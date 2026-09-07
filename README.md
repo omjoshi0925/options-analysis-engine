@@ -2,8 +2,7 @@
 
 A Black-Scholes-Merton research toolkit for European call and put pricing,
 analytical and numerical Greeks, implied-volatility inversion, and reproducible
-options-chain diagnostics. Extends the supplied MIT-licensed calculator by
-Tiago Moreira; the original license and attribution are retained.
+options-chain diagnostics.
 
 ## What changed
 
