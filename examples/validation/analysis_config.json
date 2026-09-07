@@ -1,0 +1,33 @@
+{
+  "filters": {
+    "min_volume": 0,
+    "min_open_interest": 10,
+    "max_relative_spread": 0.5,
+    "min_days": 0.0,
+    "max_days": 730.0,
+    "max_last_trade_age_days": null
+  },
+  "min_mid": 0.1,
+  "source": {
+    "data_kind": "synthetic",
+    "provider": "deterministic generator, seed 20260907",
+    "as_of": "2026-09-08T19:00:00Z",
+    "notes": [
+      "No observed market quotes. Deliberate skew and invalid quotes."
+    ],
+    "failures": [],
+    "schema_version": 1,
+    "csv_sha256": {
+      "raw_options.csv": "90f30927b15206fb434dfcc53dddcd34f4f28e78f8d0bc8509a5382e52072b7e"
+    },
+    "environment": {
+      "python": "3.12.13",
+      "numpy": "2.3.5",
+      "pandas": "2.2.3",
+      "scipy": "1.17.0",
+      "matplotlib": "3.10.8",
+      "yfinance": "1.7.0",
+      "streamlit": "1.63.0"
+    }
+  }
+}
