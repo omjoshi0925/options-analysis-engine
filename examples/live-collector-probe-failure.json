@@ -1,0 +1,78 @@
+{
+  "acquisition_finished": "2026-09-07T09:24:33.635557+00:00",
+  "acquisition_started": "2026-09-07T09:24:20.166878+00:00",
+  "assumptions": {},
+  "config": {
+    "assumptions_note": "Illustrative constant rate/yield inputs. Replace for your research observation period.",
+    "auto_train": false,
+    "cycle_timeout_seconds": 45,
+    "data_root": "<local verification directory redacted>",
+    "dividend_yields": {
+      "AAPL": 0.005,
+      "QQQ": 0.005,
+      "SPY": 0.01
+    },
+    "expirations": 1,
+    "history_window": 60,
+    "interval_seconds": 900,
+    "max_backoff_seconds": 7200,
+    "max_days": 365.0,
+    "max_quote_age_seconds": 180,
+    "max_relative_spread": 0.25,
+    "max_rows_per_symbol_session": 500,
+    "max_spot_age_seconds": 120,
+    "max_timestamp_skew_seconds": 120,
+    "min_days": 2.0,
+    "min_free_disk_mb": 500,
+    "min_open_interest": 25,
+    "min_split_rows": 50,
+    "min_training_rows": 300,
+    "min_training_sessions": 12,
+    "promotion_min_improvement": 0.02,
+    "provider": "yahoo",
+    "rate": 0.04,
+    "request_timeout_seconds": 15,
+    "retrain_every_sessions": 2,
+    "tickers": [
+      "SPY",
+      "QQQ",
+      "AAPL"
+    ],
+    "training_lookback_sessions": 60,
+    "volatility": null
+  },
+  "data_kind": "market",
+  "expiry_convention": "16:00 America/New_York; ACT/365F; US PM assumption",
+  "failures": [
+    {
+      "error": "YFRateLimitError: Too Many Requests. Rate limited. Try after a while.",
+      "stage": "history_or_expirations",
+      "symbol": "SPY"
+    },
+    {
+      "error": "YFRateLimitError: Too Many Requests. Rate limited. Try after a while.",
+      "stage": "history_or_expirations",
+      "symbol": "QQQ"
+    },
+    {
+      "error": "YFRateLimitError: Too Many Requests. Rate limited. Try after a while.",
+      "stage": "history_or_expirations",
+      "symbol": "AAPL"
+    }
+  ],
+  "notes": [
+    "Capture time is not quote time. lastTradeDate is a trade timestamp, not a bid/ask timestamp.",
+    "US equity/ETF options are treated as American; BSM results are European-equivalent diagnostics.",
+    "Daily fallback spot is not synchronized with option quotes. No exchange calendar is applied."
+  ],
+  "provider": "yahoo",
+  "quote_timestamp_available": false,
+  "requested_expirations": 1,
+  "requested_tickers": [
+    "SPY",
+    "QQQ",
+    "AAPL"
+  ],
+  "retry_after_seconds": 3600,
+  "delivery_verification_note": "Real Yahoo probe: zero quotes, rate limited. Path redaction only; no credentials present."
+}

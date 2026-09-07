@@ -24,3 +24,20 @@ The delivery's network attempt returned no usable market quotes. Therefore, the
 included numerical findings are explicitly synthetic. Run the supplied fetch
 command to produce the requested real-market study; no observed accuracy or
 successful live collection is claimed in this delivery.
+
+## Version 3 research extension
+
+| Requested improvement | Implementation/evidence |
+|---|---|
+| Real continuous collection | Tradier production adapter; regular-session polling; local provider token required |
+| Survive interruptions | SQLite WAL, worker deadlines, persisted backoff, recovery, corruption quarantine |
+| Build useful history | Checksummed raw archives, unique observations, timestamp/liquidity filters |
+| Train from accumulated data | Ridge log-IV adjustment; completed-session rolling dataset |
+| Measure whether a model improves | Later validation/test sessions, gaps, independent baseline and incumbent gates |
+| Keep improving safely | Fresh test dates, saved model versions, rejection without activation, rollback |
+| Observe collection and model health | Status CLI, latest-batch metrics, Streamlit collection tab |
+| Run on user's Mac | Bash configuration/token tools and LaunchAgent helper; host must stay awake |
+
+Live provider authentication and a native macOS LaunchAgent launch remain local
+verification steps. Offline fixtures validate the pipeline without being counted
+as real market observations or evidence of pricing improvement.

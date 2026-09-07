@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "options-analysis-engine"
-version = "2.0.0"
-description = "European option pricing, derivative verification, and reproducible market diagnostics"
+version = "3.0.0"
+description = "Option pricing, continuous market-data collection, and chronological volatility-model evaluation"
 requires-python = ">=3.10"
 license = {file = "LICENSE.txt"}
-dependencies = ["numpy>=1.24,<3", "scipy>=1.10,<2", "pandas>=2.0,<3", "matplotlib>=3.7,<4", "tzdata>=2023.3"]
+dependencies = ["numpy>=1.24,<2.4", "scipy>=1.10,<2", "pandas>=2.0,<3", "matplotlib>=3.7,<4", "tzdata>=2023.3", "requests>=2.31,<3", "exchange-calendars>=4.5,<5"]
 
 [project.optional-dependencies]
 app = ["streamlit>=1.32,<2", "yfinance>=0.2.54,<2"]

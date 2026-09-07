@@ -32,10 +32,70 @@ def parser():
         command.add_argument("--min-mid", type=float, default=.10, help="Minimum midpoint included in percentage metrics")
         command.add_argument("--max-last-trade-age-days", type=float)
         command.add_argument("--no-plots", action="store_true")
+    init = commands.add_parser("init-live", help="Write an editable continuous collection configuration")
+    init.add_argument("--provider", choices=["yahoo", "tradier"], default="yahoo")
+    init.add_argument("--config", default="config/collector.json")
+    collect = commands.add_parser("collect", help="Run the continuous collector; Ctrl+C stops it")
+    collect.add_argument("--config", default="config/collector.json")
+    collect.add_argument("--once", action="store_true", help="One scheduled check, respecting market hours")
+    collect.add_argument("--probe", action="store_true", help="One acquisition outside market hours; still respects persisted backoff")
+    status = commands.add_parser("status", help="Show collection health and training progress")
+    status.add_argument("--config", default="config/collector.json")
+    fit = commands.add_parser("train", help="Fit and evaluate a volatility model on complete prior sessions")
+    fit.add_argument("--config", default="config/collector.json")
+    ingest = commands.add_parser("ingest", help="Add an existing checksum-verified snapshot to the observation store")
+    ingest.add_argument("--config", default="config/collector.json")
+    ingest.add_argument("--snapshot", required=True)
+    select = commands.add_parser("select-model", help="Return to the baseline or roll back to a previously promoted model")
+    select.add_argument("--config", default="config/collector.json")
+    choice = select.add_mutually_exclusive_group(required=True)
+    choice.add_argument("--baseline", action="store_true")
+    choice.add_argument("--model-id")
+    score = commands.add_parser("score-snapshot", help="Compare a later snapshot using the active model and baseline")
+    score.add_argument("--config", default="config/collector.json")
+    score.add_argument("--snapshot", required=True)
+    score.add_argument("--output", required=True)
     return p
 
 
 def run(args):
+    if args.command in ("init-live", "collect", "status", "train", "ingest", "select-model", "score-snapshot"):
+        from .live_config import LiveConfig
+        from .live_utils import atomic_json, process_lock
+        if args.command == "init-live":
+            target = Path(args.config)
+            if target.exists():
+                raise ValueError("Config already exists; edit it or select another filename")
+            config = LiveConfig(provider=args.provider)
+            atomic_json(target, config.public_dict())
+            print(f"Created {target}. Edit rate/yield assumptions before collection.")
+            if args.provider == "yahoo":
+                print("Yahoo data have unverified bid/ask timestamps and will not enter strict-quality model training.")
+            else:
+                print("Set TRADIER_TOKEN in the local environment. Production data entitlement is required.")
+            return 0
+        if args.command == "collect":
+            from .collector import run_collector
+            return run_collector(args.config, args.once, args.probe)
+        config, root = LiveConfig.load(args.config)
+        if args.command == "status":
+            from .collector import live_status
+            result = live_status(args.config)
+        elif args.command == "train":
+            from .learning import train
+            result = train(root, config)
+        elif args.command == "ingest":
+            from .store import ObservationStore
+            with process_lock(root/"collector.lock"):
+                result = ObservationStore(root).ingest(args.snapshot, config)
+        elif args.command == "score-snapshot":
+            from .learning import score_snapshot
+            result = score_snapshot(root, args.snapshot, args.output, config)
+        else:
+            from .learning import select_model
+            result = select_model(root, args.model_id)
+        print(json.dumps(result, indent=2))
+        return 0
     if args.command == "fetch":
         yields = {}
         for item in args.dividend_yields:
@@ -86,7 +146,7 @@ def main():
     args = parser().parse_args()
     try:
         return run(args)
-    except (ValueError, OSError, KeyError, ImportError) as exc:
+    except (ValueError, OSError, KeyError, ImportError, RuntimeError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 2
 

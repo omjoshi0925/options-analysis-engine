@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from options_engine import BlackScholesEngine, greek_error_study
 
 
-# Preserve the original calculator's callable names and displayed Greek units.
+# Compatibility helpers for the version 2 API.
 def _kind(value):
     if value not in ("c", "p"):
         raise ValueError("type must be c or p")
@@ -56,7 +56,7 @@ def main():
     kind = st.sidebar.selectbox("Option type", ["call", "put"])
     st.sidebar.caption("0.20 = 20%. Prices and Greeks are per share, not per option contract.")
     model = BlackScholesEngine(S, K, days/365, r, sigma, q)
-    calculator, verification, market = st.tabs(["Prices & Greeks", "Numerical verification", "Market analysis"])
+    calculator, verification, market, operations = st.tabs(["Prices & Greeks", "Numerical verification", "Market analysis", "Collection & training"])
 
     def show(fig):
         st.pyplot(fig)
@@ -140,7 +140,53 @@ def main():
                 st.error(str(exc))
         elif raw is not None:
             st.warning("No quotes acquired. Use the saved acquisition diagnostics to investigate.")
-    st.caption("Extended from Tiago Moreira's MIT-licensed Black-Scholes Calculator. See THIRD_PARTY_NOTICES.md.")
+    with operations:
+        from pathlib import Path
+        from options_engine.collector import live_status
+        from options_engine.live_config import LiveConfig
+        from options_engine.learning import train
+        st.subheader("Continuous collection and model progress")
+        config_path = st.text_input("Collector configuration", "config/collector.json")
+        st.caption("The collector runs as a separate process so closing this dashboard does not stop collection. Start it with the commands in docs/CONTINUOUS_COLLECTION.md.")
+        if Path(config_path).is_file():
+            st.button("Refresh collection status")
+            try:
+                health = live_status(config_path)
+                database = health.get("database", {})
+                cols = st.columns(3)
+                cols[0].metric("Distinct observations", database.get("observations", 0))
+                cols[1].metric("Strict-quality training rows", database.get("training_rows", 0))
+                cols[2].metric("Training sessions", database.get("training_sessions", 0))
+                collector = health.get("collector", {})
+                st.write("Collector:", collector.get("state", "not started"))
+                if health.get("heartbeat_stale"):
+                    st.warning("The collector heartbeat is stale. Check the service and collector.log.")
+                st.write("Training:", health.get("training", {}).get("state", "collecting data"))
+                active = health.get("registry", {}).get("active")
+                st.write("Active model:", active["model_id"] if active else "Independent Black-Scholes baseline")
+                if st.button("Evaluate a new candidate from collected data"):
+                    cfg, data_root = LiveConfig.load(config_path)
+                    with st.spinner("Checking data and chronological holdout..."):
+                        st.json(train(data_root, cfg))
+                if database.get("recent_runs"):
+                    st.dataframe(pd.DataFrame(database["recent_runs"]), hide_index=True)
+                if database.get("quality_exclusions"):
+                    st.write("Observations excluded from training")
+                    st.dataframe(pd.DataFrame(database["quality_exclusions"]), hide_index=True)
+                if health.get("monitoring"):
+                    monitor = health["monitoring"]
+                    st.write("Latest strict-quality batch comparison")
+                    st.dataframe(pd.DataFrame([{"model": "baseline", **monitor["baseline"]},
+                                               {"model": "current", **monitor["current"]}]), hide_index=True)
+                    if monitor.get("batch_degradation_warning"):
+                        st.warning("The current model underperformed the baseline on the latest batch. Review subsequent batches before concluding there is persistent drift.")
+                with st.expander("Detailed status"):
+                    st.json(health)
+            except (ValueError, RuntimeError, OSError, KeyError) as exc:
+                st.error(str(exc))
+        else:
+            st.info("Create config/collector.json with the init-live command to begin. Real model training requires timestamp-verified quotes; synthetic demos never enter the training store.")
+    st.caption("Options Analysis Engine · Research and model evaluation")
 
 
 if __name__ == "__main__":

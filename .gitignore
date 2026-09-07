@@ -9,3 +9,12 @@ results/
 data/snapshots/
 build/
 dist/
+data/live/
+config/collector.json
+.env
+.env.*
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+*.log
+config/*-collector.json
