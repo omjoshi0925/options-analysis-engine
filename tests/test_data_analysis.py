@@ -1,4 +1,3 @@
-import json
 import sys
 from types import SimpleNamespace
 import numpy as np

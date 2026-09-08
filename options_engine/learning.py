@@ -3,7 +3,6 @@
 Learns log(IV / independently estimated volatility). No current option price,
 provider IV, solved IV, or target-derived Greek is included in the feature matrix.
 """
-from dataclasses import replace
 from pathlib import Path
 import hashlib
 import json
@@ -11,7 +10,7 @@ import uuid
 import numpy as np
 import pandas as pd
 from .core import BlackScholesEngine
-from .live_utils import atomic_json, clean_json, process_lock
+from .live_utils import atomic_json, process_lock
 from .store import ObservationStore
 
 MODEL_SCHEMA = 1
@@ -86,7 +85,7 @@ def predict_volatility(model, frame):
 
 def price_with_volatility(frame, volatilities):
     return np.array([BlackScholesEngine(row.spot, row.strike, row.T, row.r, sigma, row.q).price(row.option_type)
-                     for row, sigma in zip(frame.itertuples(index=False), volatilities)])
+                     for row, sigma in zip(frame.itertuples(index=False), volatilities, strict=True)])
 
 
 def score_predictions(frame, prices):
@@ -263,7 +262,7 @@ def monitor_latest(root, run_id):
     frame = pd.read_csv(source)
     if frame.empty:
         return None
-    frame = frame.loc[frame.training_eligible == True].copy()
+    frame = frame.loc[frame.training_eligible.astype(bool)].copy()
     if frame.empty:
         return None
     model = load_active_model(root)

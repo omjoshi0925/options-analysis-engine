@@ -1,15 +1,10 @@
 """All provider data in this module are deterministic fixtures, never market evidence."""
-from dataclasses import replace
-from contextlib import closing
 import json
-import os
-from pathlib import Path
 from types import SimpleNamespace
 import threading
 import numpy as np
 import pandas as pd
 import pytest
-import requests
 from options_engine import BlackScholesEngine
 from options_engine.live_config import LiveConfig
 from options_engine.live_utils import atomic_json, process_lock, session_window
@@ -19,7 +14,7 @@ from options_engine.store import ObservationStore, training_quality
 from options_engine.analysis import analyze_options
 from options_engine.learning import (basis, fit_ridge, predict_volatility, chronological_splits,
                                      train, load_active_model, select_model)
-from options_engine.collector import collect_cycle, retry_delay, recover_snapshots, live_status
+from options_engine.collector import collect_cycle, retry_delay, recover_snapshots
 
 
 def fixture_quotes(day="2026-04-01", capture_offset=0):
@@ -326,7 +321,7 @@ def test_recovery_quarantines_corruption_and_recovers_other_snapshots(tmp_path):
     store=ObservationStore(root)
     bad=write_snapshot(fixture_quotes(),root/"pending"/"bad",{"data_kind":"market"})
     (bad/"metadata.json").write_text('{broken')
-    good=write_snapshot(fixture_quotes(),root/"pending"/"good",{"data_kind":"market"})
+    write_snapshot(fixture_quotes(),root/"pending"/"good",{"data_kind":"market"})
     results=recover_snapshots(root,LiveConfig(),store)
     assert len(results)==1 and results[0]["training_rows"]>0
     assert len(list((root/"quarantine").glob('bad_*')))==1

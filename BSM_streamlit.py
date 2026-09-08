@@ -1,6 +1,5 @@
 """Streamlit entry point; all calculations use the same tested package as the CLI."""
 import io
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from options_engine import BlackScholesEngine, greek_error_study
@@ -72,7 +71,7 @@ def main():
         if days > 0 and sigma > 0:
             greeks = model.analytical_greeks(kind, "market")
             labels = ["Delta", "Gamma", "Theta / day", "Vega / 1 vol point", "Rho / 1 rate point"]
-            for col, label, value in zip(st.columns(5), labels, greeks.values()):
+            for col, label, value in zip(st.columns(5), labels, greeks.values(), strict=True):
                 col.metric(label, f"{value:.6f}")
             parameter = st.selectbox("Vary the input", ["S", "K", "T", "sigma"])
             st.caption("Sensitivity plots use raw derivative units; time is in years.")
