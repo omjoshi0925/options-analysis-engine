@@ -162,6 +162,76 @@ in magnitude, not conclusively nonzero on average once dependence is
 respected. The system reported this itself; the divergence between the naive
 and robust tests appeared the first time the robust test ran.
 
+## Data coverage vs evaluation window
+
+Every figure in this section is read from the saved artifacts listed in
+`docs/results/manifest.json`, which also records their SHA-256 hashes; the
+import log that printed the refusal counts above was not saved.
+
+**Raw data span.** The chain export `full_chain.csv` holds 356,936 rows on
+1,280 distinct dates from 2019-02-09 to 2026-09-07, for SPY and AAPL only: the
+`option_chain` table of the cloned database contains no QQQ rows, so although
+QQQ is in the configuration's ticker list, no QQQ quote exists in the store,
+the folds, or any figure above. The 2019 portion is stamped on weekly
+non-trading dates: 47 of the 48 dates in 2019 are non-sessions (46 Saturdays
+and one Sunday) carrying 6,156 rows, and the importer refused them because a
+quote stamped on a non-session cannot be assigned to a trading day without
+guessing, while the `daily_eod` tier requires every quote to sit at a verified
+XNYS close. The only 2019 trading-day date, 2019-05-10, is the first stored
+session. Outside 2019 the calendar gate refused one more Saturday
+(2020-01-04) and 55 weekday exchange holidays, so 103 dates carrying 22,282
+rows were refused in total. Of the 334,654 rows on trading days, 284 SPY rows
+on 2022-08-01 and 2022-09-19 were dropped because the underlying export has
+no SPY close on those dates (AAPL was imported for both sessions), 334,370
+reached the acquisition filters, and 42,352 of those were rejected before
+storage (33,795 for a relative spread above 25%, 8,457 for an invalid quote
+with a wide spread, 94 invalid quotes, 6 crossed markets), leaving the 292,018
+stored quotes.
+
+**Stored sessions versus the calendar.** The store holds 1,177 sessions from
+2019-05-10 to 2026-09-04. The XNYS calendar has 1,841 sessions in that span,
+so 664 sessions are absent from the source: through 2024 it holds roughly
+every other session, and from 2025 it is nearly complete.
+
+| Year | XNYS sessions | Sessions in store | Evaluated folds |
+|---|---:|---:|---:|
+| 2019 (from May 10) | 163 | 1 | 0 |
+| 2020 | 253 | 148 | 28 |
+| 2021 | 252 | 148 | 148 |
+| 2022 | 251 | 144 | 144 |
+| 2023 | 250 | 146 | 146 |
+| 2024 | 252 | 174 | 174 |
+| 2025 | 250 | 249 | 249 |
+| 2026 (through Sep 4) | 170 | 167 | 167 |
+| Total | 1,841 | 1,177 | 1,056 |
+
+Folds are counted in stored sessions, so a 250-session training window or a
+15-lag HAC bandwidth spans more calendar time before 2025 than after.
+
+**Evaluation window.** First evaluated session 2020-10-23, last 2026-09-04:
+1,056 sessions and 236,516 evaluated quotes (the sum of `evaluation_rows` in
+`folds.csv`), of which SPY 119,219 in 1,042 folds and AAPL 117,297 in 1,053
+folds. The 121 stored sessions before 2020-10-23 serve only as training data,
+as the 120-session minimum plus the one-session gap require.
+
+**Per-symbol counts, whole store.** SPY: 150,436 quotes, 130,801
+training-eligible, present in 1,161 sessions and absent from 16 (including
+the two missing-close sessions). AAPL: 141,582 quotes, 129,495
+training-eligible, present in 1,174 sessions and absent from 3. QQQ: 0.
+
+**SPY 2023 subsample.** Its own data root holds 144 of the 249 XNYS sessions
+between 2023-01-04 and 2023-12-29 (SPY only; 16,987 quotes, 14,869
+training-eligible; the export's seven holiday-stamped dates were refused). The
+walk-forward evaluated 83 sessions from 2023-06-12 to 2023-12-29, 8,305 quotes
+in total.
+
+**Provenance note.** Both imports ran before the 3.2.1 commits that record the
+import CSV hashes in snapshot metadata and content-hash the snapshot folders,
+so the snapshot `metadata.json` files carry no `source_files` entry. The
+import CSV hashes, the store hashes, and the hash of every snapshot file are
+recorded in `docs/results/manifest.json` instead; each snapshot's own
+`raw_options.csv` hash is in its metadata, and all 1,321 match.
+
 ## Limitations
 
 The rate and dividend assumptions are constant across a period in which the
