@@ -31,6 +31,10 @@ Exclusion reasons can overlap.
 | n_mape | 174 |
 | mape_min_mid | 0.1 |
 | within_bid_ask_pct | 42.9348 |
+| american_mae | 0.34202 |
+| american_rmse | 0.525085 |
+| american_within_bid_ask_pct | 31.5217 |
+| mean_early_exercise_premium | 0.0678931 |
 
 Baseline inputs (annual decimal units):
 
@@ -56,6 +60,29 @@ Ranked by descriptive MAE within asset/type/expiry groups with at least 5 quotes
 
 - Lowest MAE: DEMO_A / put / 2026-09-18, MAE 0.0162207, n=12.
 - Highest MAE: DEMO_B / call / 2026-12-18, MAE 0.790865, n=17.
+
+## Early-exercise premium (American baseline)
+
+The American baseline prices each quote on a CRR binomial tree with the same independent volatility;
+the premium is the American minus the European tree value, so shared discretization error cancels.
+A premium only applies to contracts that permit early exercise; the synthetic chain is generated as European.
+
+- calls: n=90, mean premium 0, max premium 0, European MAE 0.290774, American MAE 0.291269, within-spread European 34.4% / American 33.3%
+- puts: n=94, mean premium 0.132897, max premium 0.812212, European MAE 0.278592, American MAE 0.390611, within-spread European 51.1% / American 29.8%
+- Max absolute tree discretization error at 184 quotes: 0.0127709.
+
+## Implied forward, rate, and yield from put-call parity
+
+Per asset and expiry, call-minus-put midpoints are regressed on strike across matched pairs (implied_forward.csv).
+The slope implies the discount factor and rate; the intercept implies the discounted forward and the dividend yield.
+Compare these with the assumed r and q. American early exercise, stale quotes, and wide spreads bias the fit.
+
+- DEMO_A 2026-09-18: n=6, implied r 0.0400 (assumed 0.0400), implied q 0.0100 (assumed 0.0100), forward 100.0826, R² 1.000000
+- DEMO_A 2026-10-16: n=15, implied r 0.0400 (assumed 0.0400), implied q 0.0100 (assumed 0.0100), forward 100.3132, R² 1.000000
+- DEMO_A 2026-12-18: n=17, implied r 0.0400 (assumed 0.0400), implied q 0.0100 (assumed 0.0100), forward 100.8343, R² 1.000000
+- DEMO_B 2026-09-18: n=10, implied r 0.0400 (assumed 0.0400), implied q 0.0100 (assumed 0.0100), forward 175.1445, R² 1.000000
+- DEMO_B 2026-10-16: n=17, implied r 0.0400 (assumed 0.0400), implied q 0.0100 (assumed 0.0100), forward 175.5480, R² 1.000000
+- DEMO_B 2026-12-18: n=17, implied r 0.0400 (assumed 0.0400), implied q 0.0100 (assumed 0.0100), forward 176.4600, R² 1.000000
 
 ## Moneyness, maturity, and liquidity
 

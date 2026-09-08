@@ -8,14 +8,14 @@
   "failures": [],
   "schema_version": 1,
   "csv_sha256": {
-    "raw_options.csv": "90f30927b15206fb434dfcc53dddcd34f4f28e78f8d0bc8509a5382e52072b7e"
+    "raw_options.csv": "4f8327f39504fc5f29680c8fc0a146f2a0049921fc5351840361c9f4aa50cffa"
   },
   "environment": {
-    "python": "3.12.13",
+    "python": "3.13.1",
     "numpy": "2.3.5",
-    "pandas": "2.2.3",
-    "scipy": "1.17.0",
-    "matplotlib": "3.10.8",
+    "pandas": "2.3.3",
+    "scipy": "1.18.1",
+    "matplotlib": "3.11.1",
     "yfinance": "1.7.0",
     "streamlit": "1.63.0"
   }
