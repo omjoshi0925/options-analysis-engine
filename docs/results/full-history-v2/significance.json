@@ -1,0 +1,49 @@
+{
+  "bootstrap_mean_differential": {
+    "block_length": 10,
+    "confidence": 0.95,
+    "excludes_zero": true,
+    "high": 0.0011872195732320707,
+    "low": 1.0030568476683415e-05,
+    "mean": 0.00044951387966249613,
+    "replications": 2000
+  },
+  "diebold_mariano": {
+    "degenerate": false,
+    "favors": "model",
+    "folds": 1056,
+    "hac_lags": 0,
+    "hln_correction": 0.999526403004458,
+    "horizon": 1,
+    "lag1_autocorrelation": 0.8663133806916876,
+    "mean_differential": 0.00044951387966249613,
+    "p_value": 0.0002537927989852902,
+    "statistic": 3.670909831339347
+  },
+  "diebold_mariano_newey_west": {
+    "degenerate": false,
+    "favors": "model",
+    "folds": 1056,
+    "hac_lags": 15,
+    "hln_correction": 0.999526403004458,
+    "horizon": 1,
+    "lag1_autocorrelation": 0.8663133806916876,
+    "mean_differential": 0.00044951387966249613,
+    "p_value": 0.21989119548309022,
+    "statistic": 1.2275461963036527
+  },
+  "model_win_rate": 0.6638257575757576,
+  "sessions_evaluated": 1056,
+  "spec": {
+    "alphas": [
+      0.01,
+      1.0,
+      100.0
+    ],
+    "gap": 1,
+    "max_train_sessions": 250,
+    "min_train_sessions": 120,
+    "validation_sessions": 2,
+    "window": "rolling"
+  }
+}
