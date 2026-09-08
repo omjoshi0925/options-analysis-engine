@@ -18,3 +18,7 @@ config/collector.json
 *.sqlite3-shm
 *.log
 config/*-collector.json
+options/
+stocks/
+*.csv
+results/
