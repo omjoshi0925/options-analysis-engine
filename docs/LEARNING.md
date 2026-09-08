@@ -10,6 +10,10 @@ of that option midpoint.
 
 Features are constructed only from spot, strike, time to expiry, the configured
 rate/yield, independent baseline volatility, call/put type, and asset identity.
+The baseline volatility comes from the estimator named by `baseline_estimator`
+in the collector config (close-to-close by default; see the methodology page).
+Because it is the target's denominator, models trained under different
+estimators are not comparable, and each saved model records its baseline sources.
 The basis includes log moneyness through degree three, square-root and log time,
 moneyness/time interactions, log baseline volatility, rate/time and yield/time
 terms, type, and asset indicators. Current midpoint, provider IV, inverted IV,
