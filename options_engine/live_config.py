@@ -4,6 +4,7 @@ from pathlib import Path
 import json
 import math
 import re
+from .volatility import ESTIMATORS
 
 
 @dataclass(frozen=True)
@@ -13,6 +14,7 @@ class LiveConfig:
     rate: float = .04
     dividend_yields: dict = field(default_factory=lambda: {"SPY": .01, "QQQ": .005, "AAPL": .005})
     volatility: float | None = None
+    baseline_estimator: str = "close_to_close"
     data_root: str = "../data/live"
     interval_seconds: int = 900
     expirations: int = 4
@@ -53,6 +55,8 @@ class LiveConfig:
             raise ValueError("rate must be finite")
         if self.volatility is not None and (not math.isfinite(self.volatility) or self.volatility <= 0):
             raise ValueError("volatility must be positive or null for historical estimation")
+        if self.baseline_estimator not in ESTIMATORS:
+            raise ValueError(f"baseline_estimator must be one of {ESTIMATORS}")
         minimums = dict(interval_seconds=60, expirations=1, history_window=5, request_timeout_seconds=1,
                         cycle_timeout_seconds=5, max_backoff_seconds=60, max_quote_age_seconds=1,
                         max_spot_age_seconds=1, max_timestamp_skew_seconds=1, min_open_interest=0,

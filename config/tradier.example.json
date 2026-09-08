@@ -1,6 +1,7 @@
 {
   "assumptions_note": "Illustrative constant rate/yield inputs. Replace for your research observation period.",
   "auto_train": true,
+  "baseline_estimator": "close_to_close",
   "cycle_timeout_seconds": 180,
   "data_root": "../data/live",
   "dividend_yields": {

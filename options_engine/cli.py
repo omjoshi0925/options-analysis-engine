@@ -6,6 +6,7 @@ from .core import BlackScholesEngine
 from .data import FilterConfig, fetch_options, read_snapshot, write_snapshot
 from .analysis import analyze_options, write_report
 from .demo import synthetic_snapshot
+from .volatility import ESTIMATORS
 
 
 def parser():
@@ -20,6 +21,8 @@ def parser():
     fetch.add_argument("--expirations", type=int, default=3)
     fetch.add_argument("--volatility", type=float, help="Fixed independent baseline; otherwise prior 60-session realized vol")
     fetch.add_argument("--history-window", type=int, default=60)
+    fetch.add_argument("--estimator", choices=ESTIMATORS, default="close_to_close",
+                       help="Realized-volatility estimator for the baseline; range estimators use unadjusted OHLC")
     fetch.add_argument("--expiry-hour", type=int, choices=range(24), default=16)
     fetch.add_argument("--output", required=True, help="New snapshot directory; never overwritten")
     replay = commands.add_parser("analyze", help="Replay a saved, checksum-verified snapshot")
@@ -104,7 +107,7 @@ def run(args):
         if Path(args.output).exists():
             raise ValueError("Snapshot output exists; choose a new directory")
         raw, meta, history = fetch_options(args.tickers, args.rate, yields, args.expirations,
-                                           args.volatility, args.history_window, args.expiry_hour)
+                                           args.volatility, args.history_window, args.expiry_hour, args.estimator)
         if raw.empty:
             failure = Path(args.output+"-failure.json")
             failure.parent.mkdir(parents=True, exist_ok=True)

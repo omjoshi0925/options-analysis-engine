@@ -9,6 +9,7 @@ import platform
 import re
 import numpy as np
 import pandas as pd
+from .volatility import ESTIMATORS, realized_volatility
 
 YEAR_SECONDS = 365.0*24*3600
 
@@ -68,18 +69,21 @@ def read_snapshot(folder):
 
 
 def fetch_options(tickers, rate, dividend_yields, expirations=3, volatility=None,
-                  history_window=60, expiry_hour=16):
+                  history_window=60, expiry_hour=16, estimator="close_to_close"):
     """US stock/ETF convention. Inputs r/q are explicit assumptions, never fetched defaults.
 
     A captured chain's underlying quote is preferred. Fallback daily Close is
     unadjusted; adjusted historical Close is used only to estimate realized vol.
     Historical volatility excludes today's potentially incomplete daily bar.
+    Close-to-close uses adjusted closes; the range estimators use unadjusted OHLC.
     """
     import yfinance as yf
     if expirations < 1 or history_window < 2 or not np.isfinite(rate):
         raise ValueError("Invalid acquisition parameters")
     if volatility is not None and (not np.isfinite(volatility) or volatility <= 0):
         raise ValueError("Fixed volatility must be finite and positive")
+    if estimator not in ESTIMATORS:
+        raise ValueError(f"estimator must be one of {ESTIMATORS}")
     frames, histories, failures, assumptions = [], [], [], {}
     started = datetime.now(timezone.utc).isoformat()
     for symbol in dict.fromkeys(str(s).upper() for s in tickers):
@@ -101,16 +105,22 @@ def fetch_options(tickers, rate, dividend_yields, expirations=3, volatility=None
             closes = complete[vol_field].dropna().tail(history_window+1)
             if (closes <= 0).any():
                 raise ValueError("Nonpositive historical price")
-            if volatility is None and len(closes) < history_window+1:
-                raise ValueError(f"Need {history_window+1} complete daily closes for realized volatility")
-            sigma = float(volatility) if volatility is not None else float(np.log(closes).diff().dropna().std(ddof=1)*np.sqrt(252))
+            if volatility is not None:
+                sigma, source = float(volatility), "user_fixed"
+            else:
+                if estimator == "close_to_close":
+                    bars, field = pd.DataFrame({"close": closes.to_numpy()}), vol_field
+                else:
+                    bars, field = complete[[c for c in ("Open", "High", "Low", "Close") if c in complete]], "unadjusted OHLC"
+                sigma = realized_volatility(bars, estimator, history_window).sigma
+                source = f"realized_{history_window}_sessions_{estimator}_{field}"
             if not np.isfinite(sigma) or sigma <= 0:
                 raise ValueError("Invalid independent baseline volatility")
             history = hist.reset_index()
             history["symbol"] = symbol
             histories.append(history)
             assumptions[symbol] = dict(r=rate, q=q, baseline_sigma=sigma,
-                                       baseline_source="user_fixed" if volatility is not None else f"realized_{history_window}_sessions_{vol_field}",
+                                       baseline_source=source,
                                        history_end=str(closes.index[-1]), spot_fallback_session=last_session)
             selected_expiries = list(ticker.options)[:expirations]
             if not selected_expiries:

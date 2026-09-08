@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import requests
 from .data import fetch_options
+from .volatility import realized_volatility
 from .live_utils import atomic_json
 
 
@@ -98,12 +99,14 @@ class TradierProvider:
         history = pd.DataFrame(records)
         history["date"] = pd.to_datetime(history["date"], errors="raise")
         history = history.loc[history.date.dt.date < day].sort_values("date").drop_duplicates("date")
-        close = pd.to_numeric(history["close"], errors="coerce").tail(self.config.history_window+1)
-        if len(close) < self.config.history_window+1 or not (np.isfinite(close) & (close > 0)).all():
-            raise ProviderError(f"Insufficient valid complete daily closes for {symbol}")
         if self.config.volatility is None:
-            sigma = float(np.log(close).diff().dropna().std(ddof=1)*np.sqrt(252))
-            source = f"tradier_prior_{self.config.history_window}_session_realized"
+            bars = history[[c for c in ("open", "high", "low", "close") if c in history]]
+            try:
+                estimate = realized_volatility(bars, self.config.baseline_estimator, self.config.history_window)
+            except ValueError as exc:
+                raise ProviderError(f"Baseline volatility unavailable for {symbol}: {exc}") from None
+            sigma = estimate.sigma
+            source = f"tradier_prior_{self.config.history_window}_session_realized_{estimate.estimator}"
         else:
             sigma, source = self.config.volatility, "user_fixed"
         if not np.isfinite(sigma) or sigma <= 0:
@@ -179,7 +182,8 @@ def acquire(config, cache_dir):
     if config.provider == "tradier":
         return TradierProvider(config, cache_dir).fetch()
     raw, meta, history = fetch_options(config.tickers, config.rate, config.dividend_yields,
-                                       config.expirations, config.volatility, config.history_window)
+                                       config.expirations, config.volatility, config.history_window,
+                                       estimator=config.baseline_estimator)
     if not raw.empty:
         raw["provider"] = "yahoo"
         raw["feed"] = "unverified_quote_timestamps"
