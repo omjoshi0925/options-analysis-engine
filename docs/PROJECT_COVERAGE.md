@@ -38,6 +38,18 @@ successful live collection is claimed in this delivery.
 | Observe collection and model health | Status CLI, latest-batch metrics, Streamlit collection tab |
 | Run on user's Mac | Bash configuration/token tools and LaunchAgent helper; host must stay awake |
 
+## Version 3.1 research extension
+
+| Documented limitation | Implementation/evidence |
+|---|---|
+| American early exercise was unmodelled | american.py; per-quote American baseline and premium in analysis; tests against Hull's example and closed-form limits |
+| One independent price check besides the closed form | montecarlo.py with standard error and z-score; agreement within four standard errors in tests |
+| Baseline volatility fixed to close-to-close | volatility.py with five estimators; config, CLI, and dashboard wiring; simulated-path recovery tests |
+| Rate and yield inputs could not be checked against the chain | implied_forward_diagnostics; exact recovery of r and q on the synthetic chain |
+| Single-option focus | strategies.py with exact breakevens and bounds; dashboard tab; strategy CLI |
+| Collection tied to a laptop LaunchAgent | Dockerfile, compose stack, systemd unit; docs/DEPLOYMENT.md |
+| Developer ergonomics | Makefile, ruff, CI lint job, Python 3.13 matrix, Dependabot, contribution and security policies, templates, citation |
+
 Live provider authentication and a native macOS LaunchAgent launch remain local
 verification steps. Offline fixtures validate the pipeline without being counted
 as real market observations or evidence of pricing improvement.
