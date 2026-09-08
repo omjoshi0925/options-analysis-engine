@@ -15,6 +15,7 @@ class LiveConfig:
     dividend_yields: dict = field(default_factory=lambda: {"SPY": .01, "QQQ": .005, "AAPL": .005})
     volatility: float | None = None
     baseline_estimator: str = "close_to_close"
+    training_tier: str = "strict"
     data_root: str = "../data/live"
     interval_seconds: int = 900
     expirations: int = 4
@@ -41,8 +42,14 @@ class LiveConfig:
     assumptions_note: str = "Illustrative constant rate/yield inputs. Replace for your research observation period."
 
     def __post_init__(self):
-        if self.provider not in ("yahoo", "tradier"):
-            raise ValueError("provider must be yahoo or tradier")
+        if self.provider not in ("yahoo", "tradier", "dolt_eod"):
+            raise ValueError("provider must be yahoo, tradier, or dolt_eod")
+        if self.training_tier not in ("strict", "daily_eod"):
+            raise ValueError("training_tier must be strict or daily_eod")
+        if (self.provider == "dolt_eod") != (self.training_tier == "daily_eod"):
+            raise ValueError("The dolt_eod provider and the daily_eod training tier must be used together; tiers are never mixed in one data root")
+        if self.provider == "dolt_eod" and self.min_open_interest > 0:
+            raise ValueError("The dolt_eod dataset publishes no open interest; set min_open_interest to 0 for the daily_eod tier")
         object.__setattr__(self, "tickers", tuple(dict.fromkeys(self.tickers)))
         if not self.tickers or len(self.tickers) > 20:
             raise ValueError("Configure between 1 and 20 symbols")

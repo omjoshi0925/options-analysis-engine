@@ -13,6 +13,8 @@ from .live_utils import clean_json, session_window
 
 
 def training_quality(row, config, open_cache=None):
+    if getattr(config, "training_tier", "strict") == "daily_eod":
+        return eod_training_quality(row, config, open_cache)
     reasons = []
     if row.get("data_kind") != "market":
         reasons.append("not_real_market_data")
@@ -51,6 +53,58 @@ def training_quality(row, config, open_cache=None):
         reasons.append("outside_regular_session")
     size = row.get("contract_size")
     if size != 100:
+        reasons.append("nonstandard_contract_size")
+    if not row.get("iv_brent_converged") or row.get("iv_brent_poorly_identified"):
+        reasons.append("iv_not_identified")
+    iv = row.get("iv_brent_volatility", np.nan)
+    if not np.isfinite(iv) or not .03 <= iv <= 3.0:
+        reasons.append("iv_outside_training_range")
+    if row.get("mid", 0) < .10:
+        reasons.append("midpoint_below_training_floor")
+    if not config.min_days <= row.get("days_to_expiry", -1) <= config.max_days:
+        reasons.append("training_maturity_filter")
+    if abs(row.get("log_moneyness", 1)) > .35:
+        reasons.append("outside_training_moneyness")
+    return reasons
+
+
+def eod_training_quality(row, config, close_cache=None):
+    """Daily EOD tier: quote timestamps are the session close by construction.
+
+    Freshness, skew, and intraday-session checks do not apply; instead every
+    timestamp must equal the exchange close of a real XNYS session. All quote-
+    quality checks (contract terms, identifiable IV, liquidity floors) remain.
+    """
+    reasons = []
+    if row.get("data_kind") != "market":
+        reasons.append("not_real_market_data")
+    if row.get("provider") != "dolt_eod" or row.get("feed") != "historical_eod":
+        reasons.append("wrong_feed_for_daily_eod_tier")
+    captured = pd.Timestamp(row["as_of"])
+    if captured.tzinfo is None:
+        return ["timezone_missing"]
+    captured = captured.tz_convert("UTC")
+    cache = close_cache if close_cache is not None else {}
+    day = str(captured.tz_convert("America/New_York").date())
+    if day not in cache:
+        import exchange_calendars as xc
+        calendar = xc.get_calendar("XNYS")
+        try:
+            session = calendar.date_to_session(day)
+            cache[day] = pd.Timestamp(calendar.session_close(session)).tz_convert("UTC")
+        except Exception:  # noqa: BLE001 - any calendar miss means "not a session"
+            cache[day] = None
+    close = cache[day]
+    if close is None or captured != close:
+        reasons.append("not_a_session_close")
+    for field in ("bid_timestamp", "ask_timestamp", "spot_timestamp"):
+        try:
+            stamp = pd.Timestamp(row.get(field))
+            if pd.isna(stamp) or stamp.tzinfo is None or stamp.tz_convert("UTC") != captured:
+                raise ValueError("mismatch")
+        except (TypeError, ValueError):
+            reasons.append("implied_"+field+"_mismatch")
+    if row.get("contract_size") != 100:
         reasons.append("nonstandard_contract_size")
     if not row.get("iv_brent_converged") or row.get("iv_brent_poorly_identified"):
         reasons.append("iv_not_identified")
@@ -188,6 +242,15 @@ class ObservationStore:
         params = (str(before or "9999-12-31"), int(lookback_sessions), int(max_rows_per_symbol_session))
         with closing(self.connect()) as db:
             records = [json.loads(row[0]) for row in db.execute(query, params)]
+        return pd.DataFrame(records)
+
+    def export(self, include_excluded=False):
+        """All stored observations as one research frame; excluded rows keep their quality reasons."""
+        query = ("SELECT payload_json FROM observations"
+                 +("" if include_excluded else " WHERE training_eligible=1")
+                 +" ORDER BY as_of, observation_id")
+        with closing(self.connect()) as db:
+            records = [json.loads(row[0]) for row in db.execute(query)]
         return pd.DataFrame(records)
 
     def status(self):
