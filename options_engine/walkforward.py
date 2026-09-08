@@ -89,7 +89,12 @@ def walk_forward(frame, spec=None):
         base_metrics, base_prices, _ = evaluate(None, evaluation)
         model_metrics, model_prices, _ = evaluate(model, evaluation)
         mid, spot = evaluation.mid.to_numpy(float), evaluation.spot.to_numpy(float)
-        folds.append(dict(evaluated_session=sessions[j], train_start=train_sessions[0],
+        per_symbol = {}
+        for symbol, index in evaluation.groupby("symbol").groups.items():
+            mask = evaluation.index.get_indexer(index)
+            per_symbol[f"baseline_loss_{symbol}"] = float(np.mean(((base_prices[mask]-mid[mask])/spot[mask])**2))
+            per_symbol[f"model_loss_{symbol}"] = float(np.mean(((model_prices[mask]-mid[mask])/spot[mask])**2))
+        folds.append(dict(evaluated_session=sessions[j], train_start=train_sessions[0], **per_symbol,
                           train_end=train_sessions[-1], train_sessions=len(train_sessions),
                           train_rows=len(train_frame), evaluation_rows=len(evaluation), alpha=alpha,
                           baseline_loss=float(np.mean(((base_prices-mid)/spot)**2)),
@@ -104,11 +109,15 @@ def walk_forward(frame, spec=None):
                 baseline_losses=table.baseline_loss.to_numpy(), model_losses=table.model_loss.to_numpy())
 
 
-def hln_diebold_mariano(baseline_losses, model_losses, horizon=1):
+def hln_diebold_mariano(baseline_losses, model_losses, horizon=1, hac_lags=None):
     """DM test on the loss differential (baseline minus model; positive favors the model).
 
-    HAC variance with `horizon-1` lags, Harvey-Leybourne-Newbold correction,
-    and a Student-t(n-1) reference distribution. Two-sided p-value.
+    The default HAC variance uses `horizon-1` autocovariances, the textbook
+    choice for h-step forecasts; pass `hac_lags` for a Newey-West (Bartlett)
+    variance with that many lags when the differential itself is serially
+    correlated. Harvey-Leybourne-Newbold correction, Student-t(n-1) reference,
+    two-sided p-value. A zero-variance differential is reported as degenerate,
+    never as p=0.
     """
     from scipy import stats
     differential = np.asarray(baseline_losses, float)-np.asarray(model_losses, float)
@@ -117,23 +126,27 @@ def hln_diebold_mariano(baseline_losses, model_losses, horizon=1):
         raise ValueError("Diebold-Mariano needs at least 8 folds")
     if horizon < 1 or horizon > n//2:
         raise ValueError("horizon must be between 1 and half the fold count")
+    lags = horizon-1 if hac_lags is None else int(hac_lags)
+    if not 0 <= lags < n:
+        raise ValueError("hac_lags must be between 0 and the fold count")
     mean = float(differential.mean())
     centered = differential-mean
     variance = float(centered@centered)/n
-    for lag in range(1, horizon):
-        cov = float(centered[lag:]@centered[:-lag])/n
-        variance += 2.0*cov
+    for lag in range(1, lags+1):
+        weight = 1.0 if hac_lags is None else 1.0-lag/(lags+1)
+        variance += 2.0*weight*float(centered[lag:]@centered[:-lag])/n
+    lag1 = float((centered[1:]@centered[:-1])/(centered@centered)) if float(centered@centered) > 0 else 0.0
     correction = math.sqrt(max((n+1-2*horizon+horizon*(horizon-1)/n)/n, 0.0))
+    result = dict(folds=n, horizon=horizon, hac_lags=lags, mean_differential=mean,
+                  lag1_autocorrelation=lag1, hln_correction=correction,
+                  favors="model" if mean > 0 else ("baseline" if mean < 0 else "neither"))
     if variance <= 0:
-        # A constant differential: direction is certain within the sample, scale is not testable.
-        statistic = math.inf*np.sign(mean) if mean else 0.0
-        p_value = 0.0 if mean else 1.0
-    else:
-        statistic = correction*mean/math.sqrt(variance/n)
-        p_value = float(2*stats.t.sf(abs(statistic), df=n-1))
-    return dict(statistic=float(statistic), p_value=p_value, folds=n, horizon=horizon,
-                mean_differential=mean, hln_correction=correction,
-                favors="model" if mean > 0 else ("baseline" if mean < 0 else "neither"))
+        # Constant differential: the sample cannot estimate a variance, so no test statistic exists.
+        return dict(result, statistic=None, p_value=None, degenerate=True,
+                    note="Zero-variance loss differential; DM is undefined on this sample")
+    statistic = correction*mean/math.sqrt(variance/n)
+    return dict(result, statistic=float(statistic), p_value=float(2*stats.t.sf(abs(statistic), df=n-1)),
+                degenerate=False)
 
 
 def circular_block_bootstrap_ci(values, n_boot=2000, block_length=None, confidence=.95, seed=0):
@@ -171,9 +184,12 @@ def walk_forward_report(result, output, n_boot=2000, seed=0):
     table.to_csv(output/"folds.csv", index=False)
     differential = result["baseline_losses"]-result["model_losses"]
     dm = hln_diebold_mariano(result["baseline_losses"], result["model_losses"])
+    nw_lags = max(1, math.floor(1.5*len(differential)**(1/3)))
+    dm_robust = hln_diebold_mariano(result["baseline_losses"], result["model_losses"], hac_lags=nw_lags)
     ci = circular_block_bootstrap_ci(differential, n_boot=n_boot, seed=seed)
     wins = float((table.model_loss < table.baseline_loss).mean())
-    significance = dict(diebold_mariano=dm, bootstrap_mean_differential=ci, model_win_rate=wins,
+    significance = dict(diebold_mariano=dm, diebold_mariano_newey_west=dm_robust,
+                        bootstrap_mean_differential=ci, model_win_rate=wins,
                         spec=result["spec"], sessions_evaluated=len(table))
     atomic_json(output/"significance.json", clean_json(significance))
     lines = ["# Walk-forward evaluation", "",
@@ -185,6 +201,8 @@ def walk_forward_report(result, output, n_boot=2000, seed=0):
              f"| Mean loss differential (baseline - model) | {dm['mean_differential']:.3e} |",
              f"| Diebold-Mariano statistic (HLN) | {dm['statistic']:.3f} |",
              f"| Two-sided p-value | {dm['p_value']:.4g} |",
+             f"| DM with Newey-West HAC ({dm_robust['hac_lags']} lags) | {dm_robust['statistic']:.3f} (p = {dm_robust['p_value']:.4g}) |",
+             f"| Lag-1 autocorrelation of the differential | {dm['lag1_autocorrelation']:.3f} |",
              f"| Bootstrap {ci['confidence']:.0%} CI for the differential | [{ci['low']:.3e}, {ci['high']:.3e}] |",
              f"| CI excludes zero | {ci['excludes_zero']} |", "",
              "Losses are session means of squared spot-normalized pricing errors against",

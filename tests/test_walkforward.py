@@ -48,6 +48,7 @@ def test_walk_forward_folds_leakage_and_learnability(learnable_frame):
         gap_sessions = sessions[sessions.index(fold.train_end)+1:sessions.index(fold.evaluated_session)]
         assert len(gap_sessions) == 1  # the embargo session is never trained on or evaluated
     assert (table.model_loss < table.baseline_loss).all()
+    assert "model_loss_TEST" in table and np.allclose(table.model_loss_TEST, table.model_loss)
     assert table.alpha.isin(WalkForwardSpec().alphas).all()
     dm = hln_diebold_mariano(result["baseline_losses"], result["model_losses"])
     assert dm["favors"] == "model" and dm["p_value"] < .05
@@ -73,7 +74,10 @@ def test_diebold_mariano_properties():
     strong = hln_diebold_mariano(np.full(20, 2.0)+rng.normal(0, .01, 20), np.zeros(20))
     assert strong["favors"] == "model" and strong["p_value"] < 1e-6
     constant = hln_diebold_mariano(np.full(10, 1.0), np.zeros(10))
-    assert constant["statistic"] == np.inf and constant["p_value"] == 0.0
+    assert constant["degenerate"] and constant["statistic"] is None and constant["p_value"] is None
+    robust = hln_diebold_mariano(np.full(20, 2.0)+rng.normal(0, .01, 20), np.zeros(20), hac_lags=4)
+    assert robust["hac_lags"] == 4 and robust["p_value"] < 1e-4
+    assert "lag1_autocorrelation" in robust
     n, h = 10, 1
     assert hln_diebold_mariano(noise[:n], np.zeros(n), h)["hln_correction"] == pytest.approx(np.sqrt((n+1-2*h+h*(h-1)/n)/n))
     with pytest.raises(ValueError, match="at least 8"):
