@@ -91,12 +91,14 @@ reuse a holdout invalidates that evaluation discipline.
 
 ## Audit, use, and rollback
 
+Commands below run from the repository root.
+
 Training is checked automatically once per local date when `auto_train` is true.
 It waits until enough qualifying data exists. You can request the same evaluation
 explicitly without weakening its gates:
 
 ```bash
-cd ~/Documents/GitHub/options-analysis-engine && source .venv/bin/activate && python -m options_engine train --config config/collector.json
+source .venv/bin/activate && python -m options_engine train --config config/collector.json
 ```
 
 Each evaluation saves its selected alpha, split dates, dataset fingerprint,
@@ -107,21 +109,21 @@ through the rollback command. An accepted model is used in subsequent monitoring
 and snapshot scoring. Rejection leaves the active model unchanged.
 
 ```bash
-cd ~/Documents/GitHub/options-analysis-engine && source .venv/bin/activate && python -m options_engine select-model --config config/collector.json --baseline
+source .venv/bin/activate && python -m options_engine select-model --config config/collector.json --baseline
 ```
 
 To select a previously promoted version, replace the ID below with one from
 `models/registry.json`:
 
 ```bash
-cd ~/Documents/GitHub/options-analysis-engine && source .venv/bin/activate && python -m options_engine select-model --config config/collector.json --model-id YOUR_PROMOTED_MODEL_ID
+source .venv/bin/activate && python -m options_engine select-model --config config/collector.json --model-id YOUR_PROMOTED_MODEL_ID
 ```
 
 To score an archived snapshot, replace the snapshot directory with an actual later
 capture and choose an output directory that does not yet exist:
 
 ```bash
-cd ~/Documents/GitHub/options-analysis-engine && source .venv/bin/activate && python -m options_engine score-snapshot --config config/collector.json --snapshot data/live/snapshots/YYYY-MM-DD/RUN_ID --output results/later-model-score
+source .venv/bin/activate && python -m options_engine score-snapshot --config config/collector.json --snapshot data/live/snapshots/YYYY-MM-DD/RUN_ID --output results/later-model-score
 ```
 
 Snapshot scoring reports quality problems as well as comparisons. It does not
