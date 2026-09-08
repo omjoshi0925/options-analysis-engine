@@ -96,6 +96,27 @@ def smile_figure(df, symbol, synthetic=False):
     return fig
 
 
+def strategy_figure(strategy, S, T, r, sigma, q=0.0, points=241):
+    """Expiry payoff (exact) and the closed-form mark before expiry across a spot grid around the strikes."""
+    anchors = [S]+strategy.strikes
+    lo, hi = 0.7*min(anchors), 1.3*max(anchors)
+    grid = np.linspace(lo, hi, points)
+    fig, ax = plt.subplots(figsize=(9, 5))
+    ax.plot(grid, strategy.payoff(grid), color="#146A9A", lw=2, label="Profit at expiry")
+    if T > 0 and sigma > 0:
+        ax.plot(grid, [strategy.value(x, T, r, sigma, q) for x in grid], color="#CE6B30", ls="--", label=f"Closed-form mark, T={T:.3g}y")
+    ax.axhline(0, color="gray", lw=.8)
+    ax.axvline(S, color="gray", ls=":", lw=.8, label="Spot")
+    for root in strategy.breakevens():
+        ax.axvline(root, color="#5B8C5A", ls="-.", lw=.8)
+    ax.set(title=f"{strategy.name.replace('_', ' ')} | net premium {strategy.net_premium:+.4f}/share",
+           xlabel="Underlying price at expiry", ylabel="Profit per share")
+    ax.grid(alpha=.2)
+    ax.legend(fontsize=8)
+    fig.tight_layout()
+    return fig
+
+
 def save_figures(df, model, output, synthetic=False):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
