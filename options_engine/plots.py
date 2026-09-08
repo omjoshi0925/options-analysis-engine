@@ -29,7 +29,7 @@ def sensitivity_figure(model, parameter="S", points=160):
         for value in x:
             m = replace(model, **{parameter: value})
             records.append({"Price": m.price(kind), **m.analytical_greeks(kind)})
-        for ax, label, unit in zip(axes.flat, labels, units):
+        for ax, label, unit in zip(axes.flat, labels, units, strict=True):
             ax.plot(x, [row[label] for row in records], label=kind.title(), color=color)
             ax.set(title=label, xlabel={"S": "Underlying price S", "K": "Strike K", "T": "Time T (years)", "sigma": "Volatility (decimal)"}[parameter], ylabel=unit)
             ax.axvline(reference, color="gray", ls=":", lw=.8)
@@ -44,7 +44,7 @@ def sensitivity_figure(model, parameter="S", points=160):
 
 def numerical_error_figure(study):
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
-    for kind, ax in zip(("call", "put"), axes):
+    for kind, ax in zip(("call", "put"), axes, strict=True):
         for name, group in study.loc[study.option_type == kind].groupby("greek"):
             ax.loglog(group.relative_step, group.absolute_error.clip(lower=1e-16), marker=".", label=name)
         ax.set(title=f"{kind.title()}: analytic vs finite difference", xlabel="Relative step h", ylabel="Absolute error (raw Greek units)")
@@ -61,7 +61,7 @@ def market_figure(df, synthetic=False):
         axes.flat[0].scatter(sub.baseline_price, sub.mid, s=12, alpha=.5, label=label)
         for ax, field, title in zip(list(axes.flat)[1:],
                                    ["log_moneyness", "strike", "days_to_expiry", "identified_iv", "volume", "openInterest", "relative_spread"],
-                                   ["ln(S/K)", "Strike", "Days to expiry", "Calculated IV (decimal)", "Volume", "Open interest", "Relative spread"]):
+                                   ["ln(S/K)", "Strike", "Days to expiry", "Calculated IV (decimal)", "Volume", "Open interest", "Relative spread"], strict=True):
             ax.scatter(sub[field], sub.error, s=12, alpha=.5)
             ax.axhline(0, color="gray", lw=.8)
             ax.set(xlabel=title, ylabel="Midpoint - baseline")
@@ -82,7 +82,7 @@ def smile_figure(df, symbol, synthetic=False):
     fig, axes = plt.subplots(1, 2, figsize=(12, 5), sharey=True)
     eligible = df.loc[(df.symbol == symbol) & df.iv_brent_converged &
                       ~df.iv_brent_poorly_identified & (df.iv_brent_volatility > 0)]
-    for kind, ax in zip(("call", "put"), axes):
+    for kind, ax in zip(("call", "put"), axes, strict=True):
         for expiry, sub in eligible.loc[eligible.option_type == kind].groupby("expiration"):
             sub = sub.sort_values("log_moneyness")
             ax.plot(sub.log_moneyness, sub.iv_brent_volatility, ".-", label=expiry)

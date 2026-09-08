@@ -12,7 +12,7 @@ dependencies = ["numpy>=1.24,<2.4", "scipy>=1.10,<2", "pandas>=2.0,<3", "matplot
 
 [project.optional-dependencies]
 app = ["streamlit>=1.32,<2", "yfinance>=0.2.54,<2"]
-dev = ["pytest>=8,<10"]
+dev = ["pytest>=8,<10", "ruff>=0.5,<1"]
 
 [project.scripts]
 options-engine = "options_engine.cli:main"
@@ -23,3 +23,13 @@ include = ["options_engine*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+
+[tool.ruff]
+line-length = 140
+target-version = "py310"
+extend-exclude = ["examples", "results", "data"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B"]
+# Long lines are deliberate in this codebase's compact style.
+ignore = ["E501"]
