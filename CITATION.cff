@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: If you use this software in research, please cite it.
+title: Options Analysis Engine
+type: software
+version: 3.1.0
+date-released: "2026-09-07"
+license: MIT
+repository-code: https://github.com/omjoshi0925/options-analysis-engine
+authors:
+  - name: omjoshi0925
+abstract: >-
+  Option pricing (Black-Scholes-Merton, Cox-Ross-Rubinstein binomial, Monte Carlo),
+  continuous options-chain collection with quality gates, and chronological
+  evaluation of a learned volatility model.
+keywords:
+  - options
+  - Black-Scholes
+  - implied volatility
+  - binomial tree
+  - market data
