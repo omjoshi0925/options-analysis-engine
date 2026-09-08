@@ -51,3 +51,37 @@ def test_report_includes_parity_fit(analyzed, tmp_path):
     assert "## Implied forward, rate, and yield from put-call parity" in text
     assert "implied r 0.0400 (assumed 0.0400)" in text
     assert (tmp_path/"implied_forward.csv").exists()
+    assert "## Early-exercise premium (American baseline)" in text and "- puts: n=" in text
+
+
+def test_early_exercise_columns_are_consistent(analyzed):
+    frame, _, _ = analyzed
+    for column in ("american_baseline_price", "early_exercise_premium", "tree_discretization_error", "american_error", "american_within_spread"):
+        assert frame[column].notna().all(), column
+    assert (frame.early_exercise_premium >= 0).all()
+    # American tree = European closed form + discretization error + early-exercise premium, by construction.
+    np.testing.assert_allclose(frame.american_baseline_price, frame.baseline_price+frame.tree_discretization_error+frame.early_exercise_premium, atol=1e-12)
+    np.testing.assert_allclose(frame.american_error, frame.mid-frame.american_baseline_price, atol=1e-12)
+    puts = frame.loc[frame.option_type == "put"]
+    assert puts.early_exercise_premium.max() > 0.01
+    assert (frame.tree_discretization_error.abs() < 0.05).all()
+    assert (frame.loc[frame.option_type == "call"].early_exercise_premium < puts.early_exercise_premium.max()).all()
+
+
+def test_tree_can_be_skipped_and_step_count_is_validated():
+    raw, _ = synthetic_snapshot()
+    frame, _ = analyze_options(raw.head(12), american_steps=None)
+    assert frame.american_baseline_price.isna().all() and frame.early_exercise_premium.isna().all()
+    for steps in (0, -5, 2.5, True):
+        with pytest.raises(ValueError, match="american_steps"):
+            analyze_options(raw.head(12), american_steps=steps)
+
+
+def test_metrics_report_american_baseline_when_available(analyzed):
+    from options_engine.analysis import metrics
+    frame, audit, meta = analyzed
+    result = metrics(frame)
+    assert set(("american_mae", "american_rmse", "american_within_bid_ask_pct", "mean_early_exercise_premium")) <= set(result)
+    assert result["american_mae"] > 0 and result["mean_early_exercise_premium"] >= 0
+    skipped, _ = analyze_options(synthetic_snapshot()[0].head(12), american_steps=None)
+    assert "american_mae" not in metrics(skipped)

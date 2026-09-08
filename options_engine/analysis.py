@@ -5,6 +5,7 @@ import json
 import numpy as np
 import pandas as pd
 from .core import BlackScholesEngine
+from .american import binomial_analysis
 from .iv import implied_volatility
 from .data import FilterConfig, filter_options
 
@@ -15,18 +16,30 @@ def metrics(frame, min_mid=0.10):
     error = frame["error"].to_numpy(float)
     mask = frame["mid"] >= min_mid
     percentage = frame.loc[mask, "error"]/frame.loc[mask, "mid"]
-    return dict(n=len(frame), mae=float(np.mean(np.abs(error))) if len(frame) else np.nan,
+    result = dict(n=len(frame), mae=float(np.mean(np.abs(error))) if len(frame) else np.nan,
                 rmse=float(np.sqrt(np.mean(error**2))) if len(frame) else np.nan,
                 median_error=float(np.median(error)) if len(frame) else np.nan,
                 mean_error=float(np.mean(error)) if len(frame) else np.nan,
                 mape_pct=float(100*np.mean(np.abs(percentage))) if len(percentage) else np.nan,
                 n_mape=int(mask.sum()), mape_min_mid=min_mid,
                 within_bid_ask_pct=float(100*frame["baseline_within_spread"].mean()) if len(frame) else np.nan)
+    if "american_error" in frame and len(frame) and frame.american_error.notna().any():
+        american = frame.american_error.to_numpy(float)
+        result.update(american_mae=float(np.nanmean(np.abs(american))), american_rmse=float(np.sqrt(np.nanmean(american**2))),
+                      american_within_bid_ask_pct=float(100*frame["american_within_spread"].mean()),
+                      mean_early_exercise_premium=float(frame.early_exercise_premium.mean()))
+    return result
 
 
-def analyze_options(raw, config=None, min_mid=0.10):
+def analyze_options(raw, config=None, min_mid=0.10, american_steps=200):
+    """Independent European baseline per quote, plus an American tree with the same sigma.
+
+    american_steps sets the CRR step count; None skips the tree and leaves its columns NaN.
+    """
     if not np.isfinite(min_mid) or min_mid <= 0:
         raise ValueError("min_mid must be finite and positive")
+    if american_steps is not None and (isinstance(american_steps, bool) or not isinstance(american_steps, int) or american_steps < 1):
+        raise ValueError("american_steps must be a positive integer or None")
     config = config or FilterConfig()
     accepted, audit = filter_options(raw, config)
     if accepted.empty:
@@ -45,6 +58,15 @@ def analyze_options(raw, config=None, min_mid=0.10):
                    european_lower_bound=lo, european_upper_bound=hi,
                    european_bound_violation=not lo-1e-8 <= row["mid"] <= hi+1e-8,
                    parity_residual=m.verify_parity())
+        if american_steps is None:
+            row.update(american_baseline_price=np.nan, early_exercise_premium=np.nan, tree_discretization_error=np.nan,
+                       american_error=np.nan, american_within_spread=np.nan)
+        else:
+            # Same independent sigma on a CRR tree: the premium is what early exercise adds if the contract is American.
+            tree = binomial_analysis(m.S, m.K, m.T, m.r, m.sigma, m.q, kind, american_steps)
+            row.update(american_baseline_price=tree.price, early_exercise_premium=tree.early_exercise_premium,
+                       tree_discretization_error=tree.discretization_error, american_error=row["mid"]-tree.price,
+                       american_within_spread=row["bid"] <= tree.price <= row["ask"])
         for greek, value in m.analytical_greeks(kind).items():
             row["baseline_"+greek.lower()] = value
         for method in ("brent", "newton"):
@@ -216,6 +238,16 @@ def write_report(df, audit, metadata, output, config=None, min_mid=0.10):
                   f"- Highest MAE: {worst['group']}, MAE {worst.mae:.6g}, n={int(worst.n)}."]
     else:
         lines += ["No group has at least 5 observations."]
+    if df.early_exercise_premium.notna().any():
+        lines += ["", "## Early-exercise premium (American baseline)", "",
+                  "The American baseline prices each quote on a CRR binomial tree with the same independent volatility;",
+                  "the premium is the American minus the European tree value, so shared discretization error cancels.",
+                  "A premium only applies to contracts that permit early exercise; the synthetic chain is generated as European.", ""]
+        for kind, sub in df.groupby("option_type"):
+            lines += [f"- {kind}s: n={len(sub)}, mean premium {sub.early_exercise_premium.mean():.6g}, max premium {sub.early_exercise_premium.max():.6g}, "
+                      f"European MAE {sub.absolute_error.mean():.6g}, American MAE {sub.american_error.abs().mean():.6g}, "
+                      f"within-spread European {100*sub.baseline_within_spread.mean():.1f}% / American {100*sub.american_within_spread.mean():.1f}%"]
+        lines += [f"- Max absolute tree discretization error at {int(np.isfinite(df.tree_discretization_error).sum())} quotes: {df.tree_discretization_error.abs().max():.6g}."]
     lines += ["", "## Implied forward, rate, and yield from put-call parity", "",
               "Per asset and expiry, call-minus-put midpoints are regressed on strike across matched pairs (implied_forward.csv).",
               "The slope implies the discount factor and rate; the intercept implies the discounted forward and the dividend yield.",
