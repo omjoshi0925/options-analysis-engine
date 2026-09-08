@@ -1,0 +1,24 @@
+# Dashboard plus collector sharing one data volume.
+#   export TRADIER_TOKEN=...   # or omit for a Yahoo research config
+#   docker compose up --build
+services:
+  dashboard:
+    build: .
+    command: ["dashboard"]
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./config:/app/config:ro
+      - engine-data:/app/data
+    restart: unless-stopped
+  collector:
+    build: .
+    command: ["collect", "--config", "config/collector.json"]
+    environment:
+      - TRADIER_TOKEN
+    volumes:
+      - ./config:/app/config:ro
+      - engine-data:/app/data
+    restart: unless-stopped
+volumes:
+  engine-data:

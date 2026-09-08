@@ -1,0 +1,26 @@
+# systemd unit for an always-on Linux host. See docs/DEPLOYMENT.md.
+#   sudo cp deploy/options-collector.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now options-collector
+[Unit]
+Description=Options Analysis Engine collector
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=options
+Group=options
+WorkingDirectory=/opt/options-analysis-engine
+# Optional file containing TRADIER_TOKEN=...; readable by the service user only.
+EnvironmentFile=-/etc/options-analysis-engine/environment
+ExecStart=/opt/options-analysis-engine/.venv/bin/python -m options_engine collect --config /opt/options-analysis-engine/config/collector.json
+Restart=on-failure
+RestartSec=60
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/options-analysis-engine/data
+
+[Install]
+WantedBy=multi-user.target
