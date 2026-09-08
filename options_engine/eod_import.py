@@ -20,6 +20,7 @@ strict-tier row. Check the dataset's stated license before publishing results
 built on it, and cite the source.
 """
 from pathlib import Path
+import hashlib
 import numpy as np
 import pandas as pd
 from .data import write_snapshot
@@ -147,6 +148,8 @@ def import_eod(chain_path, underlying_path, config, root, max_sessions=None,
         raise ValueError("import-eod requires a dolt_eod config (training_tier daily_eod)")
     chain = load_chain_csv(chain_path, chain_columns)
     underlying = load_underlying_csv(underlying_path, underlying_columns)
+    source_files = {name: dict(path=str(Path(path)), sha256=hashlib.sha256(Path(path).read_bytes()).hexdigest())
+                    for name, path in (("chain_csv", chain_path), ("underlying_csv", underlying_path))}
     root = Path(root)
     store = ObservationStore(root)
     summary = dict(sessions_imported=0, sessions_skipped=0, inserted_rows=0, training_rows=0,
@@ -158,7 +161,13 @@ def import_eod(chain_path, underlying_path, config, root, max_sessions=None,
         if raw.empty:
             summary["sessions_skipped"] += 1
             continue
-        folder = root/"snapshots"/day/("eod_import_"+day.replace("-", ""))
+        metadata["source_files"] = source_files
+        # Revision-safe immutable snapshots: the folder name commits to the content,
+        # so a re-export with corrected or additional quotes lands in a new folder
+        # instead of being silently shadowed by an earlier import of the same date.
+        raw = raw.sort_values(["symbol", "contractSymbol"]).reset_index(drop=True)
+        content = hashlib.sha256(raw.to_csv(index=False).encode()).hexdigest()[:12]
+        folder = root/"snapshots"/day/(f"eod_import_{day.replace('-', '')}_{content}")
         if not (folder/"metadata.json").exists():
             write_snapshot(raw, folder, metadata)
         result = store.ingest(folder, config)
@@ -168,4 +177,6 @@ def import_eod(chain_path, underlying_path, config, root, max_sessions=None,
         summary["sessions_imported"] += 1
         summary["inserted_rows"] += result["inserted_rows"]
         summary["training_rows"] += result["training_rows"]
+        summary["first_session"] = summary.get("first_session") or day
+        summary["last_session"] = day
     return summary
