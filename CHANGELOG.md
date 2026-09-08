@@ -1,5 +1,25 @@
 # Changelog
 
+## 3.2.1 - 2026-09-08
+
+Fixes from external code review, all covered by new tests:
+
+- The training tier is now pinned in the database itself: the first ingest
+  records the tier in store metadata and every later ingest must match, so two
+  configs pointing at one data root can no longer mix strict and daily_eod
+  observations.
+- EOD snapshot folders are now content-hashed, so re-importing a corrected or
+  extended export for an existing date creates an immutable revision instead of
+  being silently shadowed by the earlier snapshot.
+- A zero-variance Diebold-Mariano differential is now reported as degenerate
+  (no statistic, no p-value) instead of p=0; the significance report also adds
+  a Newey-West HAC variant and the differential's lag-1 autocorrelation so
+  serial correlation in session losses is visible rather than assumed away.
+- Imports record the source CSV paths and SHA-256 hashes in every snapshot's
+  metadata, and the import summary reports the first and last session imported.
+- Walk-forward folds now include per-symbol session losses for multi-symbol
+  runs.
+
 ## 3.2.0 - 2026-09-07
 
 - Add a daily_eod training tier for free historical end-of-day chains: quotes
