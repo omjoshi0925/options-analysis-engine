@@ -125,6 +125,46 @@ def market_parity_diagnostics(df):
     return pd.DataFrame(rows, columns=keys+["european_parity", "market_mid_difference", "bid_ask_lower", "bid_ask_upper", "theory_inside_interval"])
 
 
+def implied_forward_diagnostics(df, min_pairs=3):
+    """Per asset, expiry, and capture: fit C - P = a + b*K across matched strikes (European parity).
+
+    a estimates S*exp(-qT), the discounted forward, and -b estimates exp(-rT), so the fit
+    yields a market-implied rate and dividend yield to compare with the assumed inputs.
+    American puts carry an early-exercise premium that lowers C - P and biases the implied
+    forward down; treat the output as a check on the r/q scenario, not an executable forward.
+    """
+    keys = ["symbol", "expiration", "as_of", "spot", "r", "q", "T"]
+    calls = df.loc[df.option_type == "call", keys+["strike", "mid"]]
+    puts = df.loc[df.option_type == "put", keys+["strike", "mid"]]
+    merged = calls.merge(puts, on=keys+["strike"], suffixes=("_call", "_put"), validate="one_to_one")
+    columns = keys+["n_pairs", "implied_discount", "implied_rate", "implied_forward", "implied_yield",
+                    "rate_difference", "yield_difference", "fit_rmse", "r_squared", "status"]
+    rows = []
+    for key, group in merged.groupby(keys, sort=True):
+        record = dict(zip(keys, key, strict=True))
+        record["n_pairs"] = len(group)
+        strikes = group.strike.to_numpy(float)
+        difference = (group.mid_call-group.mid_put).to_numpy(float)
+        if len(group) < min_pairs or np.unique(strikes).size < 2 or record["T"] <= 0:
+            rows.append({**record, "status": "insufficient_pairs"})
+            continue
+        slope, intercept = np.polyfit(strikes, difference, 1)
+        residual = difference-(intercept+slope*strikes)
+        total = float(np.sum((difference-difference.mean())**2))
+        record.update(fit_rmse=float(np.sqrt(np.mean(residual**2))),
+                      r_squared=float(1-np.sum(residual**2)/total) if total > 0 else np.nan)
+        discount, discounted_forward = -float(slope), float(intercept)
+        if discount <= 0 or discounted_forward <= 0:
+            rows.append({**record, "status": "no_valid_parity_fit"})
+            continue
+        record.update(implied_discount=discount, implied_rate=-np.log(discount)/record["T"],
+                      implied_forward=discounted_forward/discount,
+                      implied_yield=-np.log(discounted_forward/record["spot"])/record["T"])
+        record.update(rate_difference=record["implied_rate"]-record["r"], yield_difference=record["implied_yield"]-record["q"], status="ok")
+        rows.append(record)
+    return pd.DataFrame(rows, columns=columns)
+
+
 def write_report(df, audit, metadata, output, config=None, min_mid=0.10):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
@@ -149,6 +189,8 @@ def write_report(df, audit, metadata, output, config=None, min_mid=0.10):
     summary.to_csv(output/"metrics.csv", index=False)
     smile_summary(df).to_csv(output/"smile_summary.csv", index=False)
     market_parity_diagnostics(df).to_csv(output/"market_parity.csv", index=False)
+    forwards = implied_forward_diagnostics(df)
+    forwards.to_csv(output/"implied_forward.csv", index=False)
     headline = metrics(df, min_mid)
     lines += ["", "## Baseline comparison", "", "| Metric | Value |", "|---|---:|"]
     lines += [f"| {key} | {value:.6g} |" for key, value in headline.items()]
@@ -174,6 +216,14 @@ def write_report(df, audit, metadata, output, config=None, min_mid=0.10):
                   f"- Highest MAE: {worst['group']}, MAE {worst.mae:.6g}, n={int(worst.n)}."]
     else:
         lines += ["No group has at least 5 observations."]
+    lines += ["", "## Implied forward, rate, and yield from put-call parity", "",
+              "Per asset and expiry, call-minus-put midpoints are regressed on strike across matched pairs (implied_forward.csv).",
+              "The slope implies the discount factor and rate; the intercept implies the discounted forward and the dividend yield.",
+              "Compare these with the assumed r and q. American early exercise, stale quotes, and wide spreads bias the fit.", ""]
+    fitted = forwards.loc[forwards.status == "ok"]
+    lines += [f"- {row.symbol} {row.expiration}: n={int(row.n_pairs)}, implied r {row.implied_rate:.4f} (assumed {row.r:.4f}), "
+              f"implied q {row.implied_yield:.4f} (assumed {row.q:.4f}), forward {row.implied_forward:.4f}, R² {row.r_squared:.6f}"
+              for row in fitted.itertuples()] or ["- No asset/expiry has enough matched call-put pairs for a parity fit."]
     lines += ["", "## Moneyness, maturity, and liquidity", "",
               "metrics.csv reports fixed moneyness, tenor, IV, volume, open-interest, and relative-spread groups with sample sizes.",
               "plots/market_diagnostics.png displays these relationships. Correlation with liquidity does not isolate transaction costs or establish causation.",
