@@ -126,6 +126,8 @@ def recover_snapshots(root, config, store):
 def run_collector(config_path, once=False, probe=False):
     config_path = Path(config_path).resolve()
     config, root = LiveConfig.load(config_path)
+    if config.provider == "dolt_eod":
+        raise ValueError("dolt_eod is an import-only historical provider; use the import-eod command instead of the collector")
     if config.provider == "tradier" and not os.environ.get("TRADIER_TOKEN"):
         raise ValueError("Set TRADIER_TOKEN locally before starting the Tradier collector. It is never saved in config or logs.")
     root.mkdir(parents=True, exist_ok=True)

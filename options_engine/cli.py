@@ -60,8 +60,23 @@ def parser():
     strategy.add_argument("--width", type=float, help="Wing width; defaults to 5%% of the spot")
     strategy.add_argument("--plot", help="Optional PNG path for the payoff figure")
     init = commands.add_parser("init-live", help="Write an editable continuous collection configuration")
-    init.add_argument("--provider", choices=["yahoo", "tradier"], default="yahoo")
+    init.add_argument("--provider", choices=["yahoo", "tradier", "dolt_eod"], default="yahoo")
     init.add_argument("--config", default="config/collector.json")
+    eod = commands.add_parser("import-eod", help="Import historical end-of-day chains (DoltHub CSV export) into the daily_eod tier")
+    eod.add_argument("--config", default="config/collector.json")
+    eod.add_argument("--chain-csv", required=True, help="CSV export of option_chain rows")
+    eod.add_argument("--underlying-csv", required=True, help="CSV export of daily underlying OHLC bars")
+    eod.add_argument("--max-sessions", type=int, help="Import at most this many sessions (for a trial run)")
+    forward = commands.add_parser("walk-forward", help="Rolling-origin evaluation with Diebold-Mariano and bootstrap significance")
+    forward.add_argument("--config", default="config/collector.json")
+    forward.add_argument("--output", required=True, help="New report directory; never overwritten")
+    forward.add_argument("--min-train-sessions", type=int, default=12)
+    forward.add_argument("--gap", type=int, default=1)
+    forward.add_argument("--validation-sessions", type=int, default=2)
+    forward.add_argument("--window", choices=["expanding", "rolling"], default="expanding")
+    forward.add_argument("--max-train-sessions", type=int)
+    forward.add_argument("--lookback-sessions", type=int, default=100000, help="How much stored history to load")
+    forward.add_argument("--bootstrap", type=int, default=2000)
     collect = commands.add_parser("collect", help="Run the continuous collector; Ctrl+C stops it")
     collect.add_argument("--config", default="config/collector.json")
     collect.add_argument("--once", action="store_true", help="One scheduled check, respecting market hours")
@@ -133,20 +148,23 @@ def run(args):
             summary["plot"] = str(target)
         print(json.dumps(clean_json(summary), indent=2))
         return 0
-    if args.command in ("init-live", "collect", "status", "train", "ingest", "select-model", "score-snapshot"):
+    if args.command in ("init-live", "collect", "status", "train", "ingest", "select-model", "score-snapshot", "import-eod", "walk-forward"):
         from .live_config import LiveConfig
         from .live_utils import atomic_json, process_lock
         if args.command == "init-live":
             target = Path(args.config)
             if target.exists():
                 raise ValueError("Config already exists; edit it or select another filename")
-            config = LiveConfig(provider=args.provider)
+            overrides = dict(training_tier="daily_eod", min_open_interest=0) if args.provider == "dolt_eod" else {}
+            config = LiveConfig(provider=args.provider, **overrides)
             atomic_json(target, config.public_dict())
             print(f"Created {target}. Edit rate/yield assumptions before collection.")
             if args.provider == "yahoo":
                 print("Yahoo data have unverified bid/ask timestamps and will not enter strict-quality model training.")
-            else:
+            elif args.provider == "tradier":
                 print("Set TRADIER_TOKEN in the local environment. Production data entitlement is required.")
+            else:
+                print("Historical EOD tier: import with the import-eod command; the collector does not poll this provider.")
             return 0
         if args.command == "collect":
             from .collector import run_collector
@@ -165,6 +183,19 @@ def run(args):
         elif args.command == "score-snapshot":
             from .learning import score_snapshot
             result = score_snapshot(root, args.snapshot, args.output, config)
+        elif args.command == "import-eod":
+            from .eod_import import import_eod
+            with process_lock(root/"collector.lock"):
+                result = import_eod(args.chain_csv, args.underlying_csv, config, root, args.max_sessions)
+        elif args.command == "walk-forward":
+            from .store import ObservationStore
+            from .walkforward import WalkForwardSpec, walk_forward, walk_forward_report
+            frame = ObservationStore(root).training_frame(before="9999-12-31", lookback_sessions=args.lookback_sessions,
+                                                          max_rows_per_symbol_session=config.max_rows_per_symbol_session)
+            spec = WalkForwardSpec(min_train_sessions=args.min_train_sessions, gap=args.gap,
+                                   validation_sessions=args.validation_sessions, window=args.window,
+                                   max_train_sessions=args.max_train_sessions)
+            result = walk_forward_report(walk_forward(frame, spec), args.output, n_boot=args.bootstrap)
         else:
             from .learning import select_model
             result = select_model(root, args.model_id)
