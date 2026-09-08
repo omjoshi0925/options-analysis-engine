@@ -4,6 +4,9 @@ The collector polls option chains; it is not an exchange streaming feed. Its
 15-minute default cadence is a research sampling choice. Actual availability,
 quote delay, and permissions depend on the configured provider.
 
+Commands on this page run from the repository root. For Docker or a Linux
+systemd service on an always-on host, see [deployment](DEPLOYMENT.md).
+
 ## Provider setup
 
 Tradier production is the timestamp-verified adapter. It needs your account's
@@ -16,7 +19,7 @@ provides the bid/ask fields and quote timestamps used by the quality checks.
 Create your config and save the token with a hidden prompt:
 
 ```bash
-cd ~/Documents/GitHub/options-analysis-engine && source .venv/bin/activate && python -m options_engine init-live --provider tradier --config config/collector.json && bash scripts/set_tradier_token.sh
+source .venv/bin/activate && python -m options_engine init-live --provider tradier --config config/collector.json && bash scripts/set_tradier_token.sh
 ```
 
 The token is stored outside Git at `~/.config/options-analysis-engine/tradier-token`
@@ -86,7 +89,7 @@ European and does not model early exercise or discrete dividend schedules.
 ## macOS service
 
 ```bash
-cd ~/Documents/GitHub/options-analysis-engine && bash scripts/collector_service.sh start
+bash scripts/collector_service.sh start
 ```
 
 This installs a user LaunchAgent that starts at login and restarts after a failed
@@ -95,18 +98,18 @@ uses the repository's `.venv`; reinstall dependencies there when upgrading.
 The service is not installed or started by the upgrade installer.
 
 ```bash
-cd ~/Documents/GitHub/options-analysis-engine && bash scripts/collector_service.sh status
+bash scripts/collector_service.sh status
 ```
 
 ```bash
-cd ~/Documents/GitHub/options-analysis-engine && bash scripts/collector_service.sh stop
+bash scripts/collector_service.sh stop
 ```
 
 `stop` unloads the current service; the LaunchAgent file remains and can run at a
 later login. To prevent that, use `uninstall`, which leaves data and credentials:
 
 ```bash
-cd ~/Documents/GitHub/options-analysis-engine && bash scripts/collector_service.sh uninstall
+bash scripts/collector_service.sh uninstall
 ```
 
 After editing config, stop and start the service so it reloads the settings.
@@ -118,7 +121,7 @@ heartbeat age, failures, counts, training readiness, and active model metrics.
 On macOS or Linux, the same collector can run in a terminal:
 
 ```bash
-cd ~/Documents/GitHub/options-analysis-engine && bash scripts/run_collector.sh
+bash scripts/run_collector.sh
 ```
 
 Use Ctrl+C to stop. For operation independent of your laptop, run this command
@@ -126,7 +129,7 @@ under your host's service manager on an always-on machine. No server is deployed
 by this package. A one-cycle check respects the trading calendar:
 
 ```bash
-cd ~/Documents/GitHub/options-analysis-engine && source .venv/bin/activate && python -m options_engine collect --config config/collector.json --once
+source .venv/bin/activate && python -m options_engine collect --config config/collector.json --once
 ```
 
 Direct CLI calls need `TRADIER_TOKEN` in the environment. The wrapper loads the
@@ -150,7 +153,7 @@ manual training are stopped to keep the SQLite database and model registry
 consistent. For the default root, a local backup sequence is:
 
 ```bash
-cd ~/Documents/GitHub/options-analysis-engine && bash scripts/collector_service.sh stop && mkdir -p "$HOME/Documents/options-engine-backups" && tar -czf "$HOME/Documents/options-engine-backups/live-$(date +%Y%m%d-%H%M%S).tar.gz" -C data live && bash scripts/collector_service.sh start
+bash scripts/collector_service.sh stop && mkdir -p "$HOME/Documents/options-engine-backups" && tar -czf "$HOME/Documents/options-engine-backups/live-$(date +%Y%m%d-%H%M%S).tar.gz" -C data live && bash scripts/collector_service.sh start
 ```
 
 Raw quote downtime cannot be reconstructed by restarting the collector. Do not
