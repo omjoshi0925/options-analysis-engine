@@ -1,5 +1,30 @@
 # Changelog
 
+## 3.2.0 - 2026-09-07
+
+- Add a daily_eod training tier for free historical end-of-day chains: quotes
+  are stamped at the verified XNYS session close, provenance is labeled
+  (`dolt_eod` / `historical_eod`), and the strict and EOD tiers are validated
+  as mutually exclusive per data root.
+- Add an `import-eod` command for CSV exports of the public DoltHub
+  `post-no-preference/options` database (underlying bars from
+  `post-no-preference/stocks`), with per-session immutable snapshots,
+  baselines computed from strictly prior sessions only, deduplicated
+  re-imports, and recorded skip reasons. No account or payment is required
+  for the source data; its license should be checked before publication.
+- Add rolling-origin walk-forward evaluation with per-fold hyperparameter
+  reselection, an embargo gap, session-level loss aggregation, the
+  Diebold-Mariano test with the Harvey-Leybourne-Newbold correction, and a
+  circular block bootstrap confidence interval, exposed as a `walk-forward`
+  command producing folds.csv, significance.json, and a report.
+- Restore the `export` command writing stored observations (optionally with
+  exclusion reasons) to CSV.
+- Document the tier design and workflow in docs/EOD_RESEARCH.md.
+
+The strict tier, the promotion gates, and all 3.1 behavior are unchanged. No
+market data ships in this release; the importer and walk-forward are verified
+with deterministic fixtures end to end.
+
 ## 3.1.0 - 2026-09-07
 
 - Add a Cox-Ross-Rubinstein binomial tree for American and European exercise

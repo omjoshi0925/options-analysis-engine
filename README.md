@@ -199,3 +199,13 @@ The included `examples/validation/` results are synthetic demonstrations.
 release.** The runtime collects and trains after you configure and start it
 with a working provider. License details are in [LICENSE.txt](LICENSE.txt)
 and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+## Version 3.2 additions
+
+- A free, no-account historical data path: import end-of-day chains from the
+  public DoltHub options database into a clearly labeled `daily_eod` tier,
+  with close-stamped quotes and leakage-safe baselines. See docs/EOD_RESEARCH.md.
+- Walk-forward evaluation with Diebold-Mariano and block-bootstrap
+  significance, so improvement claims are tested rather than asserted.
+- An `export` command for research in notebooks.
+

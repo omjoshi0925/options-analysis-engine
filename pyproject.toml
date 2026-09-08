@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "options-analysis-engine"
-version = "3.1.0"
+version = "3.2.0"
 description = "Option pricing, continuous market-data collection, and chronological volatility-model evaluation"
 requires-python = ">=3.10"
 license = {file = "LICENSE.txt"}
