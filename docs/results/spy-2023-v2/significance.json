@@ -1,0 +1,49 @@
+{
+  "bootstrap_mean_differential": {
+    "block_length": 4,
+    "confidence": 0.95,
+    "excludes_zero": true,
+    "high": 5.9839403539543086e-06,
+    "low": 8.397111438805058e-07,
+    "mean": 3.369241502306453e-06,
+    "replications": 2000
+  },
+  "diebold_mariano": {
+    "degenerate": false,
+    "favors": "model",
+    "folds": 83,
+    "hac_lags": 0,
+    "hln_correction": 0.9939576486092935,
+    "horizon": 1,
+    "lag1_autocorrelation": 0.8817532899552144,
+    "mean_differential": 3.369241502306453e-06,
+    "p_value": 5.5056998399658255e-06,
+    "statistic": 4.862674297316985
+  },
+  "diebold_mariano_newey_west": {
+    "degenerate": false,
+    "favors": "model",
+    "folds": 83,
+    "hac_lags": 6,
+    "hln_correction": 0.9939576486092935,
+    "horizon": 1,
+    "lag1_autocorrelation": 0.8817532899552144,
+    "mean_differential": 3.369241502306453e-06,
+    "p_value": 0.040107349744632724,
+    "statistic": 2.085779150740679
+  },
+  "model_win_rate": 0.6867469879518072,
+  "sessions_evaluated": 83,
+  "spec": {
+    "alphas": [
+      0.01,
+      1.0,
+      100.0
+    ],
+    "gap": 1,
+    "max_train_sessions": null,
+    "min_train_sessions": 60,
+    "validation_sessions": 2,
+    "window": "expanding"
+  }
+}

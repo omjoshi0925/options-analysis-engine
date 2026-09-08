@@ -23,3 +23,6 @@ stocks/
 *.csv
 /results/
 /data/
+
+# Frozen study artifacts under docs/results/ are tracked even though *.csv is ignored above
+!docs/results/**/*.csv
