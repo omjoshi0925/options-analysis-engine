@@ -151,7 +151,23 @@ class ObservationStore:
                 );
                 CREATE INDEX IF NOT EXISTS observations_session ON observations(session_date);
                 CREATE INDEX IF NOT EXISTS observations_training ON observations(training_eligible, session_date);
+                CREATE TABLE IF NOT EXISTS store_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
             """)
+
+    def pinned_tier(self):
+        with closing(self.connect()) as db:
+            row = db.execute("SELECT value FROM store_meta WHERE key='training_tier'").fetchone()
+        return row["value"] if row else None
+
+    def pin_tier(self, config):
+        """One training tier per data root, enforced by the database, not just the config."""
+        tier = getattr(config, "training_tier", "strict")
+        with closing(self.connect()) as db, db:
+            db.execute("INSERT OR IGNORE INTO store_meta(key, value) VALUES ('training_tier', ?)", (tier,))
+            pinned = db.execute("SELECT value FROM store_meta WHERE key='training_tier'").fetchone()["value"]
+        if pinned != tier:
+            raise ValueError(f"This data root is pinned to the {pinned} tier; a {tier} config cannot ingest into it. Use a separate data_root per tier.")
+        return pinned
 
     def connect(self):
         db = sqlite3.connect(self.path, timeout=30)
@@ -180,6 +196,7 @@ class ObservationStore:
                        (pd.Timestamp.now(tz="UTC").isoformat(),))
 
     def ingest(self, snapshot_path, config, run_id=None):
+        self.pin_tier(config)
         raw, metadata = read_snapshot(snapshot_path)
         sha = metadata["csv_sha256"]["raw_options.csv"]
         with closing(self.connect()) as db:

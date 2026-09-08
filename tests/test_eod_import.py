@@ -128,3 +128,33 @@ def test_eod_rows_state_their_exclusion_reasons(tmp_path):
     weekend = dict(row, as_of="2023-04-15T20:00:00+00:00", bid_timestamp="2023-04-15T20:00:00+00:00",
                    ask_timestamp="2023-04-15T20:00:00+00:00", spot_timestamp="2023-04-15T20:00:00+00:00")
     assert "not_a_session_close" in training_quality(weekend, config)
+
+
+def test_tier_is_pinned_per_data_root(tmp_path):
+    chain_path, underlying_path, _ = fixture_csvs(tmp_path)
+    root = tmp_path/"pinned"
+    import_eod(chain_path, underlying_path, eod_config(), root)
+    from tests.test_live import fixture_quotes
+    strict_snapshot = write_snapshot(fixture_quotes(), tmp_path/"strict_snap",
+                                     {"provider": "tradier", "data_kind": "market"})
+    with pytest.raises(ValueError, match="pinned to the daily_eod tier"):
+        ObservationStore(root).ingest(strict_snapshot, LiveConfig())
+    assert ObservationStore(root).pinned_tier() == "daily_eod"
+
+
+def test_reexport_with_corrected_data_creates_a_revision(tmp_path):
+    chain_path, underlying_path, chain_days = fixture_csvs(tmp_path)
+    root = tmp_path/"rev"
+    config = eod_config()
+    first = import_eod(chain_path, underlying_path, config, root)
+    assert first["first_session"] == chain_days[0] and first["last_session"] == chain_days[-1]
+    corrected = pd.read_csv(chain_path)
+    corrected.loc[corrected.index[0], "bid"] = round(corrected.loc[corrected.index[0], "bid"]*0.95, 4)
+    corrected.to_csv(tmp_path/"chain_v2.csv", index=False)
+    second = import_eod(tmp_path/"chain_v2.csv", underlying_path, config, root)
+    assert second["sessions_imported"] == 1 and second["duplicate_sessions"] == len(chain_days)-1
+    assert second["inserted_rows"] >= 1
+    revised_day_folders = list((root/"snapshots"/chain_days[0]).iterdir())
+    assert len(revised_day_folders) == 2  # original plus content-hashed revision
+    meta = pd.read_json((revised_day_folders[0]/"metadata.json"), typ="series")
+    assert "chain_csv" in meta["source_files"]
