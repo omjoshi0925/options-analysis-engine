@@ -1,0 +1,47 @@
+{
+  "confidence": 0.95,
+  "function": "options_engine.walkforward.circular_block_bootstrap_ci",
+  "intervals": {
+    "10": {
+      "block_length": 10,
+      "confidence": 0.95,
+      "excludes_zero": true,
+      "high": 0.0011872195732320699,
+      "low": 1.0030568476681224e-05,
+      "mean": 0.0004495138796624936,
+      "replications": 2000
+    },
+    "126": {
+      "block_length": 126,
+      "confidence": 0.95,
+      "excludes_zero": true,
+      "high": 0.0013223254871697167,
+      "low": 4.9304775967365495e-06,
+      "mean": 0.0004495138796624936,
+      "replications": 2000
+    },
+    "21": {
+      "block_length": 21,
+      "confidence": 0.95,
+      "excludes_zero": true,
+      "high": 0.001378070882661387,
+      "low": 7.1812726848581975e-06,
+      "mean": 0.0004495138796624936,
+      "replications": 2000
+    },
+    "63": {
+      "block_length": 63,
+      "confidence": 0.95,
+      "excludes_zero": true,
+      "high": 0.0013277979843722076,
+      "low": 5.044979622848009e-06,
+      "mean": 0.0004495138796624936,
+      "replications": 2000
+    }
+  },
+  "note": "Re-derived at the freeze on 2026-09-08 because the study saved only the default block length (10) in significance.json. Deterministic given the seed; the block-10 interval matches significance.json exactly.",
+  "replications": 2000,
+  "seed": 0,
+  "series": "baseline_loss - model_loss, one value per fold",
+  "source": "docs/results/full-history-v2/folds.csv"
+}

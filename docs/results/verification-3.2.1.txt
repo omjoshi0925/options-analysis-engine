@@ -1,0 +1,13 @@
+options_engine 3.2.1 verification recorded at the study-v1 freeze
+date: 2026-09-08
+code commit: 533939672e1fe7fb62a0f582cb04243fe8c42da5 (HEAD before the freeze commits; docs/results/build_manifest.py is included in the lint scope)
+environment: .venv, Python 3.13.1, ruff 0.16.6
+
+$ .venv/bin/python -m pytest -q
+........................................................................ [ 39%]
+........................................................................ [ 79%]
+.....................................                                    [100%]
+181 passed in 12.68s
+
+$ uvx ruff check .
+All checks passed!
