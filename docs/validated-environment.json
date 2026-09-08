@@ -1,9 +1,9 @@
 {
   "validation_date": "2026-09-07",
-  "python": "3.12.13 (main, Aug  7 2026, 02:25:39) [Clang 22.1.3 ]",
-  "platform": "Linux-6.18.35-x86_64-with-glibc2.39",
+  "python": "3.13.1",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
   "packages": {
-    "options-analysis-engine": "3.0.0",
+    "options-analysis-engine": "3.1.0",
     "numpy": "2.3.5",
     "pandas": "2.3.3",
     "scipy": "1.18.1",
@@ -13,17 +13,20 @@
     "pytest": "9.1.1",
     "requests": "2.34.2",
     "exchange-calendars": "4.13.2",
-    "tzdata": "2026.3"
+    "tzdata": "2026.3",
+    "ruff": "0.16.6"
   },
   "tests": {
-    "passed": 102,
+    "passed": 169,
     "failed": 0,
     "warnings": 0,
-    "duration_seconds": 14.09
+    "duration_seconds": 9.72
   },
+  "lint": "ruff check . clean",
   "provider_verification": {
-    "yahoo": "real probe rate limited; no quotes",
+    "yahoo": "deterministic mocked responses; no live probe in 3.1",
     "tradier": "deterministic mocked responses; no credentials supplied"
   },
-  "macos_service": "Bash syntax checked; native launchd not executed"
+  "deployment": "Docker, compose, and systemd files syntax-checked; not built or run",
+  "macos_service": "not executed in 3.1 validation"
 }

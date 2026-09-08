@@ -1,5 +1,41 @@
 # Validation record
 
+## Version 3.1 validation
+
+Validation date: 2026-09-07 on macOS (Darwin 25.6) with Python 3.13.1. CI also
+targets Python 3.10 and 3.12; those remote jobs were not executed locally.
+169 tests passed with `python -m pytest -q` in 9.7 seconds and
+`ruff check .` reported no findings. The 3.1 checks add:
+
+- Binomial tree: Hull's five-step American put (4.49), European tree
+  convergence to the closed form, tree put-call parity, zero call premium
+  without dividends, deep in-the-money exercise, exercise-boundary shape,
+  Greek agreement with the closed form within 1% at 1000 steps, and input
+  validation.
+- Monte Carlo: agreement within four standard errors in six cases, 1/sqrt(n)
+  error scaling, antithetic variance reduction, seed determinism, and exact
+  degenerate cases.
+- Volatility: exact reproduction of the previous close-to-close formula;
+  recovery of a simulated 25% volatility by all five estimators (observed
+  0.238 to 0.253); Yang-Zhang capturing an added overnight variance that
+  Parkinson excludes (0.322 versus 0.242 against a 0.320 total); bar
+  clamping; config validation; Tradier and Yahoo wiring with fixtures.
+- Parity fit: recovery of r = 0.04 and q = 0.01 from the synthetic chain to
+  1e-6, the bias direction under inflated puts, and insufficient-pair handling.
+- Early exercise: the column identity American = European + discretization +
+  premium, nonnegative premiums, and the skip and validation paths.
+- Strategies: hand-derived breakevens and bounds for seven structures, parity
+  and Delta aggregation, and every preset against its leg sum.
+- CLI: JSON output of price, iv, and strategy against the engine, and exit codes.
+- Dashboard: the AppTest renders the new metrics, checks American against
+  European tree values, and survives the expiry boundary.
+
+Docker, compose, and systemd files were syntax-checked (compose YAML parsed,
+entrypoint `bash -n`, Dockerfile COPY sources present) but not built or run;
+Docker is not installed in the validation environment.
+
+## Version 3.0 validation record
+
 Validation date: 2026-09-07. The implementation was tested against the supplied
 source archive and requirements; the user's Mac repository was not accessed.
 

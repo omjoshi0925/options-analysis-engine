@@ -1,5 +1,32 @@
 # Changelog
 
+## 3.1.0 - 2026-09-07
+
+- Add a Cox-Ross-Rubinstein binomial tree for American and European exercise
+  with the early-exercise premium, exercise boundary, and tree Greeks; every
+  analyzed quote now carries an American baseline price and premium.
+- Add antithetic Monte Carlo pricing with a standard error and z-score as a
+  third independent check on the closed form.
+- Add Parkinson, Garman-Klass, Rogers-Satchell, and Yang-Zhang realized
+  volatility estimators, selectable in the collector config, the fetch
+  command, and the dashboard; close-to-close remains the default.
+- Add implied forward, rate, and dividend yield from put-call parity per
+  asset and expiry, reported against the assumed inputs.
+- Add a strategy builder with fourteen presets, exact breakevens and bounds,
+  closed-form marks, aggregated Greeks, and payoff figures.
+- Add `price`, `iv`, and `strategy` commands with JSON output.
+- Add dashboard sections for the tree, Monte Carlo, the parity fit, and the
+  premium, plus a Strategies tab.
+- Add Docker, compose, and systemd deployment with documentation.
+- Add a Makefile, ruff configuration, a CI lint job, Python 3.13 in the test
+  matrix, Dependabot, contribution and security policies, issue and
+  pull-request templates, and a citation file.
+- Regenerate the synthetic validation example with the new diagnostics.
+
+The European baseline, its error metrics, the training features, and the
+promotion gates are unchanged. No market-trained model is shipped, and no
+live collection is claimed in this release.
+
 ## 3.0.0 - 2026-09-07
 
 - Add continuous regular-session polling, Tradier production market-data support,
