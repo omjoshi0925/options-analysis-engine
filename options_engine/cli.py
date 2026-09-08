@@ -67,6 +67,11 @@ def parser():
     eod.add_argument("--chain-csv", required=True, help="CSV export of option_chain rows")
     eod.add_argument("--underlying-csv", required=True, help="CSV export of daily underlying OHLC bars")
     eod.add_argument("--max-sessions", type=int, help="Import at most this many sessions (for a trial run)")
+    export = commands.add_parser("export", help="Write stored observations to CSV for external research")
+    export.add_argument("--config", default="config/collector.json")
+    export.add_argument("--output", required=True, help="New CSV path; never overwritten")
+    export.add_argument("--include-excluded", action="store_true",
+                        help="Also export rows that failed training quality, with their exclusion reasons")
     forward = commands.add_parser("walk-forward", help="Rolling-origin evaluation with Diebold-Mariano and bootstrap significance")
     forward.add_argument("--config", default="config/collector.json")
     forward.add_argument("--output", required=True, help="New report directory; never overwritten")
@@ -148,7 +153,7 @@ def run(args):
             summary["plot"] = str(target)
         print(json.dumps(clean_json(summary), indent=2))
         return 0
-    if args.command in ("init-live", "collect", "status", "train", "ingest", "select-model", "score-snapshot", "import-eod", "walk-forward"):
+    if args.command in ("init-live", "collect", "status", "train", "ingest", "select-model", "score-snapshot", "import-eod", "walk-forward", "export"):
         from .live_config import LiveConfig
         from .live_utils import atomic_json, process_lock
         if args.command == "init-live":
@@ -187,6 +192,18 @@ def run(args):
             from .eod_import import import_eod
             with process_lock(root/"collector.lock"):
                 result = import_eod(args.chain_csv, args.underlying_csv, config, root, args.max_sessions)
+        elif args.command == "export":
+            from .store import ObservationStore
+            output = Path(args.output)
+            if output.exists():
+                raise ValueError("Export output exists; choose a new file")
+            frame = ObservationStore(root).export(include_excluded=args.include_excluded)
+            if frame.empty:
+                raise ValueError("No matching observations to export yet")
+            output.parent.mkdir(parents=True, exist_ok=True)
+            frame.to_csv(output, index=False)
+            eligible = int(frame["training_eligible"].sum()) if "training_eligible" in frame else len(frame)
+            result = dict(rows=len(frame), training_eligible=eligible, output=str(output))
         elif args.command == "walk-forward":
             from .store import ObservationStore
             from .walkforward import WalkForwardSpec, walk_forward, walk_forward_report
