@@ -116,3 +116,51 @@ this change.
   them. The Reproducibility section names
   `docs/results/full-history-v2/bootstrap-block-lengths.json` as the saved
   source of the block-length table.
+
+## 2026-09-08 (later): pre-registering the study v2 research plan
+
+`docs/RESEARCH_PLAN.md` is committed before any code change for v3.3 onward.
+The commit that adds it is its timestamp; later deviations go into its
+section 10 and into this notebook, never into the text above them. The two
+placeholders were filled from saved artifacts, not from memory:
+
+- Constant risk-free rate: 4% (`rate: 0.04` in config/eod-full.json), recorded
+  as `r` on every v1 observation in the committed export and in each
+  snapshot's metadata.json.
+- Baseline estimator: close-to-close realized volatility over the last 60
+  returns of the underlying bar series, recorded as `baseline_source` =
+  `dolt_prior_60_session_close_to_close` on every v1 observation and in each
+  snapshot's metadata.json (`baseline_estimator: close_to_close` and
+  `history_window: 60` in config/eod-full.json).
+
+Every factual statement about v1 in sections 1, 2, 3, and 6 was checked
+against docs/results/manifest.json, learning.py, and walkforward.py.
+Consistent: 1,056 folds and the 10.4% median; positive improvement in every
+calendar year (under the report's ratio-of-means definition; the mean of
+per-fold improvements is negative in 2021 and 2023); the significance summary;
+the dividend yields; the walk-forward settings (rolling window, 120-session
+minimum, 250-session maximum, 1-session gap, per-fold reselection over alphas
+0.01, 1, and 100 on the last two training sessions); 664 of 1,841 calendar
+sessions absent; lag-1 autocorrelation 0.87; 249 of 250 shared training
+sessions; the Harvey-Leybourne-Newbold correction; and the feature groups
+(moneyness: log, squared, cubed; maturity: sqrt and log time; interactions of
+moneyness and squared moneyness with sqrt time; carry: r*T and q*T; log
+baseline volatility; put indicator; one indicator per symbol). Two mismatches
+and one clarification, left unchanged because they touch the design:
+
+1. Section 3 defines L as the session RMSE and d = L_base - L_model "as
+   defined in walkforward.py". In walkforward.py the session loss behind the
+   differential, both DM tests, the bootstrap, and the win rate is the mean
+   squared spot-normalized pricing error (`baseline_loss`, `model_loss`); the
+   RMSE columns are its square root and feed only the relative improvement.
+   A differential in RMSE units is not the v1 differential, and the v1 lag-1
+   autocorrelation of 0.87 belongs to the squared-loss series.
+2. Section 6 keeps "Newey-West with 6 lags" for continuity with v1. The v1
+   full-history run used 15 lags (floor(1.5 n^(1/3)) with n = 1,056); 6 lags
+   was the SPY 2023 run with 83 folds.
+3. Section 2 defines "prior session" as the previous session present in the
+   store. The v1 baseline window is the last 60 close-to-close returns of the
+   underlying bar series from the stocks database, which is nearly complete
+   (2,075 bars per symbol from 2018-06-01 to 2026-09-04), so that definition
+   does not describe the baseline's window.
+
