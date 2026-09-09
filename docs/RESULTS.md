@@ -6,7 +6,7 @@ below regenerates from the commands in the Reproducibility section.
 ## Summary
 
 I evaluated a ridge-regression volatility adjustment against an independent
-realized-volatility baseline on 292,018 end-of-day US option quotes (SPY, QQQ,
+realized-volatility baseline on 292,018 end-of-day US option quotes (SPY and
 AAPL; February 2019 through September 2026) using rolling-origin walk-forward
 evaluation with an embargo gap: 1,056 folds, one held-out session each, from
 October 2020 through September 2026. The learned model priced the next unseen
@@ -32,8 +32,12 @@ maintained rate and dividend assumptions.
 Quotes come from the public DoltHub database `post-no-preference/options`
 (end-of-day chains with bid, ask, and implied volatility), with daily
 underlying OHLC bars from `post-no-preference/stocks`. Both are freely
-clonable without an account; I record the export files' SHA-256 hashes in
-every snapshot's metadata. Coverage for SPY runs 2019-02-09 to 2026-09-07.
+clonable without an account; the export files' SHA-256 hashes are recorded in
+`docs/results/manifest.json`, not in the snapshots' `metadata.json`, because
+both imports predate the 3.2.1 change that writes them there. Coverage for
+SPY runs 2019-02-09 to 2026-09-07. QQQ was requested in the configuration, but
+the source `option_chain` table contains zero QQQ rows, so the export and
+every figure below hold SPY and AAPL only.
 
 Each quote is imported into a `daily_eod` training tier: timestamps are the
 verified XNYS session close (early closes included), closing-snapshot
@@ -41,14 +45,17 @@ synchrony is assumed rather than verified, and the provenance labels are
 stored permanently on every row. This tier is enforced in the database itself
 and never mixes with the project's strict intraday tier. The dataset publishes
 no volume or open interest, so liquidity screening rests on relative spreads.
-Rates and dividend yields are held constant (r = 4%; q = 1.4%, 0.6%, 0.5% for
-SPY, QQQ, AAPL), which is a real limitation discussed below.
+Rates and dividend yields are held constant (r = 4%; q = 1.4% for SPY and
+0.5% for AAPL; the configured 0.6% for QQQ was never used), which is a real
+limitation discussed below.
 
 Import totals: 1,177 sessions accepted; 292,018 quotes stored; 260,296
-(89.1%) passed training-quality gates. 103 candidate sessions were refused:
-47 dates in 2019 that fall on non-trading days, 54 exchange holidays carrying
-stale rows, and 2 sessions where the SPY underlying close was missing
-(2022-08-01, 2022-09-19).
+(89.1%) passed training-quality gates. 103 candidate dates were refused as
+non-sessions: 47 weekend-stamped dates in 2019, 55 weekday exchange holidays,
+and 1 Saturday (2020-01-04), 103 refused dates in total carrying 22,282 rows.
+Separately, the underlying export has no SPY close on 2022-08-01 and
+2022-09-19, so the 284 SPY rows on those dates were dropped and the two
+sessions were accepted with AAPL rows only; they are not among the refusals.
 
 ### Data-quality findings in the source
 
@@ -149,7 +156,7 @@ blocks of consecutive sessions, excludes zero at every block length tested:
 |---|---|
 | 10 | [1.00e-05, 1.19e-03] |
 | 21 | [7.18e-06, 1.38e-03] |
-| 63 | [5.05e-06, 1.33e-03] |
+| 63 | [5.04e-06, 1.33e-03] |
 | 126 | [4.93e-06, 1.32e-03] |
 
 The bootstrap and the HAC t-test disagree because the differential is heavily
@@ -267,9 +274,11 @@ correction, and symbol effects.
 
 Code: `options_engine` 3.2.1 (this repository), 181 offline tests, lint
 clean. Data: DoltHub `post-no-preference/options` and
-`post-no-preference/stocks`, cloned 2026-09-08; export queries and file
-hashes are recorded in each snapshot's `metadata.json`; check the databases'
-stated license before redistribution and cite the source. Pipeline:
+`post-no-preference/stocks`, cloned 2026-09-08; the export files' SHA-256
+hashes are recorded in `docs/results/manifest.json`, not in the snapshots'
+`metadata.json`, because both imports predate the 3.2.1 change that writes
+them there; check the databases' stated license before redistribution and
+cite the source. Pipeline:
 
 ```bash
 python -m options_engine import-eod --config config/eod-full.json \
@@ -280,4 +289,7 @@ python -m options_engine walk-forward --config config/eod-full.json \
 ```
 
 Fold-level outputs, significance JSON, and the exclusion export live under
-`docs/results/`.
+`docs/results/`. The block-length table in the serial-dependence section is
+saved in `docs/results/full-history-v2/bootstrap-block-lengths.json`,
+re-derived from `folds.csv` with the package's bootstrap function (seed 0,
+2,000 replications) because the run itself saved only the block-10 interval.

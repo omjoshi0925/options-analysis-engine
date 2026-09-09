@@ -1,7 +1,7 @@
 # Research notebook
 
-Dated working notes on the empirical record. Newest entry first. Each entry
-says what was done, what it rests on, and what could not be established.
+Dated working notes on the empirical record, in chronological order. Each
+entry says what was done, what it rests on, and what could not be established.
 
 ## 2026-09-08: freezing the v1 study (tag `study-v1`)
 
@@ -87,3 +87,32 @@ competitor (already listed in the report); whether the source ever carries QQQ
 option rows; how the alternate-day gaps in 2020 to 2024 affect the serial
 dependence adjustments, which are counted in stored sessions rather than
 calendar days; and the source license before any export is redistributed.
+
+## 2026-09-08 (later): correcting the flagged claims in RESULTS.md
+
+Applied the corrections the freeze flagged, using manifest values verbatim
+and recomputing nothing. The tag `study-v1` was left at b41237d, so the
+manifest's `report_sha256` still describes the tagged report; the manifest
+was not edited. `build_manifest.py --check` after the edits: all 157 claims
+and all 13 committed artifact hashes pass, and the only reported problem is
+that `docs/RESULTS.md` differs from the frozen report hash, which is exactly
+this change.
+
+- Symbols: "SPY, QQQ, AAPL" is now "SPY and AAPL" in the Summary and in the
+  dividend-yield sentence (the configured 0.6% QQQ yield was never used); the
+  Data section states that QQQ was requested and that the source
+  `option_chain` table contains zero QQQ rows.
+- Refusals: "54 exchange holidays" replaced by the manifest breakdown, 47
+  weekend-stamped 2019 dates, 55 weekday exchange holidays, and 1 Saturday
+  (2020-01-04), 103 refused dates in total carrying 22,282 rows.
+- Missing SPY close: 2022-08-01 and 2022-09-19 are now described as sessions
+  accepted with AAPL rows only, with the 284 SPY rows dropped, not as
+  refusals.
+- Block-63 lower bound: 5.05e-06 corrected to 5.04e-06.
+- Provenance: the Data and Reproducibility sections now say the export file
+  hashes are recorded in `docs/results/manifest.json`, not in snapshot
+  `metadata.json`, because both imports predate the 3.2.1 hashing change; the
+  claim that export queries are recorded was dropped, since nothing records
+  them. The Reproducibility section names
+  `docs/results/full-history-v2/bootstrap-block-lengths.json` as the saved
+  source of the block-length table.
