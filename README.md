@@ -209,3 +209,7 @@ and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
   significance, so improvement claims are tested rather than asserted.
 - An `export` command for research in notebooks.
 
+
+## Results and research status
+
+The v1 walk-forward study (SPY and AAPL, 1,056 sessions, 2020 to 2026) is frozen at tag `study-v1`. Every number in [docs/RESULTS.md](docs/RESULTS.md) is traced by [docs/results/manifest.json](docs/results/manifest.json); verify with `python docs/results/build_manifest.py --check`. Study v2 is pre-registered in [docs/RESEARCH_PLAN.md](docs/RESEARCH_PLAN.md) and asks whether the learned adjustment captures volatility structure or compensates for constant rate and dividend assumptions. Decisions and dead ends are logged in [docs/NOTEBOOK.md](docs/NOTEBOOK.md). To reproduce from a clean install, see [docs/REPRODUCE.md](docs/REPRODUCE.md).
