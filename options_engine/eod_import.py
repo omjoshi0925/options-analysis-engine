@@ -113,8 +113,8 @@ def build_session_snapshots(chain, underlying, config):
                     continue
                 source = f"dolt_prior_{config.history_window}_session_{config.baseline_estimator}"
                 assumptions[symbol] = dict(baseline_sigma=estimate.sigma, baseline_source=source,
-                                           history_end=str(prior.date.max()), r=config.rate,
-                                           q=config.dividend_yields[symbol])
+                                           history_end=str(prior.date.max()), r=config.constant_rate,
+                                           q=config.constant_dividend_yields[symbol])
                 rows = quotes.copy()
                 expiry_compact = pd.to_datetime(rows.expiration).dt.strftime("%y%m%d")
                 letters = rows.option_type.str.upper().str[0]
@@ -124,7 +124,7 @@ def build_session_snapshots(chain, underlying, config):
                                    ask_timestamp=as_of, spot_source="dolt_underlying_close",
                                    lastTradeDate=None, volume=np.nan, openInterest=np.nan,
                                    impliedVolatility=rows.iv if "iv" in rows else np.nan,
-                                   r=config.rate, q=config.dividend_yields[symbol],
+                                   r=config.constant_rate, q=config.constant_dividend_yields[symbol],
                                    baseline_sigma=estimate.sigma, baseline_source=source,
                                    exercise_style="american", data_kind="market", provider="dolt_eod",
                                    feed="historical_eod", contract_size=100, expiry_hour=16)
@@ -146,6 +146,8 @@ def import_eod(chain_path, underlying_path, config, root, max_sessions=None,
     """Write one immutable snapshot per session and ingest it; re-imports deduplicate."""
     if getattr(config, "training_tier", "strict") != "daily_eod":
         raise ValueError("import-eod requires a dolt_eod config (training_tier daily_eod)")
+    # Imports stamp constant carry on every row; dated series belong to evaluation, so refuse them before reading files.
+    _ = (config.constant_rate, config.constant_dividend_yields)
     chain = load_chain_csv(chain_path, chain_columns)
     underlying = load_underlying_csv(underlying_path, underlying_columns)
     source_files = {name: dict(path=str(Path(path)), sha256=hashlib.sha256(Path(path).read_bytes()).hexdigest())

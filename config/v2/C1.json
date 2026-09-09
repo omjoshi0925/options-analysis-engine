@@ -1,0 +1,49 @@
+{
+  "assumptions_note": "Illustrative constant rate/yield inputs. Replace for your research observation period.",
+  "auto_train": true,
+  "baseline_estimator": "close_to_close",
+  "cycle_timeout_seconds": 180,
+  "data_root": "../../data/eod-live-full",
+  "dividend": {
+    "mode": "constant",
+    "yields": {
+      "AAPL": 0.005,
+      "QQQ": 0.006,
+      "SPY": 0.014
+    }
+  },
+  "expirations": 4,
+  "history_window": 60,
+  "interval_seconds": 900,
+  "max_backoff_seconds": 7200,
+  "max_days": 365.0,
+  "max_quote_age_seconds": 180,
+  "max_relative_spread": 0.25,
+  "max_rows_per_symbol_session": 500,
+  "max_spot_age_seconds": 120,
+  "max_timestamp_skew_seconds": 120,
+  "min_days": 2.0,
+  "min_free_disk_mb": 500,
+  "min_open_interest": 0,
+  "min_split_rows": 50,
+  "min_training_rows": 300,
+  "min_training_sessions": 12,
+  "promotion_min_improvement": 0.02,
+  "provider": "dolt_eod",
+  "rate": {
+    "alignment": "strictly_prior",
+    "mode": "series",
+    "path": "../../data/external/raw/DGS3MO.csv",
+    "units": "percent"
+  },
+  "request_timeout_seconds": 15,
+  "retrain_every_sessions": 2,
+  "tickers": [
+    "SPY",
+    "QQQ",
+    "AAPL"
+  ],
+  "training_lookback_sessions": 60,
+  "training_tier": "daily_eod",
+  "volatility": null
+}

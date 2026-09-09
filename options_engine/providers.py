@@ -129,8 +129,8 @@ class TradierProvider:
                 if not dates:
                     raise ProviderError(f"No expirations in the configured maturity range for {symbol}")
                 assumptions[symbol] = dict(baseline_sigma=sigma, baseline_source=source,
-                                           history_end=str(history.date.max()), r=self.config.rate,
-                                           q=self.config.dividend_yields[symbol])
+                                           history_end=str(history.date.max()), r=self.config.constant_rate,
+                                           q=self.config.constant_dividend_yields[symbol])
                 for expiration in dates[:self.config.expirations]:
                     chain = self.get("options/chains", symbol=symbol, expiration=expiration, greeks="true")
                     # Fetch spot immediately after each chain; preserve quote timestamps on both sides.
@@ -154,8 +154,8 @@ class TradierProvider:
                                      "ask_timestamp": provider_timestamp(quote.get("ask_date")),
                                      "lastTradeDate": provider_timestamp(quote.get("trade_date")),
                                      "lastPrice": quote.get("last"), "openInterest": quote.get("open_interest"),
-                                     "impliedVolatility": greeks.get("mid_iv"), "r": self.config.rate,
-                                     "q": self.config.dividend_yields[symbol], "baseline_sigma": sigma,
+                                     "impliedVolatility": greeks.get("mid_iv"), "r": self.config.constant_rate,
+                                     "q": self.config.constant_dividend_yields[symbol], "baseline_sigma": sigma,
                                      "baseline_source": source, "exercise_style": "american", "data_kind": "market",
                                      "provider": "tradier", "feed": "production", "expiry_hour": 16})
                     if not rows:
@@ -181,7 +181,7 @@ class TradierProvider:
 def acquire(config, cache_dir):
     if config.provider == "tradier":
         return TradierProvider(config, cache_dir).fetch()
-    raw, meta, history = fetch_options(config.tickers, config.rate, config.dividend_yields,
+    raw, meta, history = fetch_options(config.tickers, config.constant_rate, config.constant_dividend_yields,
                                        config.expirations, config.volatility, config.history_window,
                                        estimator=config.baseline_estimator)
     if not raw.empty:

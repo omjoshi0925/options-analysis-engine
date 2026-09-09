@@ -126,6 +126,7 @@ def recover_snapshots(root, config, store):
 def run_collector(config_path, once=False, probe=False):
     config_path = Path(config_path).resolve()
     config, root = LiveConfig.load(config_path)
+    _ = (config.constant_rate, config.constant_dividend_yields)   # live collection stamps constants; series are evaluation-only
     if config.provider == "dolt_eod":
         raise ValueError("dolt_eod is an import-only historical provider; use the import-eod command instead of the collector")
     if config.provider == "tradier" and not os.environ.get("TRADIER_TOKEN"):

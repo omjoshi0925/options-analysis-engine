@@ -16,11 +16,14 @@ file by scripts/build_external_inputs.py.
   plain curl request returned 200 immediately.
 - SHA-256: 504030af381b2ee828c3012ba91dcc9ea7cdbbcaa3297026acd500ed9c4b4e44
 - Size: 186,343 bytes; 11,744 daily rows from 1981-09-01 to 2026-09-04;
-  header `observation_date,DGS3MO`.
-- Units: percent per year. A "." marks a missing observation; this file
-  contains none, but the reader skips them. The rate applied to a session is
-  the most recent observation dated strictly before it, converted as
-  r = ln(1 + y/100).
+  header `observation_date,DGS3MO`. 11253 rows carry a quote; 491 rows
+  (79 of them on or after 2019-05-01, holidays such as 2023-11-23) have a
+  blank value, which is how this download marks a missing day. No row uses
+  the "." marker, but the reader skips "." and blank alike.
+- Units: percent per year. The rate applied to a session is the most recent
+  quoted observation dated strictly before it, so a holiday session takes the
+  last quoted business day, converted as r = ln(1 + y/100). A session more
+  than 10 calendar days after the last quote is refused as `rate_stale`.
 
 ## 2. SPY cash distributions: State Street
 
@@ -125,4 +128,26 @@ table and the price step.
 - splits.csv: AAPL,2020-08-31,4,1; SHA-256
   96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec.
 - The 2018-01-01 start leaves a full 365-day lookback before the first
-  stored session (2019-05-10).
+  stored session (2019-05-10). The Design A configs declare this start and
+  the retrieval date (2026-09-09) as the covered history: a session whose
+  365-day window starts before 2018-01-01 or ends after 2026-09-09 is refused
+  (`dividend_history_unavailable` / `dividend_history_stale`) rather than
+  summed over an incomplete history. Neither rule fires on any stored session.
+  A session whose last underlying bar is more than 10 calendar days old is
+  refused as `spot_prior_unavailable`; the bar file's only gaps are single
+  days.
+- Windows are literal calendar windows, so around quarter boundaries a
+  window can hold three or five quarterly distributions instead of four
+  (about 60 of the 1,839 bar days per symbol); q then steps by roughly a
+  quarter for a few sessions. This follows the plan's definition and is left
+  as is.
+
+## 7. Underlying bars used for S_{t-1}
+
+- File: raw/full_underlying.csv, a byte-identical copy of the v1 import's
+  underlying export (`post-no-preference/stocks` ohlcv for SPY, QQQ, AAPL,
+  2018-06-01 to 2026-09-04), SHA-256
+  aa9e446dddf40682a68890a0b70f36a41c6d2f108d0777dddc1b7403801bc738, the same
+  hash docs/results/manifest.json records for the import. Committed so the
+  dividend yield's prior bar close is reproducible from the repository.
+
