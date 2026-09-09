@@ -164,3 +164,16 @@ and one clarification, left unchanged because they touch the design:
    (2,075 bars per symbol from 2018-06-01 to 2026-09-04), so that definition
    does not describe the baseline's window.
 
+## 2026-09-08 (later): research plan amendment 1
+
+Section 10 of `docs/RESEARCH_PLAN.md` now carries Amendment 1, dated
+2026-09-08, recording the definitional corrections found by the
+fill-and-verify pass at fd50e25: the session loss is the mean squared
+spot-normalized pricing error, with the relative improvement in RMSE terms;
+Newey-West lags follow the v1 rule floor(1.5 n^(1/3)); the store-based "prior
+session" definition applies to option-chain information only, not to the
+realized-volatility window; and per-year breakdowns in Design C report both
+the ratio-of-means and the per-fold median. No design, threshold, or decision
+rule changed, no code for v3.3 has been written, and nothing above section 10
+was edited.
+

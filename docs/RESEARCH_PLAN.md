@@ -121,4 +121,16 @@ No run is dropped and no setting is changed after seeing results, except through
 
 ## 10. Amendments
 
-None as of 2026-09-08. Entries are appended with date, reason, and what changed. Nothing above is edited.
+Entries are appended with date, reason, and what changed. Nothing above is edited.
+
+### Amendment 1, 2026-09-08
+
+Reason: the fill-and-verify pass at commit fd50e25 found three statements about v1 that do not match the frozen code and one definitional ambiguity. No design, threshold, or decision rule changes. Recorded before any code change for v3.3.
+
+1. Section 3, loss definition. L_base,k,t and L_model,k,t are the session mean squared spot-normalized pricing error, exactly as computed in walkforward.py at study-v1. The differential d_k,t = L_base,k,t - L_model,k,t is in those squared units and is the series used by the block bootstrap, both Diebold-Mariano tests, and the win rate, as in v1. The relative improvement rho_k,t = 1 - sqrt(L_model,k,t) / sqrt(L_base,k,t) is in RMSE terms, matching the v1 per-fold improvement column, so Delta_k and S_k keep their meaning. The lag-1 autocorrelation of 0.87 cited in section 6 refers to the squared-loss differential.
+
+2. Section 6, Newey-West lags. The lag count follows the v1 rule floor(1.5 * n^(1/3)), where n is the number of evaluated sessions in the sample: 15 for the 1,056-session full-history sample. Six lags applied only to the 83-fold SPY 2023 run.
+
+3. Section 2, prior session. The "previous session present in the store" definition applies to option-chain information only: B1 and B2 inputs, the parity-implied dividend sensitivity, and the gap covariate. The realized-volatility baseline window is the last 60 close-to-close returns of the underlying bar series from the stocks database (about 2,075 bars per symbol, nearly complete), unchanged from v1, and is not affected by option-session gaps.
+
+4. Section 1, per-year positivity. "Positive in every calendar year" holds under the v1 report's per-year ratio-of-means definition. The plan's Delta_k is the median of per-fold RMSE ratios; under that definition the mean per-fold improvement in v1 is negative in 2021 and 2023. Per-year breakdowns in Design C report both the ratio-of-means and the per-fold median so the two are not conflated.
