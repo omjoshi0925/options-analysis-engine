@@ -177,3 +177,25 @@ the ratio-of-means and the per-fold median. No design, threshold, or decision
 rule changed, no code for v3.3 has been written, and nothing above section 10
 was edited.
 
+## 2026-09-09: study v2, Stage 1, external inputs
+
+Retrieved and committed the external inputs for Design A under
+data/external/ with a full provenance record (data/external/PROVENANCE.md):
+FRED DGS3MO (11,744 daily rows, 1981-09-01 to 2026-09-04), State Street's
+family-wide ETF Historical Distributions workbook (34 SPY rows since 2018),
+Apple's dividend history table (35 regular cash rows since 2018, saved as the
+rendered DOM table with a browser-side hash match), and exports of the
+DoltHub stocks `dividend` and `split` tables used for AAPL ex-dates and as a
+cross-check. scripts/build_external_inputs.py parses the raw files into
+dividends.csv (69 rows) and splits.csv (AAPL 4:1 on 2020-08-31).
+
+Findings that shape Stage 2: Apple's amounts are not split-adjusted and the
+stocks store's AAPL closes are not split-adjusted either, so no static
+rescaling is right on both sides of the split; the series module will rebase
+pre-split dividends by 1/4 whenever the price they divide is post-split and
+never touch stored prices. Apple publishes record dates only, so AAPL
+ex-dates come from the DoltHub dividend table matched to the record dates;
+the naive settlement rule would have been a day off on three Veterans Day
+record dates. Retrieval quirks: FRED answered only curl's default User-Agent;
+Apple's page needed a real browser. Confirmed at CHECKPOINT 1.
+

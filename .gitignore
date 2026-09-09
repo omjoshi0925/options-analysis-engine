@@ -22,7 +22,11 @@ options/
 stocks/
 *.csv
 /results/
-/data/
+/data/*
 
 # Frozen study artifacts under docs/results/ are tracked even though *.csv is ignored above
 !docs/results/**/*.csv
+
+# External research inputs (rates, dividends, splits) and their provenance are tracked
+!/data/external/
+!/data/external/**
