@@ -1,5 +1,50 @@
 # Changelog
 
+## 3.3.0 - 2026-09-09
+
+Study v2 engine changes (docs/RESEARCH_PLAN.md section 9, v3.3), with every
+number in the existing pipeline unchanged when a config keeps constant carry:
+
+- Rate and dividend inputs as dated series. `rate` accepts
+  `{"mode": "constant", "value": r}` or `{"mode": "series", "path": ...,
+  "alignment": "strictly_prior"}`; `dividend` accepts
+  `{"mode": "constant", "yields": {...}}` or `{"mode": "series", "path": ...,
+  "bars": ..., "splits": ...}`. The v1 flat fields keep working as constant
+  mode, and constant-mode metadata is byte-for-byte the v1 shape. Imports and
+  live collection refuse series-mode configs; series apply at evaluation.
+- `options_engine.carry_inputs`: the rate for session t is the last quote
+  dated strictly before t, r = ln(1 + y/100); the dividend yield is the
+  trailing 365-day sum of distributions with ex-dates up to t-1 divided by
+  the last bar close before t, each distribution rebased to that bar's share
+  basis through the split table. Missing inputs raise `InputUnavailable`
+  with a machine-readable reason.
+- Effective r and q flow to baseline pricing and to the model's carry
+  features, and the implied-volatility learning target is re-solved under
+  them so target and pricing share one carry; constant v1 carry reproduces
+  the stored targets exactly. Every export and fold output records the
+  effective r and q.
+- `observation-set build --configs ... --out ...` writes the keys of the
+  training-eligible rows that price under every listed configuration, with a
+  `.drops.json` sidecar of drop counts by config and reason and the file's
+  SHA-256; `walk-forward --observation-set` restricts training and
+  evaluation to that set.
+- Fold tables gain baseline_mse, model_mse, rho = 1 - sqrt(model)/sqrt(base),
+  d = base - model, r_effective, and q_effective per symbol; significance.json
+  gains median_rho, mean_d, the carry description, the observation-set hash,
+  and drop counts.
+- Config files config/v2/C0.json to C3.json for Design A; they differ from
+  config/eod-full.json only in rate, dividend, and a data_root that resolves
+  to the same store from one directory deeper.
+- Guards: a rate quote or underlying bar older than 10 days, or a dividend
+  window outside the declared history, is refused with a typed reason;
+  `walk-forward --observation-set` refuses partially matched sets, configs
+  the set was not built with, and configs that drop rows (`--allow-partial`
+  records the problems instead). `train`, `ingest`, `score-snapshot`, and the
+  collector refuse series-mode configs up front. significance.json records
+  learned-coverage statistics per run and labels its bootstrap as v1
+  continuity settings.
+- External inputs under data/external with provenance (Stage 1).
+
 ## 3.2.1 - 2026-09-08
 
 Fixes from external code review, all covered by new tests:

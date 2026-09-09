@@ -199,3 +199,45 @@ the naive settlement rule would have been a day off on three Veterans Day
 record dates. Retrieval quirks: FRED answered only curl's default User-Agent;
 Apple's page needed a real browser. Confirmed at CHECKPOINT 1.
 
+## 2026-09-09: study v2, Stage 2, engine changes (3.3.0)
+
+Implemented the v3.3 items of plan section 9: dated rate and dividend inputs
+(`options_engine/carry_inputs.py`), constant and series config forms with the
+v1 flat fields still valid, frozen observation sets (`observation-set build`,
+`walk-forward --observation-set`), effective r and q on every export row and
+fold, and the Amendment 1 fold columns (baseline_mse, model_mse, rho, d).
+Constant v1 carry reproduces every stored implied-volatility target exactly,
+so C0 is the v1 pipeline on the same rows. 202 tests pass, lint is clean.
+
+Interpretations the plan does not spell out, recorded here before any run:
+
+- Under configuration k the learning target is the implied volatility of the
+  session mid inverted under r_k and q_k, so target, features, and pricing
+  share one carry. Rows whose target does not identify under some
+  configuration (in practice in-the-money puts near the r = 0 bound, mostly
+  2020-2021) are drop reasons and leave set A for every configuration.
+- Dividend history coverage is declared (2018-01-01 to the 2026-09-09
+  retrieval) and windows outside it are refused; a rate quote or bar older
+  than 10 days is refused. None of these rules fires on a stored session.
+- config/v2 files sit one directory deeper, so data_root differs textually
+  from config/eod-full.json while resolving to the same store.
+
+Review: seven independent reviewers (rate, dividend, information flow,
+observation set, configuration, tests, plan conformance) read the uncommitted
+change; the adversarial verification fan-out hit a session limit, so each
+finding was verified by hand instead. Fixed: the set is now enforced on reuse
+(full match, zero further drops, config among the builders), its hash is
+verified on read including .csv.gz, constant-mode blocks reject stray keys,
+both dividend forms at once are refused, failed rows carry no partial carry
+values, the collector and the train, ingest, and score-snapshot commands
+refuse series configs, the report survives a degenerate statistic, and the
+tests that had been validating 0 == 0 now run a model that learns. Not
+changed, for decision at CHECKPOINT 2: the v1 support guard reverts the model
+to the baseline on sessions whose rate lies outside the training window's
+range, which never happens under constant carry and happens on 21 of 1,056
+sessions under the historical rate (17 in the 2022 hikes, 4 in late 2025),
+biasing S_1 and S_3 toward zero; the plan's "nothing else changes" keeps the
+guard, so the choice needs an amendment either way. Also for that checkpoint:
+the plan writes the conversion as ln(1 + y) where the file quotes percent;
+the code applies ln(1 + y/100) as the Stage 2 specification says.
+
