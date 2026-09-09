@@ -134,3 +134,13 @@ Reason: the fill-and-verify pass at commit fd50e25 found three statements about 
 3. Section 2, prior session. The "previous session present in the store" definition applies to option-chain information only: B1 and B2 inputs, the parity-implied dividend sensitivity, and the gap covariate. The realized-volatility baseline window is the last 60 close-to-close returns of the underlying bar series from the stocks database (about 2,075 bars per symbol, nearly complete), unchanged from v1, and is not affected by option-session gaps.
 
 4. Section 1, per-year positivity. "Positive in every calendar year" holds under the v1 report's per-year ratio-of-means definition. The plan's Delta_k is the median of per-fold RMSE ratios; under that definition the mean per-fold improvement in v1 is negative in 2021 and 2023. Per-year breakdowns in Design C report both the ratio-of-means and the per-fold median so the two are not conflated.
+
+### Amendment 2, 2026-09-08: Data provenance
+
+Reason: Stage 1 of v3.3 retrieved the external inputs named in section 2 and found three points where the retrieval had to differ from the literal description. No estimand, threshold, or rule changes.
+
+1. AAPL ex-dates come from the DoltHub `post-no-preference/stocks` dividend table matched to the issuer's record dates, because Apple publishes record dates only. Amounts remain the issuer's declared values on the as-traded basis, with the 2020-08-31 4:1 split applied in the series module so that each dividend is on the share basis of the price it is divided by.
+2. SPY amounts come from State Street's family-wide ETF Historical Distributions workbook filtered to SPY, cross-checked against DoltHub on every date and amount.
+3. FRED DGS3MO was retrieved with curl's default User-Agent; requests imitating a browser received no response.
+
+Files, hashes, timestamps, and the cross-check results are in data/external/PROVENANCE.md.
