@@ -94,13 +94,20 @@ def walk_forward(frame, spec=None):
             mask = evaluation.index.get_indexer(index)
             per_symbol[f"baseline_loss_{symbol}"] = float(np.mean(((base_prices[mask]-mid[mask])/spot[mask])**2))
             per_symbol[f"model_loss_{symbol}"] = float(np.mean(((model_prices[mask]-mid[mask])/spot[mask])**2))
+            per_symbol[f"q_effective_{symbol}"] = float(evaluation.q.to_numpy(float)[mask].mean())
+        baseline_loss = float(np.mean(((base_prices-mid)/spot)**2))
+        model_loss = float(np.mean(((model_prices-mid)/spot)**2))
+        # Session loss is the mean squared spot-normalized pricing error (Amendment 1); rho is its RMSE ratio.
         folds.append(dict(evaluated_session=sessions[j], train_start=train_sessions[0], **per_symbol,
                           train_end=train_sessions[-1], train_sessions=len(train_sessions),
                           train_rows=len(train_frame), evaluation_rows=len(evaluation), alpha=alpha,
-                          baseline_loss=float(np.mean(((base_prices-mid)/spot)**2)),
-                          model_loss=float(np.mean(((model_prices-mid)/spot)**2)),
+                          baseline_loss=baseline_loss, model_loss=model_loss,
+                          baseline_mse=baseline_loss, model_mse=model_loss,
                           baseline_rmse=base_metrics["spot_normalized_rmse"],
                           model_rmse=model_metrics["spot_normalized_rmse"],
+                          rho=float(1-math.sqrt(model_loss)/math.sqrt(baseline_loss)) if baseline_loss > 0 else float("nan"),
+                          d=baseline_loss-model_loss,
+                          r_effective=float(evaluation.r.to_numpy(float).mean()),
                           model_within_spread=model_metrics["within_spread"],
                           baseline_within_spread=base_metrics["within_spread"],
                           learned_coverage=model_metrics["learned_coverage"]))
@@ -174,8 +181,16 @@ def circular_block_bootstrap_ci(values, n_boot=2000, block_length=None, confiden
                 excludes_zero=bool(lo > 0 or hi < 0))
 
 
-def walk_forward_report(result, output, n_boot=2000, seed=0):
-    """folds.csv, significance.json, and a REPORT.md with the honest interpretation."""
+def _fmt(value, spec):
+    """Degenerate tests carry None instead of a statistic; say so instead of crashing the report."""
+    return "degenerate" if value is None else format(value, spec)
+
+
+def walk_forward_report(result, output, n_boot=2000, seed=0, extra=None):
+    """folds.csv, significance.json, and a REPORT.md with the honest interpretation.
+
+    `extra` (a mapping) is merged into significance.json: the carry inputs, the observation set, and drop counts.
+    """
     output = Path(output)
     if output.exists():
         raise ValueError("Walk-forward output exists; choose a new directory")
@@ -188,9 +203,17 @@ def walk_forward_report(result, output, n_boot=2000, seed=0):
     dm_robust = hln_diebold_mariano(result["baseline_losses"], result["model_losses"], hac_lags=nw_lags)
     ci = circular_block_bootstrap_ci(differential, n_boot=n_boot, seed=seed)
     wins = float((table.model_loss < table.baseline_loss).mean())
+    coverage = table.learned_coverage.to_numpy(float)
     significance = dict(diebold_mariano=dm, diebold_mariano_newey_west=dm_robust,
-                        bootstrap_mean_differential=ci, model_win_rate=wins,
-                        spec=result["spec"], sessions_evaluated=len(table))
+                        bootstrap_mean_differential=ci,
+                        bootstrap_note="v1 continuity settings (block round(n^(1/3)), seed 0); study v2 inference uses compare-configs",
+                        model_win_rate=wins,
+                        median_rho=float(table.rho.median()) if "rho" in table else None,
+                        mean_d=float(table.d.mean()) if "d" in table else None,
+                        learned_coverage=dict(mean=float(coverage.mean()),
+                                              zero_coverage_folds=[str(s) for s in table.evaluated_session[coverage == 0]],
+                                              partial_coverage_folds=int(((coverage > 0) & (coverage < 1)).sum())),
+                        spec=result["spec"], sessions_evaluated=len(table), **(extra or {}))
     atomic_json(output/"significance.json", clean_json(significance))
     lines = ["# Walk-forward evaluation", "",
              f"{len(table)} folds, one held-out session each, from {table.evaluated_session.iloc[0]} "
@@ -199,9 +222,9 @@ def walk_forward_report(result, output, n_boot=2000, seed=0):
              "| Quantity | Value |", "|---|---:|",
              f"| Model win rate (session loss) | {wins:.3f} |",
              f"| Mean loss differential (baseline - model) | {dm['mean_differential']:.3e} |",
-             f"| Diebold-Mariano statistic (HLN) | {dm['statistic']:.3f} |",
-             f"| Two-sided p-value | {dm['p_value']:.4g} |",
-             f"| DM with Newey-West HAC ({dm_robust['hac_lags']} lags) | {dm_robust['statistic']:.3f} (p = {dm_robust['p_value']:.4g}) |",
+             f"| Diebold-Mariano statistic (HLN) | {_fmt(dm['statistic'], '.3f')} |",
+             f"| Two-sided p-value | {_fmt(dm['p_value'], '.4g')} |",
+             f"| DM with Newey-West HAC ({dm_robust['hac_lags']} lags) | {_fmt(dm_robust['statistic'], '.3f')} (p = {_fmt(dm_robust['p_value'], '.4g')}) |",
              f"| Lag-1 autocorrelation of the differential | {dm['lag1_autocorrelation']:.3f} |",
              f"| Bootstrap {ci['confidence']:.0%} CI for the differential | [{ci['low']:.3e}, {ci['high']:.3e}] |",
              f"| CI excludes zero | {ci['excludes_zero']} |", "",

@@ -10,6 +10,11 @@ from .volatility import ESTIMATORS
 from .strategies import PRESETS
 
 
+def _digest(path):
+    import hashlib
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
 def parser():
     p = argparse.ArgumentParser(description="European BSM engine and reproducible quote analysis")
     commands = p.add_subparsers(dest="command", required=True)
@@ -82,6 +87,14 @@ def parser():
     forward.add_argument("--max-train-sessions", type=int)
     forward.add_argument("--lookback-sessions", type=int, default=100000, help="How much stored history to load")
     forward.add_argument("--bootstrap", type=int, default=2000)
+    forward.add_argument("--observation-set", help="Keys CSV (or .csv.gz) from `observation-set build`; restricts training and evaluation to it")
+    forward.add_argument("--allow-partial", action="store_true",
+                         help="Proceed when the set is not fully matched, the config drops rows, or the config is not among the set's builders")
+    obs = commands.add_parser("observation-set", help="Build a frozen observation set: v1-eligible rows that price under every listed config")
+    obs.add_argument("action", choices=["build"])
+    obs.add_argument("--configs", nargs="+", required=True, help="Carry configurations; all must share one data root")
+    obs.add_argument("--out", required=True, help="New keys CSV; a <stem>.drops.json sidecar records drops and the hash")
+    obs.add_argument("--lookback-sessions", type=int, default=100000)
     collect = commands.add_parser("collect", help="Run the continuous collector; Ctrl+C stops it")
     collect.add_argument("--config", default="config/collector.json")
     collect.add_argument("--once", action="store_true", help="One scheduled check, respecting market hours")
@@ -153,6 +166,36 @@ def run(args):
             summary["plot"] = str(target)
         print(json.dumps(clean_json(summary), indent=2))
         return 0
+    if args.command == "observation-set":
+        from .carry_inputs import CarryInputs
+        from .live_config import LiveConfig
+        from .observation_set import build_observation_set, write_observation_set
+        from .store import ObservationStore
+        from .observation_set import carry_neutral_settings
+        loaded = [LiveConfig.load(path) for path in args.configs]
+        roots = {root for _, root in loaded}
+        if len(roots) != 1:
+            raise ValueError(f"All configs must share one data root; got {sorted(map(str, roots))}")
+        stems = [Path(path).stem for path in args.configs]
+        if len(set(stems)) != len(stems):
+            raise ValueError("Config file names must be distinct; they label the drop counts")
+        neutral = [carry_neutral_settings(cfg) for cfg, _ in loaded]
+        if any(item != neutral[0] for item in neutral[1:]):
+            raise ValueError("Configs must be identical outside rate, dividend, and data_root so every run shares rows and folds")
+        (config, root), = loaded[:1]
+        frame = ObservationStore(root).training_frame(before="9999-12-31", lookback_sessions=args.lookback_sessions,
+                                                      max_rows_per_symbol_session=config.max_rows_per_symbol_session)
+        if frame.empty:
+            raise ValueError("No training-eligible observations to build a set from")
+        carries = {Path(path).stem: CarryInputs.from_config(cfg) for path, (cfg, _) in zip(args.configs, loaded, strict=True)}
+        keys, summary = build_observation_set(frame, carries)
+        summary["configs"] = {Path(path).stem: dict(path=str(path), sha256=_digest(path)) for path in args.configs}
+        summary["data_root"] = str(root)
+        result = write_observation_set(keys, summary, args.out)
+        result.update(candidates=summary["candidates"], kept=summary["kept"], dropped_under_any_config=summary["dropped_under_any_config"],
+                      by_config={name: item["by_reason"] for name, item in summary["by_config"].items()})
+        print(json.dumps(result, indent=2))
+        return 0
     if args.command in ("init-live", "collect", "status", "train", "ingest", "select-model", "score-snapshot", "import-eod", "walk-forward", "export"):
         from .live_config import LiveConfig
         from .live_utils import atomic_json, process_lock
@@ -175,6 +218,8 @@ def run(args):
             from .collector import run_collector
             return run_collector(args.config, args.once, args.probe)
         config, root = LiveConfig.load(args.config)
+        if args.command in ("train", "ingest", "score-snapshot"):
+            _ = (config.constant_rate, config.constant_dividend_yields)   # stored rows carry constant carry; series belong to walk-forward/export
         if args.command == "status":
             from .collector import live_status
             result = live_status(args.config)
@@ -197,22 +242,53 @@ def run(args):
             output = Path(args.output)
             if output.exists():
                 raise ValueError("Export output exists; choose a new file")
+            from .carry_inputs import CarryInputs, effective_carry
             frame = ObservationStore(root).export(include_excluded=args.include_excluded)
             if frame.empty:
                 raise ValueError("No matching observations to export yet")
+            carry = CarryInputs.from_config(config)
+            if {"session_date", "symbol"} <= set(frame.columns):
+                frame = frame.merge(effective_carry(frame, carry), on=["session_date", "symbol"], how="left")
             output.parent.mkdir(parents=True, exist_ok=True)
             frame.to_csv(output, index=False)
             eligible = int(frame["training_eligible"].sum()) if "training_eligible" in frame else len(frame)
-            result = dict(rows=len(frame), training_eligible=eligible, output=str(output))
+            result = dict(rows=len(frame), training_eligible=eligible, output=str(output), carry=carry.describe(),
+                          note="r, q, iv_brent_*, baseline_* and bound columns are the stored import-time values; "
+                               "effective_r/effective_q are this config's carry, NaN with carry_failure when unavailable")
         elif args.command == "walk-forward":
+            from .carry_inputs import CarryInputs, apply_carry
+            from .observation_set import read_observation_set, restrict_to_observation_set
             from .store import ObservationStore
             from .walkforward import WalkForwardSpec, walk_forward, walk_forward_report
             frame = ObservationStore(root).training_frame(before="9999-12-31", lookback_sessions=args.lookback_sessions,
                                                           max_rows_per_symbol_session=config.max_rows_per_symbol_session)
+            extra = dict(config=dict(path=str(args.config), sha256=_digest(args.config)))
+            if args.observation_set:
+                ids, description = read_observation_set(args.observation_set)
+                frame, counts = restrict_to_observation_set(frame, ids)
+                extra["observation_set"] = dict(description, **counts)
+            carry = CarryInputs.from_config(config)
+            frame, failures = apply_carry(frame, carry)
+            extra["carry"] = carry.describe()
+            extra["dropped_by_carry"] = dict(rows=int(len(failures)), by_reason={k: int(v) for k, v in failures.reason.value_counts().items()})
+            if args.observation_set:
+                # The set guarantees identical rows, sessions, and fold boundaries only if it is fully matched, nothing
+                # more is dropped, and this config is one the set was built for.
+                problems = []
+                if counts["matched_rows"] != counts["set_size"]:
+                    problems.append(f"only {counts['matched_rows']} of {counts['set_size']} set rows are in the store frame")
+                if len(failures):
+                    problems.append(f"{len(failures)} set rows fail under this config: {extra['dropped_by_carry']['by_reason']}")
+                recorded = description.get("configs") or {}
+                if recorded and extra["config"]["sha256"] not in recorded.values():
+                    problems.append("this config is not among the configs the set was built with")
+                extra["observation_set"]["problems"] = problems
+                if problems and not args.allow_partial:
+                    raise ValueError("Observation set not honored: "+"; ".join(problems)+" (use --allow-partial to proceed anyway)")
             spec = WalkForwardSpec(min_train_sessions=args.min_train_sessions, gap=args.gap,
                                    validation_sessions=args.validation_sessions, window=args.window,
                                    max_train_sessions=args.max_train_sessions)
-            result = walk_forward_report(walk_forward(frame, spec), args.output, n_boot=args.bootstrap)
+            result = walk_forward_report(walk_forward(frame, spec), args.output, n_boot=args.bootstrap, extra=extra)
         else:
             from .learning import select_model
             result = select_model(root, args.model_id)
