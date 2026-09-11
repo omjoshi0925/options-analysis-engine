@@ -1,0 +1,98 @@
+{
+  "bootstrap_mean_differential": {
+    "block_length": 10,
+    "confidence": 0.95,
+    "excludes_zero": true,
+    "high": 0.0012491973176207414,
+    "low": 9.979868573657089e-06,
+    "mean": 0.0004732288938953233,
+    "replications": 2000
+  },
+  "bootstrap_note": "v1 continuity settings (block round(n^(1/3)), seed 0); study v2 inference uses compare-configs",
+  "carry": {
+    "dividend": {
+      "mode": "constant",
+      "yields": {
+        "AAPL": 0.005,
+        "QQQ": 0.006,
+        "SPY": 0.014
+      }
+    },
+    "rate": {
+      "mode": "constant",
+      "value": 0.04
+    }
+  },
+  "config": {
+    "path": "config/v2/C0.json",
+    "sha256": "91f9c8e042f5bd6004c9291b705a29ca2d8fddfbf4e45885d1f755aca59725cc"
+  },
+  "diebold_mariano": {
+    "degenerate": false,
+    "favors": "model",
+    "folds": 1056,
+    "hac_lags": 0,
+    "hln_correction": 0.999526403004458,
+    "horizon": 1,
+    "lag1_autocorrelation": 0.8743841715835666,
+    "mean_differential": 0.0004732288938953233,
+    "p_value": 0.00025227633030369657,
+    "statistic": 3.6724608898313753
+  },
+  "diebold_mariano_newey_west": {
+    "degenerate": false,
+    "favors": "model",
+    "folds": 1056,
+    "hac_lags": 15,
+    "hln_correction": 0.999526403004458,
+    "horizon": 1,
+    "lag1_autocorrelation": 0.8743841715835666,
+    "mean_differential": 0.0004732288938953233,
+    "p_value": 0.22106655600782868,
+    "statistic": 1.224421621157528
+  },
+  "dropped_by_carry": {
+    "by_reason": {},
+    "rows": 0
+  },
+  "learned_coverage": {
+    "mean": 0.9970146604193015,
+    "partial_coverage_folds": 7,
+    "zero_coverage_folds": []
+  },
+  "mean_d": 0.0004732288938953233,
+  "median_rho": 0.10855818559605884,
+  "model_win_rate": 0.6638257575757576,
+  "observation_set": {
+    "candidate_rows": 260296,
+    "configs": {
+      "C0": "91f9c8e042f5bd6004c9291b705a29ca2d8fddfbf4e45885d1f755aca59725cc",
+      "C1": "0284dfc50dc513094bc5dfcdbad7442ac05e42a3dcc40a237d120991356d54e1",
+      "C2": "36be1914e18628f2d67e24af3d643f6eaae990c30ffadda6c74721d9d5e90fd6",
+      "C3": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348"
+    },
+    "matched_rows": 253554,
+    "path": "docs/results/v2/observation-set-A.csv.gz",
+    "problems": [],
+    "recorded_rows": 253554,
+    "recorded_sha256": "0f6c47bf691a90a2ceb60e6b5fdf447fed4d04cb8fa3334a121316dc8448f57c",
+    "rows": 253554,
+    "set_size": 253554,
+    "sha256": "81234b995f154331a190c9e0e126308b386d217957dcb99e3c5f228404f846df",
+    "sidecar": "docs/results/v2/observation-set-A.drops.json",
+    "uncompressed_sha256": "0f6c47bf691a90a2ceb60e6b5fdf447fed4d04cb8fa3334a121316dc8448f57c"
+  },
+  "sessions_evaluated": 1056,
+  "spec": {
+    "alphas": [
+      0.01,
+      1.0,
+      100.0
+    ],
+    "gap": 1,
+    "max_train_sessions": 250,
+    "min_train_sessions": 120,
+    "validation_sessions": 2,
+    "window": "rolling"
+  }
+}

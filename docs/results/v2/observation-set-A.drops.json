@@ -1,0 +1,298 @@
+{
+  "by_config": {
+    "C0": {
+      "by_reason": {},
+      "carry": {
+        "dividend": {
+          "mode": "constant",
+          "yields": {
+            "AAPL": 0.005,
+            "QQQ": 0.006,
+            "SPY": 0.014
+          }
+        },
+        "rate": {
+          "mode": "constant",
+          "value": 0.04
+        }
+      },
+      "composition": {},
+      "dropped": 0
+    },
+    "C1": {
+      "by_reason": {
+        "iv_not_identified": 5964
+      },
+      "carry": {
+        "dividend": {
+          "mode": "constant",
+          "yields": {
+            "AAPL": 0.005,
+            "QQQ": 0.006,
+            "SPY": 0.014
+          }
+        },
+        "rate": {
+          "alignment": "strictly_prior",
+          "first_quote": "1981-09-01",
+          "last_quote": "2026-09-04",
+          "mode": "series",
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/DGS3MO.csv",
+          "quotes": 11253,
+          "sha256": "504030af381b2ee828c3012ba91dcc9ea7cdbbcaa3297026acd500ed9c4b4e44",
+          "stale_days": 10,
+          "units": "percent"
+        }
+      },
+      "composition": {
+        "by_days_to_expiry": {
+          "31-90d": 1456,
+          "<=30d": 4508,
+          ">90d": 0
+        },
+        "by_log_moneyness": {
+          "-0.05 to 0.05": 199,
+          "-0.15 to -0.05": 2191,
+          "0.05 to 0.15": 194,
+          "above 0.15": 820,
+          "below -0.15": 2560
+        },
+        "by_option_type": {
+          "call": 1026,
+          "put": 4938
+        },
+        "by_symbol": {
+          "AAPL": 1628,
+          "SPY": 4336
+        },
+        "by_year": {
+          "2019": 5,
+          "2020": 1297,
+          "2021": 2563,
+          "2022": 998,
+          "2023": 536,
+          "2024": 420,
+          "2025": 65,
+          "2026": 80
+        }
+      },
+      "dropped": 5964
+    },
+    "C2": {
+      "by_reason": {
+        "iv_not_identified": 504
+      },
+      "carry": {
+        "dividend": {
+          "files": {
+            "bars": {
+              "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/full_underlying.csv",
+              "sha256": "aa9e446dddf40682a68890a0b70f36a41c6d2f108d0777dddc1b7403801bc738"
+            },
+            "dividends": {
+              "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/dividends.csv",
+              "sha256": "7cc323daac11272eee3949729e7ee435ae865670ccb76b3424f80068cdbf39d2"
+            },
+            "splits": {
+              "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/splits.csv",
+              "sha256": "96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec"
+            }
+          },
+          "history_end": "2026-09-09",
+          "history_start": "2018-01-01",
+          "max_bar_gap_days": 10,
+          "mode": "series",
+          "stale_days": 100,
+          "window_days": 365
+        },
+        "rate": {
+          "mode": "constant",
+          "value": 0.04
+        }
+      },
+      "composition": {
+        "by_days_to_expiry": {
+          "31-90d": 157,
+          "<=30d": 347,
+          ">90d": 0
+        },
+        "by_log_moneyness": {
+          "-0.05 to 0.05": 9,
+          "-0.15 to -0.05": 44,
+          "0.05 to 0.15": 116,
+          "above 0.15": 301,
+          "below -0.15": 34
+        },
+        "by_option_type": {
+          "call": 423,
+          "put": 81
+        },
+        "by_symbol": {
+          "AAPL": 68,
+          "SPY": 436
+        },
+        "by_year": {
+          "2019": 1,
+          "2020": 47,
+          "2021": 89,
+          "2022": 38,
+          "2023": 15,
+          "2024": 43,
+          "2025": 123,
+          "2026": 148
+        }
+      },
+      "dropped": 504
+    },
+    "C3": {
+      "by_reason": {
+        "iv_not_identified": 6279
+      },
+      "carry": {
+        "dividend": {
+          "files": {
+            "bars": {
+              "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/full_underlying.csv",
+              "sha256": "aa9e446dddf40682a68890a0b70f36a41c6d2f108d0777dddc1b7403801bc738"
+            },
+            "dividends": {
+              "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/dividends.csv",
+              "sha256": "7cc323daac11272eee3949729e7ee435ae865670ccb76b3424f80068cdbf39d2"
+            },
+            "splits": {
+              "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/splits.csv",
+              "sha256": "96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec"
+            }
+          },
+          "history_end": "2026-09-09",
+          "history_start": "2018-01-01",
+          "max_bar_gap_days": 10,
+          "mode": "series",
+          "stale_days": 100,
+          "window_days": 365
+        },
+        "rate": {
+          "alignment": "strictly_prior",
+          "first_quote": "1981-09-01",
+          "last_quote": "2026-09-04",
+          "mode": "series",
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/DGS3MO.csv",
+          "quotes": 11253,
+          "sha256": "504030af381b2ee828c3012ba91dcc9ea7cdbbcaa3297026acd500ed9c4b4e44",
+          "stale_days": 10,
+          "units": "percent"
+        }
+      },
+      "composition": {
+        "by_days_to_expiry": {
+          "31-90d": 1567,
+          "<=30d": 4712,
+          ">90d": 0
+        },
+        "by_log_moneyness": {
+          "-0.05 to 0.05": 193,
+          "-0.15 to -0.05": 2222,
+          "0.05 to 0.15": 220,
+          "above 0.15": 947,
+          "below -0.15": 2697
+        },
+        "by_option_type": {
+          "call": 1183,
+          "put": 5096
+        },
+        "by_symbol": {
+          "AAPL": 1765,
+          "SPY": 4514
+        },
+        "by_year": {
+          "2019": 8,
+          "2020": 1472,
+          "2021": 2585,
+          "2022": 1009,
+          "2023": 491,
+          "2024": 500,
+          "2025": 153,
+          "2026": 61
+        }
+      },
+      "dropped": 6279
+    }
+  },
+  "candidate_sessions": 1177,
+  "candidates": 260296,
+  "configs": {
+    "C0": {
+      "path": "config/v2/C0.json",
+      "sha256": "91f9c8e042f5bd6004c9291b705a29ca2d8fddfbf4e45885d1f755aca59725cc"
+    },
+    "C1": {
+      "path": "config/v2/C1.json",
+      "sha256": "0284dfc50dc513094bc5dfcdbad7442ac05e42a3dcc40a237d120991356d54e1"
+    },
+    "C2": {
+      "path": "config/v2/C2.json",
+      "sha256": "36be1914e18628f2d67e24af3d643f6eaae990c30ffadda6c74721d9d5e90fd6"
+    },
+    "C3": {
+      "path": "config/v2/C3.json",
+      "sha256": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348"
+    }
+  },
+  "data_root": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/eod-live-full",
+  "dropped_by_symbol": {
+    "AAPL": 1842,
+    "SPY": 4900
+  },
+  "dropped_composition": {
+    "by_days_to_expiry": {
+      "31-90d": 1741,
+      "<=30d": 5001,
+      ">90d": 0
+    },
+    "by_log_moneyness": {
+      "-0.05 to 0.05": 214,
+      "-0.15 to -0.05": 2292,
+      "0.05 to 0.15": 306,
+      "above 0.15": 1173,
+      "below -0.15": 2757
+    },
+    "by_option_type": {
+      "call": 1499,
+      "put": 5243
+    },
+    "by_symbol": {
+      "AAPL": 1842,
+      "SPY": 4900
+    },
+    "by_year": {
+      "2019": 8,
+      "2020": 1472,
+      "2021": 2713,
+      "2022": 1069,
+      "2023": 549,
+      "2024": 504,
+      "2025": 199,
+      "2026": 228
+    }
+  },
+  "dropped_under_any_config": 6742,
+  "kept": 253554,
+  "kept_by_symbol": {
+    "AAPL": 127653,
+    "SPY": 125901
+  },
+  "kept_sessions": 1177,
+  "observation_set": {
+    "columns": [
+      "observation_id",
+      "session_date",
+      "symbol"
+    ],
+    "note": "sha256 is of the uncompressed CSV bytes",
+    "path": "docs/results/v2/observation-set-A.csv",
+    "rows": 253554,
+    "sha256": "0f6c47bf691a90a2ceb60e6b5fdf447fed4d04cb8fa3334a121316dc8448f57c"
+  },
+  "rule": "kept only if apply_carry succeeds under every listed configuration",
+  "sessions_lost": []
+}

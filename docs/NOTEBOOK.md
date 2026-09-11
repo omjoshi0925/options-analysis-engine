@@ -241,3 +241,27 @@ guard, so the choice needs an amendment either way. Also for that checkpoint:
 the plan writes the conversion as ln(1 + y) where the file quotes percent;
 the code applies ln(1 + y/100) as the Stage 2 specification says.
 
+## 2026-09-09: study v2, Stage 3, observation set A and the C0 control
+
+Built docs/results/v2/observation-set-A.csv (committed gzipped; uncompressed
+SHA-256 0f6c47bf691a90a2ceb60e6b5fdf447fed4d04cb8fa3334a121316dc8448f57c) from
+the four Design A configurations: 253,554 of the 260,296 v1-eligible rows
+kept, 6,742 dropped (2.6%), every one because the implied-volatility target
+does not identify under a historical-carry configuration (C1 5,964, C2 504,
+C3 6,279, C0 none); no rate, dividend, or bar input was ever unavailable. The
+drops are 5,243 puts and 1,499 calls, 4,900 SPY and 1,842 AAPL, 62% in
+2020-2021, 74% within 30 days of expiry: in-the-money puts whose mid sits
+below the r = 0 lower bound. No session is lost, so the 1,056 fold boundaries
+are the v1 ones. Inside the evaluation window the set holds 230,927 quotes
+against v1's 236,516.
+
+C0 on set A (docs/results/v2/design-a/C0, 6 min 46 s): median rho 0.1086
+(v1 0.1045), mean d 4.73e-04 (v1 4.50e-04), win rate 0.664 (identical to v1,
+701 of 1,056), DM 3.672 (v1 3.671), Newey-West 1.224 (v1 1.228), mean learned
+coverage 0.99702 with the same 7 partial-coverage folds as v1. Folds whose
+evaluation rows are untouched still differ from v1 because the intersection
+also removes training rows. C0 reproduces v1 up to the intersection, as
+section 3 requires, and CHECKPOINT 2 was reported with the open decisions
+from Stage 2 (support guard, target re-solve, conversion wording, coverage
+rules, config data_root).
+
