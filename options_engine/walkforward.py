@@ -68,8 +68,12 @@ def fit_fold(train_frame, spec):
     return fit_ridge(train_frame, best_alpha), best_alpha
 
 
-def walk_forward(frame, spec=None):
-    """One fold per evaluable session; returns fold table and session-level loss series."""
+def walk_forward(frame, spec=None, baseline_only=False):
+    """One fold per evaluable session; returns fold table and session-level loss series.
+
+    With baseline_only the model is not fitted: the fold table scores the baseline alone and the model columns repeat it,
+    which is how a competing baseline (Design B's B1, B2) is evaluated on exactly the folds the learned runs use.
+    """
     spec = spec or WalkForwardSpec()
     if frame.empty or "session_date" not in frame:
         raise ValueError("Walk-forward needs a training frame with session_date")
@@ -85,7 +89,7 @@ def walk_forward(frame, spec=None):
             train_sessions = train_sessions[-spec.max_train_sessions:]
         train_frame = pd.concat([by_session[day] for day in train_sessions], ignore_index=True)
         evaluation = by_session[sessions[j]]
-        model, alpha = fit_fold(train_frame, spec)
+        model, alpha = (None, None) if baseline_only else fit_fold(train_frame, spec)
         base_metrics, base_prices, _ = evaluate(None, evaluation)
         model_metrics, model_prices, _ = evaluate(model, evaluation)
         mid, spot = evaluation.mid.to_numpy(float), evaluation.spot.to_numpy(float)

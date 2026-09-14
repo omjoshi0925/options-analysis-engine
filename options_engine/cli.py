@@ -1,6 +1,8 @@
 import argparse
 from pathlib import Path
 import json
+
+import pandas as pd
 import sys
 from .core import BlackScholesEngine
 from .data import FilterConfig, fetch_options, read_snapshot, write_snapshot
@@ -88,6 +90,14 @@ def parser():
     forward.add_argument("--lookback-sessions", type=int, default=100000, help="How much stored history to load")
     forward.add_argument("--bootstrap", type=int, default=2000)
     forward.add_argument("--observation-set", help="Keys CSV (or .csv.gz) from `observation-set build`; restricts training and evaluation to it")
+    baselines = commands.add_parser("baselines", help="Design B prior-session baselines (B1, B2) and observation set B")
+    baselines_commands = baselines.add_subparsers(dest="baselines_command", required=True)
+    build_b = baselines_commands.add_parser("build", help="Compute B1 and B2 for every row of an observation set and write set B")
+    build_b.add_argument("--config", required=True, help="Carry configuration (Design B uses config/v2/C3.json)")
+    build_b.add_argument("--observation-set", required=True, help="Set A keys (.csv or .csv.gz)")
+    build_b.add_argument("--out", required=True, help="New keys CSV for set B; its .drops.json sidecar is written beside it")
+    build_b.add_argument("--baselines", required=True, help="New CSV with b1_sigma, b1_source, gap_days, b2_sigma, b2_source per observation")
+    build_b.add_argument("--lookback-sessions", type=int, default=100000)
     compare = commands.add_parser("compare-configs", help="Design A comparison: S_k with paired block-bootstrap intervals and the section 3 decision")
     compare.add_argument("--runs", nargs="+", required=True, help="Walk-forward output directories named by configuration (C0 C1 C2 C3)")
     compare.add_argument("--out", required=True, help="Directory for comparison.json and REPORT.md")
@@ -96,6 +106,9 @@ def parser():
     compare.add_argument("--block-length", type=int, default=21)
     compare.add_argument("--replicates", type=int, default=10000)
     compare.add_argument("--seed", type=int, default=20260908)
+    forward.add_argument("--baseline-file", help="Per-observation baselines CSV from `baselines build`; replaces baseline_sigma")
+    forward.add_argument("--baseline-column", default="b1_sigma", help="Column of --baseline-file to use as the base volatility")
+    forward.add_argument("--baseline-only", action="store_true", help="Evaluate the baseline alone; no model is fitted")
     forward.add_argument("--allow-partial", action="store_true",
                          help="Proceed when the set is not fully matched, the config drops rows, or the config is not among the set's builders")
     obs = commands.add_parser("observation-set", help="Build a frozen observation set: v1-eligible rows that price under every listed config")
@@ -181,6 +194,39 @@ def run(args):
         print(json.dumps(dict(decision=result["decision"], s={k: dict(s=v["s"], interval=v["interval"]) for k, v in result["s"].items()},
                               carry_only_check=result["carry_only_check"], mean_d_treatment=result["mean_d_treatment"],
                               output=str(Path(args.out)/"comparison.json")), indent=2))
+        return 0
+    if args.command == "baselines":
+        from .baselines import build_design_b
+        from .carry_inputs import CarryInputs, apply_carry, file_digest
+        from .live_config import LiveConfig
+        from .live_utils import clean_json
+        from .observation_set import read_observation_set, restrict_to_observation_set, write_observation_set
+        from .store import ObservationStore
+        config, root = LiveConfig.load(args.config)
+        frame = ObservationStore(root).training_frame(before="9999-12-31", lookback_sessions=args.lookback_sessions,
+                                                      max_rows_per_symbol_session=config.max_rows_per_symbol_session)
+        ids, description = read_observation_set(args.observation_set)
+        frame, counts = restrict_to_observation_set(frame, ids)
+        if counts["matched_rows"] != counts["set_size"]:
+            raise ValueError(f"Only {counts['matched_rows']} of {counts['set_size']} set rows are in the store frame")
+        carry = CarryInputs.from_config(config)
+        frame, failures = apply_carry(frame, carry)
+        if len(failures):
+            raise ValueError(f"{len(failures)} set rows fail under this config; set A guarantees none: {failures.reason.value_counts().to_dict()}")
+        keys, table, summary = build_design_b(frame)
+        baselines_path = Path(args.baselines)
+        if baselines_path.exists():
+            raise ValueError("Baselines output exists; choose a new file")
+        baselines_path.parent.mkdir(parents=True, exist_ok=True)
+        table.to_csv(baselines_path, index=False)
+        summary["configs"] = {Path(args.config).stem: dict(path=args.config, sha256=file_digest(args.config))}
+        summary["carry"] = carry.describe()
+        summary["source_set"] = description
+        summary["baselines"] = dict(path=str(baselines_path), rows=int(len(table)), sha256=file_digest(baselines_path), columns=list(table.columns))
+        written = write_observation_set(keys, summary, args.out)
+        result = dict(written, kept=summary["kept"], candidates=summary["candidates"], dropped_by_reason=summary["dropped_by_reason"],
+                      b1_by_source=summary["b1_by_source"], b2=summary["b2"], b1_vs_rv=summary["b1_vs_rv"], baselines=summary["baselines"])
+        print(json.dumps(clean_json(result), indent=2))
         return 0
     if args.command == "observation-set":
         from .carry_inputs import CarryInputs
@@ -301,10 +347,29 @@ def run(args):
                 extra["observation_set"]["problems"] = problems
                 if problems and not args.allow_partial:
                     raise ValueError("Observation set not honored: "+"; ".join(problems)+" (use --allow-partial to proceed anyway)")
+            if args.baseline_file:
+                from .carry_inputs import file_digest
+                table = pd.read_csv(args.baseline_file)
+                if args.baseline_column not in table:
+                    raise ValueError(f"{args.baseline_file} has no column {args.baseline_column}")
+                merged = frame.merge(table[["observation_id", args.baseline_column]], on="observation_id", how="left")
+                missing = int(merged[args.baseline_column].isna().sum())
+                if missing and not args.allow_partial:
+                    raise ValueError(f"{missing} rows have no {args.baseline_column} in {args.baseline_file} (use --allow-partial to drop them)")
+                frame = merged.loc[merged[args.baseline_column].notna()].copy()
+                frame["baseline_sigma"] = frame.pop(args.baseline_column).astype(float)
+                frame["baseline_source"] = f"design_b:{args.baseline_column}"
+                extra["baseline"] = dict(file=args.baseline_file, sha256=file_digest(args.baseline_file), column=args.baseline_column,
+                                         rows=int(len(frame)), rows_without_value=missing)
+                source_column = args.baseline_column.replace("_sigma", "_source")
+                if source_column in table:
+                    used = table.loc[table.observation_id.isin(frame.observation_id), source_column]
+                    extra["baseline"]["by_source"] = {k: int(v) for k, v in used.value_counts().sort_index().items()}
+            extra["baseline_only"] = bool(args.baseline_only)
             spec = WalkForwardSpec(min_train_sessions=args.min_train_sessions, gap=args.gap,
                                    validation_sessions=args.validation_sessions, window=args.window,
                                    max_train_sessions=args.max_train_sessions)
-            result = walk_forward_report(walk_forward(frame, spec), args.output, n_boot=args.bootstrap, extra=extra)
+            result = walk_forward_report(walk_forward(frame, spec, baseline_only=args.baseline_only), args.output, n_boot=args.bootstrap, extra=extra)
         else:
             from .learning import select_model
             result = select_model(root, args.model_id)
