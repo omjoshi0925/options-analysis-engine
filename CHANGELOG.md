@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.3.1 - 2026-09-13
+
+- The learned model's support guard no longer covers the rate and dividend
+  yield (Research Plan Amendment 3): under a dated carry it silenced the model
+  for whole sessions whenever the rate moved past the training window's range,
+  which never happens under constant carry. Maturity, baseline volatility,
+  log-moneyness, and symbol are still guarded; v1 and C0 numbers are
+  unchanged.
+
 ## 3.3.0 - 2026-09-09
 
 Study v2 engine changes (docs/RESEARCH_PLAN.md section 9, v3.3), with every

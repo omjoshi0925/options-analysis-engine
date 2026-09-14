@@ -335,3 +335,15 @@ def test_effective_carry_leaves_both_values_empty_on_any_failure(tmp_path):
     assert table.carry_failure.iloc[0] == "dividend_history_unavailable"          # the window starts before history_start
     assert np.isnan(table.effective_r.iloc[0]) and np.isnan(table.effective_q.iloc[0])
 
+
+def test_dated_carry_outside_the_training_range_still_receives_the_learned_volatility():
+    """Research Plan Amendment 3: a session whose rate or yield lies beyond the training window's range is not silenced."""
+    from options_engine.learning import fit_ridge, predict_volatility
+    frame = synthetic_frame(sessions=6)
+    model = fit_ridge(frame, 1.0)
+    assert set(model["support"]) == {"T", "baseline_sigma", "log_moneyness"}
+    jumped = frame.loc[frame.session_date == frame.session_date.max()].copy()
+    jumped["r"], jumped["q"] = .12, .06                                   # far outside the constant .04 / .01 of the training rows
+    sigmas, supported = predict_volatility(model, jumped)
+    assert supported.all() and not np.allclose(sigmas, jumped.baseline_sigma)
+
