@@ -53,7 +53,7 @@ class WalkForwardSpec:
             raise ValueError("alphas must be nonnegative and finite")
 
 
-def fit_fold(train_frame, spec):
+def fit_fold(train_frame, spec, exclude=()):
     """Select alpha on the training tail, then refit on the whole training window."""
     sessions = sorted(train_frame.session_date.unique())
     tail = sessions[-spec.validation_sessions:]
@@ -61,14 +61,18 @@ def fit_fold(train_frame, spec):
     inner_validation = train_frame.loc[train_frame.session_date.isin(tail)]
     scored = []
     for alpha in spec.alphas:
-        candidate = fit_ridge(inner_train, alpha)
+        candidate = fit_ridge(inner_train, alpha, exclude=exclude)
         metrics, _, _ = evaluate(candidate, inner_validation)
         scored.append((metrics["spot_normalized_rmse"], alpha))
     _, best_alpha = min(scored)
-    return fit_ridge(train_frame, best_alpha), best_alpha
+    return fit_ridge(train_frame, best_alpha, exclude=exclude), best_alpha
 
 
-def walk_forward(frame, spec=None, baseline_only=False, evaluation_ids=None):
+PREDICTION_COLUMNS = ("observation_id", "symbol", "contractSymbol", "option_type", "expiration", "strike", "spot", "mid", "bid", "ask", "T",
+                      "days_to_expiry", "r", "q", "baseline_sigma")
+
+
+def walk_forward(frame, spec=None, baseline_only=False, evaluation_ids=None, exclude_features=(), collect_predictions=False):
     """One fold per evaluable session; returns fold table and session-level loss series.
 
     With baseline_only the model is not fitted: the fold table scores the baseline alone and the model columns repeat it,
@@ -79,6 +83,8 @@ def walk_forward(frame, spec=None, baseline_only=False, evaluation_ids=None):
     """
     spec = spec or WalkForwardSpec()
     evaluation_ids = None if evaluation_ids is None else set(evaluation_ids)
+    exclude_features = tuple(exclude_features)
+    predictions = []
     if frame.empty or "session_date" not in frame:
         raise ValueError("Walk-forward needs a training frame with session_date")
     sessions = sorted(frame.session_date.unique())
@@ -98,9 +104,16 @@ def walk_forward(frame, spec=None, baseline_only=False, evaluation_ids=None):
             if evaluation.empty:
                 skipped.append(sessions[j])
                 continue
-        model, alpha = (None, None) if baseline_only else fit_fold(train_frame, spec)
-        base_metrics, base_prices, _ = evaluate(None, evaluation)
-        model_metrics, model_prices, _ = evaluate(model, evaluation)
+        model, alpha = (None, None) if baseline_only else fit_fold(train_frame, spec, exclude=exclude_features)
+        base_metrics, base_prices, base_sigmas = evaluate(None, evaluation)
+        model_metrics, model_prices, model_sigmas = evaluate(model, evaluation)
+        if collect_predictions:
+            columns = [c for c in PREDICTION_COLUMNS if c in evaluation]
+            rows = evaluation[columns].copy()
+            rows.insert(1, "evaluated_session", sessions[j])
+            rows["baseline_price"], rows["model_price"] = base_prices, model_prices
+            rows["model_sigma"] = model_sigmas
+            predictions.append(rows)
         mid, spot = evaluation.mid.to_numpy(float), evaluation.spot.to_numpy(float)
         per_symbol = {}
         for symbol, index in evaluation.groupby("symbol").groups.items():
@@ -128,6 +141,8 @@ def walk_forward(frame, spec=None, baseline_only=False, evaluation_ids=None):
         raise ValueError("No session has evaluation rows left")
     table = pd.DataFrame(folds)
     return dict(folds=table, spec=asdict(spec), sessions=list(table.evaluated_session), skipped_sessions=skipped,
+                excluded_features=list(exclude_features),
+                predictions=(pd.concat(predictions, ignore_index=True) if collect_predictions else None),
                 baseline_losses=table.baseline_loss.to_numpy(), model_losses=table.model_loss.to_numpy())
 
 

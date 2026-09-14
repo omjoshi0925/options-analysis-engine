@@ -117,6 +117,19 @@ recorded in splits.csv from the issuer's split row (payable column, starred
 as the first split-adjusted trading date) and agrees with the DoltHub split
 table and the price step.
 
+## 7. VIX: FRED VIXCLS (Design C regimes)
+
+- File: raw/VIXCLS.csv
+- URL: https://fred.stlouisfed.org/graph/fredgraph.csv?id=VIXCLS
+- Retrieved: 2026-09-14T20:52:03Z with curl 8.7.1 (default User-Agent).
+- SHA-256: 60f2ec1ea081cf27427b8a24930a2ebee7c1992aad14119e9380673cc85fb9c1
+- Size: 161,204 bytes; 9,574 daily rows from 1990-01-02 to 2026-09-11, of
+  which 9,272 carry a value and 302 are blank (missing days). Used only for
+  the exploratory Design C regime breakdown: the regime of session t is the
+  most recent observation dated strictly before t, and the terciles are
+  computed over the evaluation window with the cut points recorded in
+  docs/results/v2/design-c/breakdowns.json.
+
 ## 6. Parser and outputs
 
 - scripts/build_external_inputs.py, SHA-256

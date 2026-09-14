@@ -115,6 +115,25 @@ def parser():
     compare_b.add_argument("--replicates", type=int, default=10000)
     compare_b.add_argument("--seed", type=int, default=20260908)
     compare_b.add_argument("--stale-diagnostic", help="stale-quote-diagnostic.json to render as a section of the report")
+    design_c = commands.add_parser("design-c", help="Design C attribution (exploratory): feature ablations and breakdowns of d and rho")
+    design_c_commands = design_c.add_subparsers(dest="design_c_command", required=True)
+    abl = design_c_commands.add_parser("ablations", help="Ablation tables against the full model")
+    abl.add_argument("--entry", nargs="+", action="append", required=True, metavar="ARG",
+                     help="LABEL FULL_RUN_DIR ABLATED_RUN_DIR... (ablation names are the directory names); repeatable")
+    abl.add_argument("--out", required=True)
+    abl.add_argument("--replicates", type=int, default=10000)
+    brk = design_c_commands.add_parser("breakdowns", help="Breakdowns of d and rho by symbol, maturity, moneyness, VIX regime, and gap")
+    brk.add_argument("--entry", nargs=5, action="append", required=True, metavar=("LABEL", "MODEL_PREDICTIONS", "REFERENCE_PREDICTIONS", "REFERENCE_ROLE", "SESSION_CALENDAR"),
+                     help="reference predictions file or '-' for the model run's own baseline; role 'baseline' or 'model' names the column of the reference file")
+    brk.add_argument("--vix", required=True, help="FRED VIXCLS csv")
+    brk.add_argument("--vix-cuts", nargs=2, type=float, help="Tercile cut points; computed over the first entry's sessions when omitted")
+    brk.add_argument("--moneyness-cuts", nargs=2, type=float, help="Tercile cut points of |log(K/F)|; computed over the first entry's rows when omitted")
+    brk.add_argument("--out", required=True)
+    brk.add_argument("--replicates", type=int, default=10000)
+    rep = design_c_commands.add_parser("report", help="REPORT.md from ablations.json and breakdowns.json")
+    rep.add_argument("--ablations", required=True)
+    rep.add_argument("--breakdowns", required=True)
+    rep.add_argument("--out", required=True)
     stale = commands.add_parser("stale-quote-diagnostic", help="Amendment 5: unchanged-mid share of set B and the changed-mid sensitivity (exploratory)")
     stale_commands = stale.add_subparsers(dest="stale_command", required=True)
     stale_build = stale_commands.add_parser("build", help="Compute the mid-change statistics and write the evaluation subsets")
@@ -134,6 +153,9 @@ def parser():
     forward.add_argument("--baseline-column", default="b1_sigma", help="Column of --baseline-file to use as the base volatility")
     forward.add_argument("--baseline-only", action="store_true", help="Evaluate the baseline alone; no model is fitted")
     forward.add_argument("--evaluation-subset", help="CSV of observation_id: training is unchanged, session losses use only these rows")
+    forward.add_argument("--exclude-features", nargs="+", default=(), choices=["moneyness", "maturity_interactions", "symbol"],
+                         help="Ablation: fit the learner without these feature groups (Research Plan section 5)")
+    forward.add_argument("--save-predictions", help="Write per-row baseline and model prices for every evaluated session (CSV, .gz allowed)")
     forward.add_argument("--allow-partial", action="store_true",
                          help="Proceed when the set is not fully matched, the config drops rows, or the config is not among the set's builders")
     obs = commands.add_parser("observation-set", help="Build a frozen observation set: v1-eligible rows that price under every listed config")
@@ -211,6 +233,18 @@ def run(args):
             figure.savefig(target, dpi=160, bbox_inches="tight")
             summary["plot"] = str(target)
         print(json.dumps(clean_json(summary), indent=2))
+        return 0
+    if args.command == "design-c":
+        from .attribution import run_ablations, run_breakdowns, write_design_c_report
+        from .live_utils import clean_json
+        if args.design_c_command == "ablations":
+            result = run_ablations(args.entry, args.out, replicates=args.replicates)
+        elif args.design_c_command == "breakdowns":
+            result = run_breakdowns(args.entry, args.out, vix_path=args.vix, vix_cuts=args.vix_cuts, moneyness_cuts=args.moneyness_cuts,
+                                    replicates=args.replicates)
+        else:
+            result = write_design_c_report(args.ablations, args.breakdowns, args.out)
+        print(json.dumps(clean_json(result), indent=2))
         return 0
     if args.command == "stale-quote-diagnostic":
         from .stale_quotes import build_stale_quote_stats, report_stale_quote_diagnostic
@@ -435,9 +469,20 @@ def run(args):
             spec = WalkForwardSpec(min_train_sessions=args.min_train_sessions, gap=args.gap,
                                    validation_sessions=args.validation_sessions, window=args.window,
                                    max_train_sessions=args.max_train_sessions)
-            outcome = walk_forward(frame, spec, baseline_only=args.baseline_only, evaluation_ids=evaluation_ids)
+            if args.exclude_features:
+                extra["excluded_features"] = list(args.exclude_features)
+            outcome = walk_forward(frame, spec, baseline_only=args.baseline_only, evaluation_ids=evaluation_ids,
+                                   exclude_features=tuple(args.exclude_features), collect_predictions=bool(args.save_predictions))
             if evaluation_ids is not None:
                 extra["evaluation_subset"]["skipped_sessions"] = outcome["skipped_sessions"]
+            if args.save_predictions:
+                from .carry_inputs import file_digest
+                target = Path(args.save_predictions)
+                if target.exists():
+                    raise ValueError("Predictions output exists; choose a new file")
+                target.parent.mkdir(parents=True, exist_ok=True)
+                outcome["predictions"].to_csv(target, index=False)
+                extra["predictions"] = dict(path=str(target), rows=int(len(outcome["predictions"])), sha256=file_digest(target))
             result = walk_forward_report(outcome, args.output, n_boot=args.bootstrap, extra=extra)
         else:
             from .learning import select_model

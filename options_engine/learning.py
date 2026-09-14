@@ -17,7 +17,24 @@ MODEL_SCHEMA = 1
 INPUT_COLUMNS = ("spot", "strike", "T", "r", "q", "baseline_sigma", "option_type", "symbol")
 
 
-def basis(frame, symbols):
+FEATURE_GROUPS = {"moneyness": ("log_moneyness", "moneyness_squared", "moneyness_cubed"),
+                  "maturity_interactions": ("moneyness_sqrt_time", "moneyness_squared_sqrt_time"),
+                  "symbol": ("symbol_*",)}
+
+
+def excluded_names(exclude, names):
+    """Feature names removed by the excluded groups (Research Plan section 5 ablations)."""
+    unknown = set(exclude)-set(FEATURE_GROUPS)
+    if unknown:
+        raise ValueError(f"Unknown feature groups {sorted(unknown)}; choose from {sorted(FEATURE_GROUPS)}")
+    removed = set()
+    for group in exclude:
+        for pattern in FEATURE_GROUPS[group]:
+            removed |= {n for n in names if n.startswith(pattern[:-1])} if pattern.endswith("*") else {pattern}
+    return removed
+
+
+def basis(frame, symbols, exclude=()):
     m = np.log(frame.spot.to_numpy(float)/frame.strike.to_numpy(float))
     T = frame["T"].to_numpy(float)
     r, q = frame.r.to_numpy(float), frame.q.to_numpy(float)
@@ -30,15 +47,19 @@ def basis(frame, symbols):
     for symbol in symbols:
         arrays.append((frame.symbol == symbol).to_numpy(float))
         names.append("symbol_"+symbol)
+    if exclude:
+        removed = excluded_names(exclude, names)
+        arrays = [a for a, n in zip(arrays, names, strict=True) if n not in removed]
+        names = [n for n in names if n not in removed]
     matrix = np.column_stack(arrays)
     if not np.isfinite(matrix).all():
         raise ValueError("Nonfinite prediction features")
     return matrix, names
 
 
-def fit_ridge(frame, alpha):
+def fit_ridge(frame, alpha, exclude=()):
     symbols = sorted(frame.symbol.unique())
-    X, names = basis(frame, symbols)
+    X, names = basis(frame, symbols, exclude=exclude)
     # Equal total weight for each session/symbol/expiry group.
     sizes = frame.groupby(["session_date", "symbol", "expiration"])["symbol"].transform("size").to_numpy()
     weights = 1/sizes
@@ -57,7 +78,7 @@ def fit_ridge(frame, alpha):
     support = {key: [float(frame[key].min()), float(frame[key].max())] for key in ("T", "baseline_sigma")}
     m = np.log(frame.spot/frame.strike)
     support["log_moneyness"] = [float(m.min()), float(m.max())]
-    return dict(schema=MODEL_SCHEMA, kind="ridge_log_iv_ratio", alpha=float(alpha), symbols=symbols,
+    return dict(schema=MODEL_SCHEMA, kind="ridge_log_iv_ratio", alpha=float(alpha), symbols=symbols, excluded_groups=sorted(exclude),
                 feature_names=names, center=center.tolist(), scale=scale.tolist(), coefficients=coefficients.tolist(),
                 support=support, trained_through=max(frame.session_date), training_rows=len(frame),
                 training_sessions=sorted(frame.session_date.unique()),
@@ -67,7 +88,7 @@ def fit_ridge(frame, alpha):
 def predict_volatility(model, frame):
     if model.get("schema") != MODEL_SCHEMA or model.get("kind") != "ridge_log_iv_ratio":
         raise ValueError("Unsupported model schema")
-    X, names = basis(frame, model["symbols"])
+    X, names = basis(frame, model["symbols"], exclude=tuple(model.get("excluded_groups", ())))
     if names != model["feature_names"]:
         raise ValueError("Feature schema does not match model")
     center, scale = np.asarray(model["center"]), np.asarray(model["scale"])
