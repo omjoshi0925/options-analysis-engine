@@ -727,5 +727,10 @@
       "M_RV_median_mse": 1.1324494176165072e-05,
       "RV_median_mse": 1.6092035958221377e-05
     }
+  },
+  "stale_quote_diagnostic": {
+    "exploratory": true,
+    "path": "docs/results/v2/design-b/stale-quote-diagnostic.json",
+    "sha256": "25d50d5a589154d7cdf8d4272a83f7456c06cfdc2c8df1379ff584be895542ce"
   }
 }

@@ -31,3 +31,39 @@ The claim requires the interval for the mean of L_B1 - L_M(RV) to lie entirely a
 | C3 on set A (Design A) | 1056 | 0.1070 | 4.748e-04 | 0.646 | 1.399e-05 | 1.146e-05 |
 
 Diebold-Mariano and Newey-West values are reported for continuity with v1 and are not used for decisions.
+
+## Stale-quote diagnostic (exploratory, Amendment 5)
+
+Of set B's 154,110 observations, 88,408 have the same contract quoted at the prior available session; 892 of those (1.0%; 0.6% of set B) have a mid identical to the prior session's. Among comparable rows |mid_t - mid_(t-1)| / mid_(t-1) has percentiles p10 0.010, p25 0.032, p50 0.096, p75 0.221, p90 0.394.
+
+| Breakdown | Group | Rows | Comparable | Unchanged share of comparable | Median relative change |
+|---|---|---:|---:|---:|---:|
+| symbol | AAPL | 87,852 | 68,844 | 1.0% | 0.113 |
+| symbol | SPY | 66,258 | 19,564 | 1.2% | 0.041 |
+| maturity | 31-90d | 81,276 | 45,601 | 1.1% | 0.087 |
+| maturity | <=30d | 72,834 | 42,807 | 0.9% | 0.108 |
+| moneyness tercile | farthest | 51,370 | 33,192 | 1.3% | 0.059 |
+| moneyness tercile | middle | 51,370 | 29,153 | 1.0% | 0.115 |
+| moneyness tercile | nearest | 51,370 | 26,063 | 0.7% | 0.139 |
+| gap in days | 1 | 63,427 | 36,454 | 1.2% | 0.072 |
+| gap in days | 2 | 39,315 | 22,662 | 0.7% | 0.130 |
+| gap in days | 3 | 45,644 | 26,135 | 1.1% | 0.095 |
+| gap in days | 4 | 2,026 | 1,039 | 0.7% | 0.171 |
+| gap in days | 5+ | 3,698 | 2,118 | 0.8% | 0.191 |
+| B1 source | interpolated | 65,702 | 0 | n/a | n/a |
+| B1 source | same_contract | 88,408 | 88,408 | 1.0% | 0.096 |
+
+Sensitivity: the two Design B comparisons recomputed on evaluation subsets, with the pre-registered training windows and models (only the rows entering each session's loss change) and the same bootstrap settings. The full-set-B figures are the pre-registered ones.
+
+| Subset | Sessions | Comparison | Mean L_baseline - L_model | 95% interval | Median relative improvement | Win rate | Label |
+|---|---:|---|---:|---:|---:|---:|---|
+| changed-mid | 1004 | M(B1) vs B1 | 5.250e-07 | [7.88e-08, 1.04e-06] | -0.0013 | 0.497 | adds value |
+| changed-mid | 1004 | M(RV) vs B1 | -1.895e-05 | [-3.00e-05, -1.11e-05] | -1.5780 | 0.078 | baseline wins |
+| not-unchanged-mid | 1005 | M(B1) vs B1 | 4.101e-07 | [5.43e-08, 8.38e-07] | -0.0119 | 0.465 | adds value |
+| not-unchanged-mid | 1005 | M(RV) vs B1 | -1.694e-05 | [-2.41e-05, -1.14e-05] | -1.8894 | 0.055 | baseline wins |
+| unchanged-mid | 379 | M(RV) vs B1 | -7.768e-06 | [-1.10e-05, -4.76e-06] | -4.8921 | 0.111 | baseline wins |
+
+B1's median session RMSE: changed-mid 1.2551e-03 (1004 sessions, M(RV) 3.2764e-03); full set B 1.1862e-03 (1005 sessions, M(RV) 3.3652e-03); not-unchanged-mid 1.1834e-03 (1005 sessions, M(RV) 3.3645e-03); unchanged-mid 2.7691e-04 (379 sessions, M(RV) 1.7844e-03).
+
+Label changes against the pre-registered labels: none.
+

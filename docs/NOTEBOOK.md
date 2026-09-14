@@ -401,3 +401,40 @@ its fallbacks were optimizer artifacts. The manifest was rebuilt to cover set
 B, the baselines, the five runs, and the comparison. docs/TALK_OUTLINE.md's
 Design B slot can be filled from docs/results/v2/design-b/comparison.json.
 
+## 2026-09-14: study v2, Design B, stale-quote diagnostic (Amendment 5, exploratory)
+
+Specified after the Design B result and recorded as Amendment 5 before any
+code. Over set B, 88,408 of 154,110 observations have the same contract
+quoted at the prior available session (the rest have an interpolated B1);
+892 of those (1.0%, 0.6% of set B) carry a mid identical
+to the prior session's. Where the contract is quoted at both sessions, the
+relative mid change has median 0.096 and p90 0.394; it is
+smaller for SPY (median 0.041) than AAPL (0.113), grows with the gap to the
+prior session (0.072 at one day, 0.191 at five or more), and is largest
+nearest the money. The prior-quote universe is set A, the universe B1 was
+built from; 14 interpolated rows had a prior quote outside it and are not
+counted as comparable.
+
+Sensitivity (same training windows and models, only the evaluation rows
+restricted; paired block bootstrap, block 21, 10,000 replicates, seed
+20260908), against the pre-registered full-set-B figures:
+
+| Comparison | Mean L_baseline - L_model | 95% interval | Median relative improvement | Win rate | Label |
+|---|---:|---:|---:|---:|---|
+| M(RV) vs B1, full set B | -1.692e-05 | [-2.41e-05, -1.14e-05] | -1.8900 | 0.054 | baseline wins |
+| M(RV) vs B1, changed-mid | -1.895e-05 | [-3.00e-05, -1.11e-05] | -1.5780 | 0.078 | baseline wins |
+| M(B1) vs B1, full set B | 4.104e-07 | [5.39e-08, 8.40e-07] | -0.0119 | 0.463 | adds value |
+| M(B1) vs B1, changed-mid | 5.250e-07 | [7.88e-08, 1.04e-06] | -0.0013 | 0.497 | adds value |
+
+Neither label changes. B1's median session RMSE is 2.77e-04 on the
+unchanged-mid rows (379 sessions hold any) against 1.26e-03 on the
+changed-mid rows: the mechanical advantage of an unchanged quote is real,
+about a fourth of the usual error, but it touches 0.6% of set B and B1 wins by
+the same margin without it. M(B1) versus B1 stays fragile on the changed-mid
+subset (median relative improvement -0.001, win rate 0.497, blocks 63 and 126
+include zero). Eight sensitivity runs took about 24 minutes in parallel; the
+unchanged-mid runs skip the 626 sessions with no unchanged row. Outputs:
+docs/results/v2/design-b/stale-quote-diagnostic.json, the sensitivity/ tree,
+and a section of the Design B report; the pre-registered numbers are
+unchanged. Version 3.4.1.
+

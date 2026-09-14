@@ -1,0 +1,282 @@
+{
+  "amendment": 5,
+  "config": "config/v2/C3.json",
+  "exploratory": true,
+  "note": "Specified after the Design B result was known; no estimand, threshold, or decision rule changes.",
+  "source_set": {
+    "configs": {
+      "C3": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348"
+    },
+    "path": "docs/results/v2/observation-set-B.csv.gz",
+    "recorded_rows": 154110,
+    "recorded_sha256": "5136adc81d154fa3b1e793a006bd1bacbf0bd1367724fd49c5f8672ff7810217",
+    "rows": 154110,
+    "sha256": "12a371b4837d190c5eb43314304863de49edfb25004845180681a3dcef5d5051",
+    "sidecar": "docs/results/v2/observation-set-B.drops.json",
+    "uncompressed_sha256": "5136adc81d154fa3b1e793a006bd1bacbf0bd1367724fd49c5f8672ff7810217"
+  },
+  "stats": {
+    "by_b1_source": {
+      "interpolated": {
+        "comparable": 0,
+        "relative_change_mean": null,
+        "relative_change_percentiles": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null
+        },
+        "rows": 65702,
+        "unchanged": 0,
+        "unchanged_share_of_comparable": null,
+        "unchanged_share_of_rows": 0.0
+      },
+      "same_contract": {
+        "comparable": 88408,
+        "relative_change_mean": 0.17132207882046493,
+        "relative_change_percentiles": {
+          "p10": 0.01040615549515757,
+          "p25": 0.03154205607476639,
+          "p50": 0.09554140127388536,
+          "p75": 0.22058823529411764,
+          "p90": 0.3942229879946644
+        },
+        "rows": 88408,
+        "unchanged": 892,
+        "unchanged_share_of_comparable": 0.010089584652972581,
+        "unchanged_share_of_rows": 0.010089584652972581
+      }
+    },
+    "by_gap_days": {
+      "1": {
+        "comparable": 36454,
+        "relative_change_mean": 0.14596341166644092,
+        "relative_change_percentiles": {
+          "p10": 0.0083136484221467,
+          "p25": 0.024178166722764516,
+          "p50": 0.07246376811594203,
+          "p75": 0.17961165048543695,
+          "p90": 0.33231174612912995
+        },
+        "rows": 63427,
+        "unchanged": 425,
+        "unchanged_share_of_comparable": 0.011658528556537005,
+        "unchanged_share_of_rows": 0.006700616456714018
+      },
+      "2": {
+        "comparable": 22662,
+        "relative_change_mean": 0.21277156894905297,
+        "relative_change_percentiles": {
+          "p10": 0.016605488607333723,
+          "p25": 0.04800252684775749,
+          "p50": 0.1296296296296296,
+          "p75": 0.27624786626640774,
+          "p90": 0.47130890809794196
+        },
+        "rows": 39315,
+        "unchanged": 151,
+        "unchanged_share_of_comparable": 0.006663136528108729,
+        "unchanged_share_of_rows": 0.0038407732417652294
+      },
+      "3": {
+        "comparable": 26135,
+        "relative_change_mean": 0.16169356997274936,
+        "relative_change_percentiles": {
+          "p10": 0.009913713379563815,
+          "p25": 0.03162982675656931,
+          "p50": 0.09525899912203695,
+          "p75": 0.21621621621621612,
+          "p90": 0.3769987389659523
+        },
+        "rows": 45644,
+        "unchanged": 293,
+        "unchanged_share_of_comparable": 0.011211019705375932,
+        "unchanged_share_of_rows": 0.006419244588554903
+      },
+      "4": {
+        "comparable": 1039,
+        "relative_change_mean": 0.22355366310485333,
+        "relative_change_percentiles": {
+          "p10": 0.02640136927685065,
+          "p25": 0.07980099502487559,
+          "p50": 0.17116170461179211,
+          "p75": 0.3117970645169194,
+          "p90": 0.4726797385620916
+        },
+        "rows": 2026,
+        "unchanged": 7,
+        "unchanged_share_of_comparable": 0.006737247353224254,
+        "unchanged_share_of_rows": 0.0034550839091806516
+      },
+      "5+": {
+        "comparable": 2118,
+        "relative_change_mean": 0.25747362263646933,
+        "relative_change_percentiles": {
+          "p10": 0.02079163554891706,
+          "p25": 0.0783960599823581,
+          "p50": 0.1912843621895346,
+          "p75": 0.3558380414312618,
+          "p90": 0.5656509441174222
+        },
+        "rows": 3698,
+        "unchanged": 16,
+        "unchanged_share_of_comparable": 0.007554296506137866,
+        "unchanged_share_of_rows": 0.004326663061114116
+      }
+    },
+    "by_maturity_bucket": {
+      "31-90d": {
+        "comparable": 45601,
+        "relative_change_mean": 0.14273668562052033,
+        "relative_change_percentiles": {
+          "p10": 0.009779951100244636,
+          "p25": 0.029508196721311507,
+          "p50": 0.08666666666666664,
+          "p75": 0.19132231404958674,
+          "p90": 0.3304347826086956
+        },
+        "rows": 81276,
+        "unchanged": 501,
+        "unchanged_share_of_comparable": 0.010986601171026952,
+        "unchanged_share_of_rows": 0.0061641813081352425
+      },
+      "<=30d": {
+        "comparable": 42807,
+        "relative_change_mean": 0.2017732320269656,
+        "relative_change_percentiles": {
+          "p10": 0.011273781045591619,
+          "p25": 0.03387355553899026,
+          "p50": 0.10759493670886085,
+          "p75": 0.2584269662921349,
+          "p90": 0.46287860496311206
+        },
+        "rows": 72834,
+        "unchanged": 391,
+        "unchanged_share_of_comparable": 0.009134020136893498,
+        "unchanged_share_of_rows": 0.005368371914215888
+      }
+    },
+    "by_moneyness_tercile": {
+      "farthest": {
+        "comparable": 33192,
+        "relative_change_mean": 0.11459295878489346,
+        "relative_change_percentiles": {
+          "p10": 0.006085192697768806,
+          "p25": 0.019460425519734578,
+          "p50": 0.058823529411764754,
+          "p75": 0.1455502030885152,
+          "p90": 0.2893681318681321
+        },
+        "rows": 51370,
+        "unchanged": 442,
+        "unchanged_share_of_comparable": 0.01331646179802362,
+        "unchanged_share_of_rows": 0.00860424372201674
+      },
+      "middle": {
+        "comparable": 29153,
+        "relative_change_mean": 0.18832579487072076,
+        "relative_change_percentiles": {
+          "p10": 0.012650002496981614,
+          "p25": 0.03846153846153849,
+          "p50": 0.11490683229813672,
+          "p75": 0.24345549738219904,
+          "p90": 0.4294802404782918
+        },
+        "rows": 51370,
+        "unchanged": 280,
+        "unchanged_share_of_comparable": 0.009604500394470552,
+        "unchanged_share_of_rows": 0.005450652131594316
+      },
+      "nearest": {
+        "comparable": 26063,
+        "relative_change_mean": 0.2245486305684441,
+        "relative_change_percentiles": {
+          "p10": 0.019484342000898346,
+          "p25": 0.05335865501540081,
+          "p50": 0.13928571428571423,
+          "p75": 0.2804878048780488,
+          "p90": 0.46871428571428536
+        },
+        "rows": 51370,
+        "unchanged": 170,
+        "unchanged_share_of_comparable": 0.006522656639680774,
+        "unchanged_share_of_rows": 0.0033093245084679776
+      }
+    },
+    "by_symbol": {
+      "AAPL": {
+        "comparable": 68844,
+        "relative_change_mean": 0.18886973858411574,
+        "relative_change_percentiles": {
+          "p10": 0.015151515151515166,
+          "p25": 0.0415696112302197,
+          "p50": 0.11332007952286274,
+          "p75": 0.2428684091933304,
+          "p90": 0.4210526315789476
+        },
+        "rows": 87852,
+        "unchanged": 662,
+        "unchanged_share_of_comparable": 0.009615943292080646,
+        "unchanged_share_of_rows": 0.007535400446204981
+      },
+      "SPY": {
+        "comparable": 19564,
+        "relative_change_mean": 0.1095734032546924,
+        "relative_change_percentiles": {
+          "p10": 0.004281761489125535,
+          "p25": 0.013979834736627918,
+          "p50": 0.04135203181768171,
+          "p75": 0.13530949666536,
+          "p90": 0.2797413793103449
+        },
+        "rows": 66258,
+        "unchanged": 230,
+        "unchanged_share_of_comparable": 0.011756287057861378,
+        "unchanged_share_of_rows": 0.0034712789399015966
+      }
+    },
+    "moneyness_tercile_edges": [
+      0.0544259433808894,
+      0.13238882016602754
+    ],
+    "overall": {
+      "comparable": 88408,
+      "relative_change_mean": 0.17132207882046493,
+      "relative_change_percentiles": {
+        "p10": 0.01040615549515757,
+        "p25": 0.03154205607476639,
+        "p50": 0.09554140127388536,
+        "p75": 0.22058823529411764,
+        "p90": 0.3942229879946644
+      },
+      "rows": 154110,
+      "unchanged": 892,
+      "unchanged_share_of_comparable": 0.010089584652972581,
+      "unchanged_share_of_rows": 0.005788073454026345
+    }
+  },
+  "subsets": {
+    "changed-mid": {
+      "definition": "same contract quoted at t-1 and mid_t != mid_(t-1)",
+      "path": "docs/results/v2/design-b/sensitivity/subsets/changed-mid.csv",
+      "rows": 87516,
+      "sessions": 1124,
+      "sha256": "1ab94b1b835a5b2a987e95391f3ed237a1f2ff04f3801baf58fa1219ca4415eb"
+    },
+    "not-unchanged-mid": {
+      "definition": "every set B row except unchanged-mid (interpolated B1 rows included)",
+      "path": "docs/results/v2/design-b/sensitivity/subsets/not-unchanged-mid.csv",
+      "rows": 153218,
+      "sessions": 1126,
+      "sha256": "d86538e8fa5dfb329a801d8d1f1bb0dfeca5105a20dc927a6b34faddac252cf1"
+    },
+    "unchanged-mid": {
+      "definition": "same contract quoted at t-1 and mid_t == mid_(t-1)",
+      "path": "docs/results/v2/design-b/sensitivity/subsets/unchanged-mid.csv",
+      "rows": 892,
+      "sessions": 398,
+      "sha256": "feb2a52a29136f1b0935095975b06ff86801542a51b9d809b721dbd0cd980403"
+    }
+  }
+}
