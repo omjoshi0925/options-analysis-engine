@@ -6,9 +6,9 @@
   "report": "docs/RESULTS.md",
   "code_version": "3.2.1",
   "repository": "https://github.com/omjoshi0925/options-analysis-engine",
-  "code_commit": "3c32dcb1a76a93a6403f3b4e6fe0cbac421c57ef",
-  "code_commit_short": "3c32dcb",
-  "working_tree_version": "3.4.0",
+  "code_commit": "a0b65880e9bc67c2514bf6ca1c17290224c1b24c",
+  "code_commit_short": "a0b6588",
+  "working_tree_version": "3.4.1",
   "report_sha256": "74a6e12ff4f54e7ec4dc230582e372ff74506a1683dcaa52ec84a90763b12447",
   "description": "1,056-fold rolling-origin walk-forward over DoltHub end-of-day chains (SPY and AAPL; QQQ configured but absent from the export) plus a single-year SPY 2023 run, constant rate and dividend yields.",
   "built_with": {
@@ -10234,8 +10234,8 @@
  "study_v2": {
   "plan": {
    "path": "docs/RESEARCH_PLAN.md",
-   "sha256": "35564db7a269bf0587e8405850f8be9d57bef7cbd064ff9892e965020d0ce234",
-   "bytes": 20630
+   "sha256": "4d2feadc3902734bf5d4067e755bf753fd55c80656c279ea135fa924f05e0168",
+   "bytes": 22432
   },
   "external_inputs": [
    {
@@ -10721,13 +10721,13 @@
    "comparison": [
     {
      "path": "docs/results/v2/design-b/comparison.json",
-     "sha256": "584c93eb7b960642a0e3d9e71a5901c57695f37a466735ecb47fe5107c34f464",
-     "bytes": 24929
+     "sha256": "537b3c357887e6d1696480d606639e9d6dd854add4bd7625838b4e2614ee2994",
+     "bytes": 25138
     },
     {
      "path": "docs/results/v2/design-b/REPORT.md",
-     "sha256": "3f76701bfdf994f84c1deb16f65697b2e4f07b3a7c8d94e2021ed92085a01055",
-     "bytes": 3057
+     "sha256": "45ff718103cdb55cbff5f3d0dc9d1ec01a8a3edb8a5d4e45fde98ed3b4e6db78",
+     "bytes": 5634
     }
    ],
    "headline": {
@@ -10944,6 +10944,292 @@
       126
      ],
      "sensitivity_blocks_skipped": []
+    }
+   },
+   "stale_quote_diagnostic": {
+    "diagnostic": {
+     "path": "docs/results/v2/design-b/stale-quote-diagnostic.json",
+     "sha256": "25d50d5a589154d7cdf8d4272a83f7456c06cfdc2c8df1379ff584be895542ce",
+     "bytes": 40820
+    },
+    "stats": {
+     "path": "docs/results/v2/design-b/sensitivity/stale-quote-stats.json",
+     "sha256": "dbd372b6226ce1c5eb0dc4e3c5f517a66e1026ff17b25bab6011628c7a0a637f",
+     "bytes": 9564
+    },
+    "subsets": [
+     {
+      "path": "docs/results/v2/design-b/sensitivity/subsets/changed-mid.csv.gz",
+      "sha256": "900096b8a8435811c651c3eacea9d41f41801a9eaa1eb662015521f50b147817",
+      "bytes": 3446104,
+      "compression": "gzip -n -9",
+      "uncompressed_sha256": "1ab94b1b835a5b2a987e95391f3ed237a1f2ff04f3801baf58fa1219ca4415eb"
+     },
+     {
+      "path": "docs/results/v2/design-b/sensitivity/subsets/unchanged-mid.csv.gz",
+      "sha256": "f2af8595e3c600471d2e61f1cd5fe438b0eb7b826222b439a65e02e37e6633dd",
+      "bytes": 37041,
+      "compression": "gzip -n -9",
+      "uncompressed_sha256": "feb2a52a29136f1b0935095975b06ff86801542a51b9d809b721dbd0cd980403"
+     },
+     {
+      "path": "docs/results/v2/design-b/sensitivity/subsets/not-unchanged-mid.csv.gz",
+      "sha256": "6ef128186342b9a6174089fe66a5b2b913c4156cba5ed2ce9c1e83db79cd8f40",
+      "bytes": 6010922,
+      "compression": "gzip -n -9",
+      "uncompressed_sha256": "d86538e8fa5dfb329a801d8d1f1bb0dfeca5105a20dc927a6b34faddac252cf1"
+     }
+    ],
+    "runs": {
+     "changed-mid": {
+      "B1": {
+       "folds.csv": {
+        "path": "docs/results/v2/design-b/sensitivity/changed-mid/B1/folds.csv",
+        "sha256": "91d1e0c59878b45f15fefc4f7dfd33769c08af3b2b981c396984cf97a27a7cef",
+        "bytes": 371816
+       },
+       "significance.json": {
+        "path": "docs/results/v2/design-b/sensitivity/changed-mid/B1/significance.json",
+        "sha256": "b305172e247aa964bebaee166713e7d691069a574b1239d3f9c25b4e6bcdcc36",
+        "bytes": 24345
+       },
+       "REPORT.md": {
+        "path": "docs/results/v2/design-b/sensitivity/changed-mid/B1/REPORT.md",
+        "sha256": "5c67b5aae92f3fb0257756963da0e10a86c7c2831bd1358ff5311fac04b63ee1",
+        "bytes": 1014
+       }
+      },
+      "M-RV": {
+       "folds.csv": {
+        "path": "docs/results/v2/design-b/sensitivity/changed-mid/M-RV/folds.csv",
+        "sha256": "7554cee4c3112f7d380838629491845225c59ec4c1fb5fa1028ed48b8ff8664f",
+        "bytes": 410579
+       },
+       "significance.json": {
+        "path": "docs/results/v2/design-b/sensitivity/changed-mid/M-RV/significance.json",
+        "sha256": "148bb8fa514164060933d4c46100b5ecfe27f949c03d6d1977f0cfdfa33bf534",
+        "bytes": 4035
+       },
+       "REPORT.md": {
+        "path": "docs/results/v2/design-b/sensitivity/changed-mid/M-RV/REPORT.md",
+        "sha256": "f3f0f68cda276f4a134fceeb9f4a91af832bcff61a4db5be2b56949070d04f8e",
+        "bytes": 995
+       }
+      },
+      "M-B1": {
+       "folds.csv": {
+        "path": "docs/results/v2/design-b/sensitivity/changed-mid/M-B1/folds.csv",
+        "sha256": "eed3ae49c712bc22f2de6b238b8bad51018e32aa0f3db38df3ae60b54e8958c9",
+        "bytes": 411865
+       },
+       "significance.json": {
+        "path": "docs/results/v2/design-b/sensitivity/changed-mid/M-B1/significance.json",
+        "sha256": "b091a0e4efd570426e3380fd092e049c1c6cdb206910616d4b3aced593c1a016",
+        "bytes": 4348
+       },
+       "REPORT.md": {
+        "path": "docs/results/v2/design-b/sensitivity/changed-mid/M-B1/REPORT.md",
+        "sha256": "cb02a7c4d7420c769321885eee6b7d60307f8e3e903bebb3d0e80c32fee10346",
+        "bytes": 998
+       }
+      }
+     },
+     "unchanged-mid": {
+      "B1": {
+       "folds.csv": {
+        "path": "docs/results/v2/design-b/sensitivity/unchanged-mid/B1/folds.csv",
+        "sha256": "1aeb69329301e5aff234541bc92e8624c68efcc423436634d6e22fa81310d1f9",
+        "bytes": 114389
+       },
+       "significance.json": {
+        "path": "docs/results/v2/design-b/sensitivity/unchanged-mid/B1/significance.json",
+        "sha256": "035d29d6ba5cce720f75c9780dd7bbb109d7dbbf727d96e748ec0344dfa2bbda",
+        "bytes": 24339
+       },
+       "REPORT.md": {
+        "path": "docs/results/v2/design-b/sensitivity/unchanged-mid/B1/REPORT.md",
+        "sha256": "26de39624868602f130743460a0036cf626eff3981bd0924030906c409b81ccd",
+        "bytes": 1013
+       }
+      },
+      "M-RV": {
+       "folds.csv": {
+        "path": "docs/results/v2/design-b/sensitivity/unchanged-mid/M-RV/folds.csv",
+        "sha256": "3db97cf8b8756abf36dd8dc6a5c3c384a1a9fc5d5bf22c8a3a77247a2f966fd6",
+        "bytes": 128342
+       },
+       "significance.json": {
+        "path": "docs/results/v2/design-b/sensitivity/unchanged-mid/M-RV/significance.json",
+        "sha256": "861cdaf9a020fe1fd795da6c5d80dec86f176eb7a56ec530756c477a8a2ad47d",
+        "bytes": 16548
+       },
+       "REPORT.md": {
+        "path": "docs/results/v2/design-b/sensitivity/unchanged-mid/M-RV/REPORT.md",
+        "sha256": "0642f85499927882f8f258ef43291053151038b3e6d54cf7909c8ee92d476a11",
+        "bytes": 994
+       }
+      }
+     },
+     "not-unchanged-mid": {
+      "B1": {
+       "folds.csv": {
+        "path": "docs/results/v2/design-b/sensitivity/not-unchanged-mid/B1/folds.csv",
+        "sha256": "94f4df453955227b137779ca53c58aacde43c39fe8009ab62b07645bb974920f",
+        "bytes": 377179
+       },
+       "significance.json": {
+        "path": "docs/results/v2/design-b/sensitivity/not-unchanged-mid/B1/significance.json",
+        "sha256": "3cfb440bb33ad724ae541ea8083431f3db4a49e5d4a040b4a6d474689ff98603",
+        "bytes": 24349
+       },
+       "REPORT.md": {
+        "path": "docs/results/v2/design-b/sensitivity/not-unchanged-mid/B1/REPORT.md",
+        "sha256": "21d9507a16f6ce93c597ff395031da2ef49a39d8575f59ebf929413f93104c5f",
+        "bytes": 1014
+       }
+      },
+      "M-RV": {
+       "folds.csv": {
+        "path": "docs/results/v2/design-b/sensitivity/not-unchanged-mid/M-RV/folds.csv",
+        "sha256": "e159ce0ad54540b85567df126adfdce538618391a3039971075a390c28caa5a6",
+        "bytes": 416179
+       },
+       "significance.json": {
+        "path": "docs/results/v2/design-b/sensitivity/not-unchanged-mid/M-RV/significance.json",
+        "sha256": "5c663d0beb6f41f14efbfcefddc02cff835d398e7ee40e8dafa6e8d95690754c",
+        "bytes": 4018
+       },
+       "REPORT.md": {
+        "path": "docs/results/v2/design-b/sensitivity/not-unchanged-mid/M-RV/REPORT.md",
+        "sha256": "e692dfcc3dcd7332df311545319249debde3577337ed3765cf8e929cab5c28c0",
+        "bytes": 996
+       }
+      },
+      "M-B1": {
+       "folds.csv": {
+        "path": "docs/results/v2/design-b/sensitivity/not-unchanged-mid/M-B1/folds.csv",
+        "sha256": "a8b169f7146278d15824addb447028f70720edc60dfeb466c9befb7ba39d06ea",
+        "bytes": 417409
+       },
+       "significance.json": {
+        "path": "docs/results/v2/design-b/sensitivity/not-unchanged-mid/M-B1/significance.json",
+        "sha256": "472e4315c8be071e5d8e5c39803d5c9a21e3eb8a7b4e6a7f0366988ad7faa0d5",
+        "bytes": 4334
+       },
+       "REPORT.md": {
+        "path": "docs/results/v2/design-b/sensitivity/not-unchanged-mid/M-B1/REPORT.md",
+        "sha256": "bde658b1c2f30a1b3e5d8454d56eb2f30988c4d0c37bb92f624c4f67a4c3a05d",
+        "bytes": 998
+       }
+      }
+     }
+    },
+    "headline": {
+     "exploratory": true,
+     "amendment": 5,
+     "overall": {
+      "comparable": 88408,
+      "relative_change_mean": 0.17132207882046493,
+      "relative_change_percentiles": {
+       "p10": 0.01040615549515757,
+       "p25": 0.03154205607476639,
+       "p50": 0.09554140127388536,
+       "p75": 0.22058823529411764,
+       "p90": 0.3942229879946644
+      },
+      "rows": 154110,
+      "unchanged": 892,
+      "unchanged_share_of_comparable": 0.010089584652972581,
+      "unchanged_share_of_rows": 0.005788073454026345
+     },
+     "label_changes": [],
+     "sensitivity": {
+      "changed-mid": {
+       "M(B1) vs B1": {
+        "mean_differential": 5.250331626317554e-07,
+        "interval": [
+         7.87942228099613e-08,
+         1.0397955011182912e-06
+        ],
+        "median_relative_improvement": -0.0012658543879878748,
+        "win_rate": 0.49701195219123506,
+        "label": "adds value"
+       },
+       "M(RV) vs B1": {
+        "mean_differential": -1.8954909069550677e-05,
+        "interval": [
+         -2.9986512061847874e-05,
+         -1.1127862218328641e-05
+        ],
+        "median_relative_improvement": -1.578004839455499,
+        "win_rate": 0.07768924302788845,
+        "label": "baseline wins"
+       },
+       "sessions": 1004
+      },
+      "not-unchanged-mid": {
+       "M(B1) vs B1": {
+        "mean_differential": 4.1011447519718174e-07,
+        "interval": [
+         5.427218254704219e-08,
+         8.38185721029767e-07
+        ],
+        "median_relative_improvement": -0.011913211052866357,
+        "win_rate": 0.4646766169154229,
+        "label": "adds value"
+       },
+       "M(RV) vs B1": {
+        "mean_differential": -1.6944080464584285e-05,
+        "interval": [
+         -2.4113198590862756e-05,
+         -1.1393559009332858e-05
+        ],
+        "median_relative_improvement": -1.8894312383794314,
+        "win_rate": 0.05472636815920398,
+        "label": "baseline wins"
+       },
+       "sessions": 1005
+      },
+      "unchanged-mid": {
+       "M(RV) vs B1": {
+        "mean_differential": -7.768321996292848e-06,
+        "interval": [
+         -1.0988799010304345e-05,
+         -4.758905565787124e-06
+        ],
+        "median_relative_improvement": -4.892071080573234,
+        "win_rate": 0.11081794195250659,
+        "label": "baseline wins"
+       },
+       "sessions": 379
+      }
+     },
+     "b1_rmse_by_subset": {
+      "changed-mid": {
+       "b1_median_session_rmse": 0.00125505179215352,
+       "m_rv_median_session_rmse": 0.0032764288296820406,
+       "rv_median_session_rmse": 0.004088027286942335,
+       "sessions": 1004
+      },
+      "full set B": {
+       "b1_median_session_rmse": 0.0011861920093765399,
+       "m_rv_median_session_rmse": 0.0033651885795843704,
+       "rv_median_session_rmse": 0.004011487998015372,
+       "sessions": 1005
+      },
+      "not-unchanged-mid": {
+       "b1_median_session_rmse": 0.0011834275924406425,
+       "m_rv_median_session_rmse": 0.0033644907628680707,
+       "rv_median_session_rmse": 0.004015313767274314,
+       "sessions": 1005
+      },
+      "unchanged-mid": {
+       "b1_median_session_rmse": 0.000276913795609362,
+       "m_rv_median_session_rmse": 0.0017844326089290167,
+       "rv_median_session_rmse": 0.0014401956696011215,
+       "sessions": 379
+      }
+     }
     }
    }
   }

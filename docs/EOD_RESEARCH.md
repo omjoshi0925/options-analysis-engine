@@ -129,6 +129,14 @@ intervals (identical block indices for numerator and denominator; block 21,
 63, 126); the carry-only check; the interval for the mean of d_3; and the
 section 3 decision label applied mechanically.
 
+Amendment 5 (exploratory): `stale-quote-diagnostic build --config C3 --observation-set
+set B --prior-universe set A --baselines baselines-B --out-dir <dir>` writes the
+unchanged-mid statistics and the evaluation subsets; `walk-forward
+--evaluation-subset <keys>` reruns a configuration with training untouched and
+only those rows entering each session's loss; `stale-quote-diagnostic report`
+assembles stale-quote-diagnostic.json from the full and subset runs, and
+`compare-baselines --stale-diagnostic` renders it in the Design B report.
+
 Column semantics: in `export` output, `r`, `q`, `iv_brent_*`, `baseline_*` and
 the bound columns are the values stored at import (constant v1 carry), while
 `effective_r`/`effective_q` are the config's carry for that session and symbol

@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.4.1 - 2026-09-14
+
+- Add the Amendment 5 stale-quote diagnostic (exploratory): `stale-quote-diagnostic
+  build` measures how often a set B contract's mid is unchanged from the prior
+  available session and the size of mid changes, with breakdowns, and writes
+  evaluation subsets; `walk-forward --evaluation-subset` keeps the training
+  windows and models of a run and restricts only the rows entering each
+  session's loss; `stale-quote-diagnostic report` recomputes M(RV) vs B1 and
+  M(B1) vs B1 on the subsets with the same bootstrap and reports B1's RMSE by
+  subset; `compare-baselines --stale-diagnostic` renders the section.
+
 ## 3.4.0 - 2026-09-14
 
 Design B of the study v2 research plan (section 4, Amendment 4):

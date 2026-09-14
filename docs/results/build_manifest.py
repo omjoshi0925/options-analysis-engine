@@ -727,6 +727,11 @@ V2_SET_B_SIDECAR = "docs/results/v2/observation-set-B.drops.json"
 V2_BASELINES = "docs/results/v2/baselines-B.csv.gz"
 V2_RUNS_B = [f"docs/results/v2/design-b/{name}" for name in ("B1", "B2", "M-RV", "M-B1", "M-B2")]
 V2_COMPARISON_B = ["docs/results/v2/design-b/comparison.json", "docs/results/v2/design-b/REPORT.md"]
+V2_STALE = "docs/results/v2/design-b/stale-quote-diagnostic.json"
+V2_STALE_STATS = "docs/results/v2/design-b/sensitivity/stale-quote-stats.json"
+V2_STALE_SUBSETS = [f"docs/results/v2/design-b/sensitivity/subsets/{name}.csv.gz" for name in ("changed-mid", "unchanged-mid", "not-unchanged-mid")]
+V2_STALE_RUNS = {subset: [f"docs/results/v2/design-b/sensitivity/{subset}/{run}" for run in runs]
+                 for subset, runs in (("changed-mid", ("B1", "M-RV", "M-B1")), ("unchanged-mid", ("B1", "M-RV")), ("not-unchanged-mid", ("B1", "M-RV", "M-B1")))}
 
 
 def study_v2_block():
@@ -779,6 +784,18 @@ def design_b_block():
     for run in V2_RUNS_B:
         if exists(run):
             block["runs"][Path(run).name] = {name: file_entry(f"{run}/{name}") for name in RUN_FILES if exists(f"{run}/{name}")}
+    stale = dict(diagnostic=file_entry(V2_STALE) if exists(V2_STALE) else None, stats=file_entry(V2_STALE_STATS) if exists(V2_STALE_STATS) else None,
+                 subsets=[file_entry(p, compression="gzip -n -9", uncompressed_sha256=sha256_file(ROOT/p, gz_member=True)) for p in V2_STALE_SUBSETS if exists(p)],
+                 runs={subset: {Path(run).name: {name: file_entry(f"{run}/{name}") for name in RUN_FILES if exists(f"{run}/{name}")}
+                                for run in runs if exists(run)} for subset, runs in V2_STALE_RUNS.items()})
+    if exists(V2_STALE):
+        diag = json.loads((ROOT/V2_STALE).read_text())
+        stale["headline"] = dict(exploratory=True, amendment=5, overall=diag["stats"]["overall"], label_changes=diag["label_changes"],
+                                 sensitivity={k: {c: dict(mean_differential=v["mean_differential"], interval=v["interval"], median_relative_improvement=v["median_relative_improvement"],
+                                                          win_rate=v["win_rate"], label=v["label"]) for c, v in sub["comparisons"].items()} | dict(sessions=sub["sessions"])
+                                              for k, sub in diag["sensitivity"].items()},
+                                 b1_rmse_by_subset=diag["b1_rmse_by_subset"])
+    block["stale_quote_diagnostic"] = stale
     if exists(V2_COMPARISON_B[0]):
         cmp = json.loads((ROOT/V2_COMPARISON_B[0]).read_text())
         block["headline"] = dict(source=V2_COMPARISON_B[0], primary_claim=cmp["primary_claim"], b2_fallback_contaminated=cmp["b2_fallback_contaminated"],
@@ -923,6 +940,15 @@ def check(manifest):
     for files in design_b.get("runs", {}).values():
         v2_entries += list(files.values())
     v2_entries += list(design_b.get("comparison", []))
+    stale = design_b.get("stale_quote_diagnostic") or {}
+    v2_entries += [item for item in (stale.get("diagnostic"), stale.get("stats")) if item]
+    for compressed in stale.get("subsets", []):
+        v2_entries.append(compressed)
+        if exists(compressed["path"]) and sha256_file(ROOT/compressed["path"], gz_member=True) != compressed["uncompressed_sha256"]:
+            problems.append(f"{compressed['path']} decompresses to a different hash than recorded")
+    for runs in stale.get("runs", {}).values():
+        for files in runs.values():
+            v2_entries += list(files.values())
     for item in v2_entries:
         path = ROOT/item["path"]
         if not path.exists():
