@@ -34,7 +34,6 @@ B1_REASONS = ("no_prior_session", "expiry_absent_at_prior_session", "type_absent
 B2_REASONS = ("too_few_strikes", "no_convergence", "parameter_bounds", "butterfly", "evaluation_failed")
 SVI_MIN_STRIKES = 6
 LEE_WING_BOUND = 2.0
-SVI_BOUNDS = ([-2.0, 0.0, -0.999, -1.5, 1e-3], [10.0, 2.0, 0.999, 1.5, 3.0])
 FRAME_COLUMNS = ["observation_id", "session_date", "symbol", "contractSymbol", "expiration", "strike", "option_type",
                  "spot", "T", "r", "q", "iv_brent_volatility", "iv_brent_vega", "baseline_sigma"]
 
@@ -115,9 +114,10 @@ def butterfly_g(k, params):
     return (1-k*w1/(2*w))**2-(w1*w1/4)*(1/w+.25)+w2/2, w
 
 
-def parameter_bounds_hold(params):
+def parameter_bounds_hold(params, tolerance=1e-9):
     a, b, rho, m, sigma = params
-    return b >= 0 and abs(rho) < 1 and sigma > 0 and a+b*sigma*math.sqrt(1-rho*rho) >= 0 and b*(1+abs(rho)) <= LEE_WING_BOUND
+    return (b >= 0 and abs(rho) < 1 and sigma > 0 and a+b*sigma*math.sqrt(1-rho*rho) >= -tolerance
+            and b*(1+abs(rho)) <= LEE_WING_BOUND+tolerance)
 
 
 def butterfly_free(params, k_low, k_high, points=201, margin=.1):
@@ -125,25 +125,63 @@ def butterfly_free(params, k_low, k_high, points=201, margin=.1):
     return bool(np.all(w > 0) and np.all(g >= -1e-10))
 
 
+# The fit works in (w_min, b, rho, m, sigma) with w_min = a + b sigma sqrt(1 - rho^2) the slice's minimum total variance,
+# so the non-negativity bound is a box constraint, and adds a penalty residual for Lee's wing bound b(1 + |rho|) <= 2.
+# Without these the least-squares surface is flat along a degenerate direction (b -> 2, |rho| -> 1, a < 0) that fits the
+# quoted range but is not an admissible raw SVI slice.
+FIT_BOUNDS = ([0.0, 0.0, -0.999, -1.5, 1e-3], [10.0, 2.0, 0.999, 1.5, 3.0])
+LEE_PENALTY = 10.0
+
+
+def _to_raw(theta):
+    w_min, b, rho, m, sigma = theta
+    return (float(w_min-b*sigma*math.sqrt(1-rho*rho)), float(b), float(rho), float(m), float(sigma))
+
+
+def _residuals(theta, k, w, scale):
+    w_min, b, rho, m, sigma = theta
+    d = k-m
+    root = np.sqrt(d*d+sigma*sigma)
+    model = w_min-b*sigma*math.sqrt(1-rho*rho)+b*(rho*d+root)
+    excess = b*(1+abs(rho))-LEE_WING_BOUND
+    return np.append(scale*(model-w), LEE_PENALTY*max(excess, 0.0))
+
+
+def _jacobian(theta, k, w, scale):
+    w_min, b, rho, m, sigma = theta
+    d = k-m
+    root = np.sqrt(d*d+sigma*sigma)
+    q = math.sqrt(1-rho*rho)
+    jac = np.empty((len(k)+1, 5))
+    jac[:-1, 0] = scale
+    jac[:-1, 1] = scale*(-sigma*q+rho*d+root)
+    jac[:-1, 2] = scale*(b*sigma*rho/q+b*d)
+    jac[:-1, 3] = scale*(-b*(rho+d/root))
+    jac[:-1, 4] = scale*(-b*q+b*sigma/root)
+    active = float(b*(1+abs(rho)) > LEE_WING_BOUND)
+    jac[-1] = [0.0, LEE_PENALTY*(1+abs(rho))*active, LEE_PENALTY*b*np.sign(rho)*active, 0.0, 0.0]
+    return jac
+
+
 def fit_svi(k, w, weights):
-    """Vega-weighted least squares over several starts; returns (params, info) or (None, reason)."""
+    """Vega-weighted least squares from several starts with an analytic Jacobian; (raw params, info) or (None, reason)."""
     k, w, weights = (np.asarray(x, float) for x in (k, w, weights))
     scale = np.sqrt(np.maximum(weights, 1e-12)/np.maximum(weights, 1e-12).mean())
-    floor = float(w.min())
-    starts = [(floor*.8, .1, -.5, 0.0, .1), (floor*.5, .3, 0.0, float(k[np.argmin(w)]), .2), (floor*.8, .05, .3, 0.0, .3),
-              (floor*.9, .5, -.8, .1, .05)]
+    floor = max(float(w.min()), 1e-10)
+    at_min = float(k[np.argmin(w)])
+    starts = [(floor, .05, -.5, at_min, .05), (floor, .3, -.3, at_min, .2), (floor, .1, .0, 0.0, .1), (floor, .5, -.8, at_min+.05, .3)]
     best = None
     for start in starts:
         try:
-            fit = least_squares(lambda p: scale*(svi_total_variance(k, p)-w), np.clip(start, SVI_BOUNDS[0], SVI_BOUNDS[1]),
-                                bounds=SVI_BOUNDS, method="trf", max_nfev=2000)
+            fit = least_squares(_residuals, np.clip(start, FIT_BOUNDS[0], FIT_BOUNDS[1]), jac=_jacobian, bounds=FIT_BOUNDS, args=(k, w, scale),
+                                method="trf", x_scale="jac", ftol=1e-12, xtol=1e-12, gtol=1e-12, max_nfev=3000)
         except (ValueError, FloatingPointError):
             continue
-        if fit.success and np.isfinite(fit.cost) and (best is None or fit.cost < best.cost):
+        if fit.status > 0 and np.isfinite(fit.cost) and (best is None or fit.cost < best.cost):
             best = fit
     if best is None:
         return None, "no_convergence"
-    return tuple(float(x) for x in best.x), dict(cost=float(best.cost), evaluations=int(best.nfev), status=int(best.status))
+    return _to_raw(best.x), dict(cost=float(best.cost), evaluations=int(best.nfev), status=int(best.status))
 
 
 def slice_points(rows):
