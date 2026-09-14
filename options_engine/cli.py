@@ -353,7 +353,7 @@ def run(args):
         return 0
     if args.command in ("init-live", "collect", "status", "train", "ingest", "select-model", "score-snapshot", "import-eod", "walk-forward", "export"):
         from .live_config import LiveConfig
-        from .live_utils import atomic_json, process_lock
+        from .live_utils import atomic_json, clean_json, process_lock
         if args.command == "init-live":
             target = Path(args.config)
             if target.exists():
@@ -475,15 +475,17 @@ def run(args):
                                    exclude_features=tuple(args.exclude_features), collect_predictions=bool(args.save_predictions))
             if evaluation_ids is not None:
                 extra["evaluation_subset"]["skipped_sessions"] = outcome["skipped_sessions"]
-            if args.save_predictions:
+            target = Path(args.save_predictions) if args.save_predictions else None
+            if target is not None and target.exists():
+                raise ValueError("Predictions output exists; choose a new file")
+            result = walk_forward_report(outcome, args.output, n_boot=args.bootstrap, extra=extra)
+            if target is not None:
+                # Written after the report so the predictions file may live inside the report directory.
                 from .carry_inputs import file_digest
-                target = Path(args.save_predictions)
-                if target.exists():
-                    raise ValueError("Predictions output exists; choose a new file")
                 target.parent.mkdir(parents=True, exist_ok=True)
                 outcome["predictions"].to_csv(target, index=False)
-                extra["predictions"] = dict(path=str(target), rows=int(len(outcome["predictions"])), sha256=file_digest(target))
-            result = walk_forward_report(outcome, args.output, n_boot=args.bootstrap, extra=extra)
+                result["predictions"] = dict(path=str(target), rows=int(len(outcome["predictions"])), sha256=file_digest(target))
+                atomic_json(Path(args.output)/"significance.json", clean_json(result))
         else:
             from .learning import select_model
             result = select_model(root, args.model_id)

@@ -259,3 +259,19 @@ def test_report_survives_a_degenerate_differential(tmp_path):
     significance = walk_forward_report(result, tmp_path/"report", n_boot=50)
     assert significance["diebold_mariano"]["degenerate"] and significance["diebold_mariano"]["statistic"] is None
     assert "degenerate" in (tmp_path/"report"/"REPORT.md").read_text()
+
+
+def test_walk_forward_saves_predictions_inside_the_output_directory(eod_root, capsys, tmp_path):
+    out = tmp_path/"pred"
+    code, result = invoke(capsys, "walk-forward", "--config", eod_root["configs"]["K0"], "--output", out, "--min-train-sessions", "6", "--bootstrap", "200",
+                          "--save-predictions", out/"predictions.csv.gz", "--exclude-features", "symbol")
+    assert code == 0 and (out/"folds.csv").exists() and (out/"predictions.csv.gz").exists()
+    predictions = pd.read_csv(out/"predictions.csv.gz")
+    folds = pd.read_csv(out/"folds.csv")
+    assert len(predictions) == folds.evaluation_rows.sum() and result["predictions"]["rows"] == len(predictions)
+    saved = json.loads((out/"significance.json").read_text())
+    assert saved["predictions"]["sha256"] == result["predictions"]["sha256"] and saved["excluded_features"] == ["symbol"]
+    with pytest.raises(ValueError, match="exists"):
+        invoke(capsys, "walk-forward", "--config", eod_root["configs"]["K0"], "--output", tmp_path/"pred2", "--min-train-sessions", "6",
+               "--save-predictions", out/"predictions.csv.gz")
+
