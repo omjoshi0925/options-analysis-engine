@@ -704,6 +704,47 @@ def gather(check_mode):
     return ctx
 
 
+V2_EXTERNAL = ["data/external/PROVENANCE.md", "data/external/dividends.csv", "data/external/splits.csv", "data/external/raw/DGS3MO.csv",
+               "data/external/raw/full_underlying.csv", "data/external/raw/apple-dividend-history-table.html",
+               "data/external/raw/spdr-etf-historical-distributions.xlsx", "data/external/raw/dolt-stocks-dividend-aapl-spy.csv",
+               "data/external/raw/dolt-stocks-split-aapl-spy.csv", "scripts/build_external_inputs.py"]
+V2_CONFIGS = ["config/v2/C0.json", "config/v2/C1.json", "config/v2/C2.json", "config/v2/C3.json"]
+V2_SET = "docs/results/v2/observation-set-A.csv.gz"
+V2_SET_SIDECAR = "docs/results/v2/observation-set-A.drops.json"
+V2_RUNS = ["docs/results/v2/design-a/C0", "docs/results/v2/design-a/C1", "docs/results/v2/design-a/C2", "docs/results/v2/design-a/C3"]
+V2_COMPARISON = ["docs/results/v2/design-a/comparison.json", "docs/results/v2/design-a/REPORT.md"]
+
+
+def study_v2_block():
+    """Hashes of every study v2 input and artifact that exists, plus the Design A headline numbers from comparison.json."""
+    block = dict(plan=file_entry("docs/RESEARCH_PLAN.md") if exists("docs/RESEARCH_PLAN.md") else None,
+                 external_inputs=[file_entry(p) for p in V2_EXTERNAL if exists(p)],
+                 configs=[file_entry(p) for p in V2_CONFIGS if exists(p)],
+                 observation_set=None, runs={}, comparison=[file_entry(p) for p in V2_COMPARISON if exists(p)], design_a=None)
+    if exists(V2_SET):
+        entry = file_entry(V2_SET, compression="gzip -n -9", uncompressed_sha256=sha256_file(ROOT/V2_SET, gz_member=True))
+        if exists(V2_SET_SIDECAR):
+            sidecar = json.loads((ROOT/V2_SET_SIDECAR).read_text())
+            entry["sidecar"] = file_entry(V2_SET_SIDECAR, rows=sidecar["observation_set"]["rows"], recorded_sha256=sidecar["observation_set"]["sha256"],
+                                          kept=sidecar["kept"], candidates=sidecar["candidates"], dropped=sidecar["dropped_under_any_config"],
+                                          by_config={k: v["by_reason"] for k, v in sidecar["by_config"].items()})
+            entry["uncompressed_matches_sidecar"] = entry["uncompressed_sha256"] == sidecar["observation_set"]["sha256"]
+        block["observation_set"] = entry
+    for run in V2_RUNS:
+        if exists(run):
+            block["runs"][Path(run).name] = {name: file_entry(f"{run}/{name}") for name in RUN_FILES if exists(f"{run}/{name}")}
+    if exists(V2_COMPARISON[0]):
+        cmp = json.loads((ROOT/V2_COMPARISON[0]).read_text())
+        block["design_a"] = dict(source=V2_COMPARISON[0], decision=cmp["decision"],
+                                 s={k: dict(s=v["s"], interval=v["interval"], sensitivity=v["sensitivity"]) for k, v in cmp["s"].items()},
+                                 carry_only_check=cmp["carry_only_check"], mean_d_treatment=cmp["mean_d_treatment"],
+                                 configurations={k: dict(folds=v["folds"], median_rho=v["median_rho"], mean_d=v["mean_d"], win_rate=v["win_rate"],
+                                                         zero_coverage_folds=v["learned_coverage"]["zero_coverage_folds"])
+                                                 for k, v in cmp["configurations"].items()},
+                                 bootstrap=cmp["bootstrap"])
+    return block
+
+
 def build_manifest(ctx):
     runs = {}
     for name, run in RUNS.items():
@@ -758,6 +799,7 @@ def build_manifest(ctx):
                       parameters=dict(n_boot=2000, seed=0, confidence=0.95, block_lengths=list(BOOTSTRAP_BLOCKS)))],
         code_constants=ctx["code_constants"],
         verification=ctx["verification"],
+        study_v2=study_v2_block(),
         claims=make_claims(ctx),
     )
     return jsonable(manifest)
@@ -813,6 +855,25 @@ def check(manifest):
     report = ROOT/manifest["study"]["report"]
     if sha256_file(report) != manifest["study"]["report_sha256"]:
         problems.append(f"{manifest['study']['report']} differs from the frozen report hash")
+    v2 = manifest.get("study_v2") or {}
+    v2_entries = list(v2.get("external_inputs", []))+list(v2.get("configs", []))+list(v2.get("comparison", []))
+    if v2.get("plan"):
+        v2_entries.append(v2["plan"])
+    for files in v2.get("runs", {}).values():
+        v2_entries += list(files.values())
+    if v2.get("observation_set"):
+        v2_entries.append(v2["observation_set"])
+        if v2["observation_set"].get("sidecar"):
+            v2_entries.append(v2["observation_set"]["sidecar"])
+        if exists(v2["observation_set"]["path"]) and sha256_file(ROOT/v2["observation_set"]["path"], gz_member=True) != v2["observation_set"]["uncompressed_sha256"]:
+            problems.append("observation set decompresses to a different hash than recorded")
+    for item in v2_entries:
+        path = ROOT/item["path"]
+        if not path.exists():
+            problems.append(f"missing study v2 artifact {item['path']}")
+        elif sha256_file(path) != item["sha256"]:
+            problems.append(f"sha256 mismatch for {item['path']}")
+    committed += v2_entries
     for item in manifest["import_csvs"]:
         if exists(item["path"]) and sha256_file(ROOT/item["path"]) != item["sha256"]:
             problems.append(f"sha256 mismatch for local {item['path']}")

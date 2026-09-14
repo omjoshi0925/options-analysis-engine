@@ -6,9 +6,9 @@
   "report": "docs/RESULTS.md",
   "code_version": "3.2.1",
   "repository": "https://github.com/omjoshi0925/options-analysis-engine",
-  "code_commit": "533939672e1fe7fb62a0f582cb04243fe8c42da5",
-  "code_commit_short": "5339396",
-  "report_sha256": "8f2277ffc06407701366c6b4776e5ddb5ebb8233aa9b967db4ed8c523ef0db75",
+  "code_commit": "fbfa43aaf81722b46303be41b25a0f10dd6c7fe7",
+  "code_commit_short": "fbfa43a",
+  "report_sha256": "74a6e12ff4f54e7ec4dc230582e372ff74506a1683dcaa52ec84a90763b12447",
   "description": "1,056-fold rolling-origin walk-forward over DoltHub end-of-day chains (SPY and AAPL; QQQ configured but absent from the export) plus a single-year SPY 2023 run, constant rate and dividend yields.",
   "built_with": {
    "python": "3.13.1",
@@ -10230,6 +10230,367 @@
   "tests_passed": 181,
   "lint": "clean"
  },
+ "study_v2": {
+  "plan": {
+   "path": "docs/RESEARCH_PLAN.md",
+   "sha256": "3b2c6f4342a324ede90bdefc4f832d605b39e4bb7d137cd35b950d2be8a030ae",
+   "bytes": 19585
+  },
+  "external_inputs": [
+   {
+    "path": "data/external/PROVENANCE.md",
+    "sha256": "37a7b8af7b7342d9b36c69e5a42bc0e2ea2f8eede03bb72420487d4cc922e44b",
+    "bytes": 9003
+   },
+   {
+    "path": "data/external/dividends.csv",
+    "sha256": "7cc323daac11272eee3949729e7ee435ae865670ccb76b3424f80068cdbf39d2",
+    "bytes": 1638
+   },
+   {
+    "path": "data/external/splits.csv",
+    "sha256": "96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec",
+    "bytes": 58
+   },
+   {
+    "path": "data/external/raw/DGS3MO.csv",
+    "sha256": "504030af381b2ee828c3012ba91dcc9ea7cdbbcaa3297026acd500ed9c4b4e44",
+    "bytes": 186343
+   },
+   {
+    "path": "data/external/raw/full_underlying.csv",
+    "sha256": "aa9e446dddf40682a68890a0b70f36a41c6d2f108d0777dddc1b7403801bc738",
+    "bytes": 319637
+   },
+   {
+    "path": "data/external/raw/apple-dividend-history-table.html",
+    "sha256": "c49fdd6e815165034a51deb3d0f3fe9444699d7165bbae54a9fcc2404024b8f1",
+    "bytes": 35084
+   },
+   {
+    "path": "data/external/raw/spdr-etf-historical-distributions.xlsx",
+    "sha256": "1b952f87ca60ece4080b446d6c3b580f640d893ed33641797a2dd22dd61beca9",
+    "bytes": 575400
+   },
+   {
+    "path": "data/external/raw/dolt-stocks-dividend-aapl-spy.csv",
+    "sha256": "3e7dee014ad1e3cbe7b2056ab15d54755841b5854ccd9c6a7c14bf38d0250240",
+    "bytes": 1813
+   },
+   {
+    "path": "data/external/raw/dolt-stocks-split-aapl-spy.csv",
+    "sha256": "bb5ac4164132bf351052e7f4c95345c31878f3f7b33fddc1993fa176f5234681",
+    "bytes": 104
+   },
+   {
+    "path": "scripts/build_external_inputs.py",
+    "sha256": "c45e9b53c4bb0ef2edc98394d7fb23c43b720874453a900815f934168be47246",
+    "bytes": 8468
+   }
+  ],
+  "configs": [
+   {
+    "path": "config/v2/C0.json",
+    "sha256": "91f9c8e042f5bd6004c9291b705a29ca2d8fddfbf4e45885d1f755aca59725cc",
+    "bytes": 1157
+   },
+   {
+    "path": "config/v2/C1.json",
+    "sha256": "0284dfc50dc513094bc5dfcdbad7442ac05e42a3dcc40a237d120991356d54e1",
+    "bytes": 1245
+   },
+   {
+    "path": "config/v2/C2.json",
+    "sha256": "36be1914e18628f2d67e24af3d643f6eaae990c30ffadda6c74721d9d5e90fd6",
+    "bytes": 1320
+   },
+   {
+    "path": "config/v2/C3.json",
+    "sha256": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348",
+    "bytes": 1408
+   }
+  ],
+  "observation_set": {
+   "path": "docs/results/v2/observation-set-A.csv.gz",
+   "sha256": "81234b995f154331a190c9e0e126308b386d217957dcb99e3c5f228404f846df",
+   "bytes": 9917010,
+   "compression": "gzip -n -9",
+   "uncompressed_sha256": "0f6c47bf691a90a2ceb60e6b5fdf447fed4d04cb8fa3334a121316dc8448f57c",
+   "sidecar": {
+    "path": "docs/results/v2/observation-set-A.drops.json",
+    "sha256": "2ec20d289a495a428c949d46ccd12238f31b573b89f7009b89b0d67f50ca28f2",
+    "bytes": 8008,
+    "rows": 253554,
+    "recorded_sha256": "0f6c47bf691a90a2ceb60e6b5fdf447fed4d04cb8fa3334a121316dc8448f57c",
+    "kept": 253554,
+    "candidates": 260296,
+    "dropped": 6742,
+    "by_config": {
+     "C0": {},
+     "C1": {
+      "iv_not_identified": 5964
+     },
+     "C2": {
+      "iv_not_identified": 504
+     },
+     "C3": {
+      "iv_not_identified": 6279
+     }
+    }
+   },
+   "uncompressed_matches_sidecar": true
+  },
+  "runs": {
+   "C0": {
+    "folds.csv": {
+     "path": "docs/results/v2/design-a/C0/folds.csv",
+     "sha256": "e3bdf0320721e2eef69933ca8801e98917f523e2be026f8bbbd418aa17e4a5d0",
+     "bytes": 431349
+    },
+    "significance.json": {
+     "path": "docs/results/v2/design-a/C0/significance.json",
+     "sha256": "9a62a165e4f9eb0da597be03ca98160bd37790988fc27541f1e1aeaf5ed9231b",
+     "bytes": 2864
+    },
+    "REPORT.md": {
+     "path": "docs/results/v2/design-a/C0/REPORT.md",
+     "sha256": "8514f146c48ad0556b964ab513532e6d043d5530bace7923f45dd61462d3268c",
+     "bytes": 998
+    }
+   },
+   "C1": {
+    "folds.csv": {
+     "path": "docs/results/v2/design-a/C1/folds.csv",
+     "sha256": "f915ec2f3f3cc854e97c4305af4909f152884b1d339319e63dd543e1ca401b34",
+     "bytes": 436156
+    },
+    "significance.json": {
+     "path": "docs/results/v2/design-a/C1/significance.json",
+     "sha256": "7af21a5b02c93b837d2b806f2c8319bf7dbece1371c205dff2aa1f357fe3abbb",
+     "bytes": 3201
+    },
+    "REPORT.md": {
+     "path": "docs/results/v2/design-a/C1/REPORT.md",
+     "sha256": "7881b077bff34d30ccb470924d895f4a5876b49019f5d098b539a12d7caede0d",
+     "bytes": 997
+    }
+   },
+   "C2": {
+    "folds.csv": {
+     "path": "docs/results/v2/design-a/C2/folds.csv",
+     "sha256": "771db83f3a91a4fb88385330756447430954014bb9000819eac8bdae968bdb95",
+     "bytes": 439121
+    },
+    "significance.json": {
+     "path": "docs/results/v2/design-a/C2/significance.json",
+     "sha256": "f769cb231d7c925012af3b9fcd02c84b8a8353f6cd5f8d3bbfc92ade91dbd90b",
+     "bytes": 3625
+    },
+    "REPORT.md": {
+     "path": "docs/results/v2/design-a/C2/REPORT.md",
+     "sha256": "0ab01c256fa4a7f6da44ba63be8ef1c0e1de15d362c7a001f509264d004725dc",
+     "bytes": 998
+    }
+   },
+   "C3": {
+    "folds.csv": {
+     "path": "docs/results/v2/design-a/C3/folds.csv",
+     "sha256": "a0249049ebb6c1ff9d61b7c29737964e6304eaf3c0cf0fcd3f056303a9330a0e",
+     "bytes": 444429
+    },
+    "significance.json": {
+     "path": "docs/results/v2/design-a/C3/significance.json",
+     "sha256": "35ac94e4434f42fe95b7d91757f04061b440589dab938587da0d3a6d8366fcd1",
+     "bytes": 3967
+    },
+    "REPORT.md": {
+     "path": "docs/results/v2/design-a/C3/REPORT.md",
+     "sha256": "d5599af70a257d6ece76bbe5aae424640962ecb7317057eac9de6a4ee1a8847a",
+     "bytes": 998
+    }
+   }
+  },
+  "comparison": [
+   {
+    "path": "docs/results/v2/design-a/comparison.json",
+    "sha256": "9b55ecd48506d05ab676483a7a9e0cd9b0f74a3a6626dc44eea7a5531593ac06",
+    "bytes": 13450
+   },
+   {
+    "path": "docs/results/v2/design-a/REPORT.md",
+    "sha256": "f2d6397578e0dac04057f30574807224e0cadd6a7caa524ce6f2196218c9e144",
+    "bytes": 2281
+   }
+  ],
+  "design_a": {
+   "source": "docs/results/v2/design-a/comparison.json",
+   "decision": {
+    "headline": "S_3 = 0.986 with 95% interval [0.762, 1.281]: structure dominant",
+    "label": "structure dominant",
+    "s3": 0.9860774585691403,
+    "s3_interval": [
+     0.7616867511532046,
+     1.2805612644513384
+    ],
+    "v1_improvement_survives_carry_correction": true
+   },
+   "s": {
+    "C1": {
+     "s": 0.9546658447713058,
+     "interval": [
+      0.6652852898149378,
+      1.2299714012401048
+     ],
+     "sensitivity": {
+      "10": [
+       0.7093651818982183,
+       1.194600587845577
+      ],
+      "126": [
+       0.6621343670868352,
+       1.342553931614944
+      ],
+      "21": [
+       0.6652852898149378,
+       1.2299714012401048
+      ],
+      "63": [
+       0.6571653785941848,
+       1.3005744640803645
+      ]
+     }
+    },
+    "C2": {
+     "s": 0.9767260662777091,
+     "interval": [
+      0.8907111681026388,
+      1.1207152931742184
+     ],
+     "sensitivity": {
+      "10": [
+       0.903143106181066,
+       1.1047230362720857
+      ],
+      "126": [
+       0.8836025219231904,
+       1.1410485027762256
+      ],
+      "21": [
+       0.8907111681026388,
+       1.1207152931742184
+      ],
+      "63": [
+       0.8770119556083332,
+       1.1443338791127224
+      ]
+     }
+    },
+    "C3": {
+     "s": 0.9860774585691403,
+     "interval": [
+      0.7616867511532046,
+      1.2805612644513384
+     ],
+     "sensitivity": {
+      "10": [
+       0.8003191475559344,
+       1.2417213646898877
+      ],
+      "126": [
+       0.77929305458811,
+       1.377315269794648
+      ],
+      "21": [
+       0.7616867511532046,
+       1.2805612644513384
+      ],
+      "63": [
+       0.753844220256928,
+       1.3576266822335763
+      ]
+     }
+    }
+   },
+   "carry_only_check": {
+    "definition": "median(L_base,C3) - median(L_model,C0)",
+    "interval": [
+     2.581480305769066e-07,
+     3.859499465543497e-06
+    ],
+    "median_baseline_mse_treatment": 1.3989102215239915e-05,
+    "median_model_mse_control": 1.185351833788722e-05,
+    "value": 2.1355838773526954e-06
+   },
+   "mean_d_treatment": {
+    "interval": [
+     6.320121947499345e-06,
+     0.001404195764720898
+    ],
+    "sensitivity": {
+     "10": [
+      9.124125324273795e-06,
+      0.0012478757043653493
+     ],
+     "126": [
+      4.227291049632705e-06,
+      0.0014023032999962493
+     ],
+     "21": [
+      6.320121947499345e-06,
+      0.001404195764720898
+     ],
+     "63": [
+      3.984852073765861e-06,
+      0.0014067921379788152
+     ]
+    },
+    "value": 0.000474847531248505
+   },
+   "configurations": {
+    "C0": {
+     "folds": 1056,
+     "median_rho": 0.10855818559605879,
+     "mean_d": 0.00047322889389532117,
+     "win_rate": 0.6638257575757576,
+     "zero_coverage_folds": 0
+    },
+    "C1": {
+     "folds": 1056,
+     "median_rho": 0.10363679195890166,
+     "mean_d": 0.00047418392378395063,
+     "win_rate": 0.6373106060606061,
+     "zero_coverage_folds": 0
+    },
+    "C2": {
+     "folds": 1056,
+     "median_rho": 0.10603160957948396,
+     "mean_d": 0.0004731611732433084,
+     "win_rate": 0.6647727272727273,
+     "zero_coverage_folds": 0
+    },
+    "C3": {
+     "folds": 1056,
+     "median_rho": 0.1070467797594387,
+     "mean_d": 0.000474847531248505,
+     "win_rate": 0.6458333333333334,
+     "zero_coverage_folds": 0
+    }
+   },
+   "bootstrap": {
+    "block_length": 21,
+    "confidence": 0.95,
+    "kind": "circular block, paired (identical block indices for every series)",
+    "replicates": 10000,
+    "seed": 20260908,
+    "sensitivity_blocks": [
+     10,
+     63,
+     126
+    ],
+    "sensitivity_blocks_skipped": []
+   }
+  }
+ },
  "claims": [
   {
    "id": "data.quotes_stored",
@@ -11387,9 +11748,9 @@
    "section": "Header; Reproducibility",
    "text": "options_engine 3.2.1",
    "reported": "3.2.1",
-   "value": "3.2.1",
-   "rendered": "3.2.1",
-   "matches_reported": true,
+   "value": "3.3.1",
+   "rendered": "3.3.1",
+   "matches_reported": false,
    "source": "pyproject.toml; options_engine/__init__.py",
    "field": "version / __version__",
    "status": "traced"
