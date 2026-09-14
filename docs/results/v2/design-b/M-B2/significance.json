@@ -1,0 +1,128 @@
+{
+  "baseline": {
+    "by_source": {
+      "fallback_b1": 4072,
+      "svi": 150038
+    },
+    "column": "b2_sigma",
+    "file": "docs/results/v2/baselines-B.csv.gz",
+    "rows": 154110,
+    "rows_without_value": 0,
+    "sha256": "d4f886aaefbd202f86d03b065dbdc76e7915a3f9aa72bb3d545b3c4f64bcd99e"
+  },
+  "baseline_only": false,
+  "bootstrap_mean_differential": {
+    "block_length": 10,
+    "confidence": 0.95,
+    "excludes_zero": true,
+    "high": -2.8556235408689924e-06,
+    "low": -7.624218953618672e-06,
+    "mean": -4.825266026670465e-06,
+    "replications": 2000
+  },
+  "bootstrap_note": "v1 continuity settings (block round(n^(1/3)), seed 0); study v2 inference uses compare-configs",
+  "carry": {
+    "dividend": {
+      "files": {
+        "bars": {
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/full_underlying.csv",
+          "sha256": "aa9e446dddf40682a68890a0b70f36a41c6d2f108d0777dddc1b7403801bc738"
+        },
+        "dividends": {
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/dividends.csv",
+          "sha256": "7cc323daac11272eee3949729e7ee435ae865670ccb76b3424f80068cdbf39d2"
+        },
+        "splits": {
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/splits.csv",
+          "sha256": "96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec"
+        }
+      },
+      "history_end": "2026-09-09",
+      "history_start": "2018-01-01",
+      "max_bar_gap_days": 10,
+      "mode": "series",
+      "stale_days": 100,
+      "window_days": 365
+    },
+    "rate": {
+      "alignment": "strictly_prior",
+      "first_quote": "1981-09-01",
+      "last_quote": "2026-09-04",
+      "mode": "series",
+      "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/DGS3MO.csv",
+      "quotes": 11253,
+      "sha256": "504030af381b2ee828c3012ba91dcc9ea7cdbbcaa3297026acd500ed9c4b4e44",
+      "stale_days": 10,
+      "units": "percent"
+    }
+  },
+  "config": {
+    "path": "config/v2/C3.json",
+    "sha256": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348"
+  },
+  "diebold_mariano": {
+    "degenerate": false,
+    "favors": "baseline",
+    "folds": 1005,
+    "hac_lags": 0,
+    "hln_correction": 0.9995023637412661,
+    "horizon": 1,
+    "lag1_autocorrelation": 0.2630414746838701,
+    "mean_differential": -4.825266026670465e-06,
+    "p_value": 1.587369535004144e-11,
+    "statistic": -6.818361760865282
+  },
+  "diebold_mariano_newey_west": {
+    "degenerate": false,
+    "favors": "baseline",
+    "folds": 1005,
+    "hac_lags": 15,
+    "hln_correction": 0.9995023637412661,
+    "horizon": 1,
+    "lag1_autocorrelation": 0.2630414746838701,
+    "mean_differential": -4.825266026670465e-06,
+    "p_value": 0.00041514273991405057,
+    "statistic": -3.5421358184547365
+  },
+  "dropped_by_carry": {
+    "by_reason": {},
+    "rows": 0
+  },
+  "learned_coverage": {
+    "mean": 0.9999657276383962,
+    "partial_coverage_folds": 4,
+    "zero_coverage_folds": []
+  },
+  "mean_d": -4.825266026670465e-06,
+  "median_rho": -0.2382008118200405,
+  "model_win_rate": 0.2407960199004975,
+  "observation_set": {
+    "candidate_rows": 260296,
+    "configs": {
+      "C3": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348"
+    },
+    "matched_rows": 154110,
+    "path": "docs/results/v2/observation-set-B.csv.gz",
+    "problems": [],
+    "recorded_rows": 154110,
+    "recorded_sha256": "5136adc81d154fa3b1e793a006bd1bacbf0bd1367724fd49c5f8672ff7810217",
+    "rows": 154110,
+    "set_size": 154110,
+    "sha256": "12a371b4837d190c5eb43314304863de49edfb25004845180681a3dcef5d5051",
+    "sidecar": "docs/results/v2/observation-set-B.drops.json",
+    "uncompressed_sha256": "5136adc81d154fa3b1e793a006bd1bacbf0bd1367724fd49c5f8672ff7810217"
+  },
+  "sessions_evaluated": 1005,
+  "spec": {
+    "alphas": [
+      0.01,
+      1.0,
+      100.0
+    ],
+    "gap": 1,
+    "max_train_sessions": 250,
+    "min_train_sessions": 120,
+    "validation_sessions": 2,
+    "window": "rolling"
+  }
+}

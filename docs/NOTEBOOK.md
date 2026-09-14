@@ -346,3 +346,58 @@ exclusion rule makes set B lean toward monthly expiries (median 39 days to
 expiry against 28 for the dropped rows), so Design B answers its question on
 a longer-dated subset than Design A.
 
+## 2026-09-14: study v2, Design B, Stage 2 (runs on set B)
+
+Five walk-forwards on set B with the v1 settings (rolling 250, minimum 120,
+gap 1, per-fold alpha reselection) under config/v2/C3.json: B1 alone and B2
+alone in baseline-only mode, and M(RV), M(B1), M(B2) with the base volatility
+swapped through `--baseline-file`. All five matched the set fully, dropped
+nothing, and evaluate the same 1005 sessions from 2020-11-16 to
+2026-09-04 (set B's first sessions supply the 120-session training window,
+so the window opens ten sessions later than Design A's). About 8.5 minutes in
+parallel; no zero-coverage fold in the learned runs. A first launch failed at
+argument parsing (an unsplit shell variable) and was rerun identically.
+
+Set B control (Amendment 4): M(RV) on set B has median rho 0.1623, mean d
+2.530e-04, win rate 0.708 against C3 on set A's 0.1070,
+4.748e-04, 0.646; the RV baseline's median session MSE is 1.609e-05 on
+set B against 1.399e-05 on set A. Restricting to the longer-dated set B
+therefore flatters the learned model relative to its flat baseline, so every
+Design B number is read on set B only and not against Design A.
+
+## 2026-09-14: study v2, Design B, Stage 3 (comparison)
+
+`compare-baselines` (paired circular block bootstrap, block 21, 10,000
+replicates, seed 20260908; sensitivity at 10, 63, 126):
+
+| Comparison | Mean L_baseline - L_model | 95% interval | Median relative improvement | Win rate | Label |
+|---|---:|---:|---:|---:|---|
+| M(RV) vs B1 | -1.692e-05 | [-2.41e-05, -1.14e-05] | -1.8900 | 0.054 | baseline wins |
+| M(RV) vs B2 | -1.316e-05 | [-2.04e-05, -7.64e-06] | -0.4545 | 0.154 | baseline wins |
+| M(B1) vs B1 | 4.104e-07 | [5.39e-08, 8.40e-07] | -0.0119 | 0.463 | adds value |
+| M(B2) vs B2 | -4.825e-06 | [-8.20e-06, -2.50e-06] | -0.2382 | 0.241 | baseline wins |
+
+The primary claim does not hold: the prior-session implied volatility beats
+the v1 model at every block length, the model's session RMSE is about 2.9
+times B1's at the median, and it wins 5.4% of sessions. Per section 8
+the value claim is downgraded: the v1 model captured structure that a flat
+baseline lacks, but no more than persistence of the previous smile provides.
+M(B1) versus B1, the relevant test of incremental value, carries the
+mechanical label "adds value" because its block-21 interval lies above zero,
+but the median relative improvement is negative, the model loses most
+sessions, and the block-63 and block-126 intervals include zero; the report
+prints these caveats, and I read the incremental value beyond persistence as
+not robust. B2, the SVI smile, also beats M(RV), and refitting relative to it
+(M(B2)) is worse than B2 alone. B2 is not fallback-contaminated (3.9% of
+slices), so its secondary labels stand.
+
+Implementation choices not spelled out by the plan, all recorded before the
+runs: interpolation within the same expiry and option type; SVI slices fitted
+to out-of-the-money quotes (puts below the forward, calls at or above it)
+with vega taken from the t-1 inversion; the fitted smile persisted as implied
+volatility, so B2 at t is sqrt(w(k_t)/T_(t-1)) with k_t against t's forward;
+the first-pass fitter replaced (commit 4e5ffa4) before any run because half
+its fallbacks were optimizer artifacts. The manifest was rebuilt to cover set
+B, the baselines, the five runs, and the comparison. docs/TALK_OUTLINE.md's
+Design B slot can be filled from docs/results/v2/design-b/comparison.json.
+
