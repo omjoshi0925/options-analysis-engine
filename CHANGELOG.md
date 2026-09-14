@@ -1,5 +1,27 @@
 # Changelog
 
+## 3.4.0 - 2026-09-14
+
+Design B of the study v2 research plan (section 4, Amendment 4):
+
+- Add `options_engine.baselines`: B1, the prior-session implied volatility
+  of the same contract inverted under t-1 conditions (or interpolated
+  linearly in strike within the same expiry and type, never beyond the
+  quoted range), and B2, a raw SVI slice fitted per t-1 expiry by
+  vega-weighted least squares inside the admissible region (minimum total
+  variance as a box bound, Lee's wing bound as a penalty, analytic
+  Jacobian) with the butterfly check, evaluated at t's strikes and forward,
+  falling back to B1 with the reason counted.
+- Add `baselines build`, writing observation set B, its drops sidecar, and a
+  per-observation baselines table (source, gap in days, B1, B2, RV).
+- `walk-forward --baseline-file/--baseline-column` replaces the base
+  volatility so the learner is refit relative to a competing baseline;
+  `--baseline-only` scores a baseline on the same folds without a model.
+- Add `compare-baselines`: the mean of L_B1 - L_M(RV) with paired block
+  bootstrap intervals and the section 4 value claim, the three secondary
+  pairs, continuity statistics, the section 8 reading, the set B control
+  against Design A, and the Amendment 4 contamination flag.
+
 ## 3.3.1 - 2026-09-13
 
 - The learned model's support guard no longer covers the rate and dividend

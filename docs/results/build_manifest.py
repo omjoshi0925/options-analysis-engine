@@ -722,6 +722,11 @@ V2_SET = "docs/results/v2/observation-set-A.csv.gz"
 V2_SET_SIDECAR = "docs/results/v2/observation-set-A.drops.json"
 V2_RUNS = ["docs/results/v2/design-a/C0", "docs/results/v2/design-a/C1", "docs/results/v2/design-a/C2", "docs/results/v2/design-a/C3"]
 V2_COMPARISON = ["docs/results/v2/design-a/comparison.json", "docs/results/v2/design-a/REPORT.md"]
+V2_SET_B = "docs/results/v2/observation-set-B.csv.gz"
+V2_SET_B_SIDECAR = "docs/results/v2/observation-set-B.drops.json"
+V2_BASELINES = "docs/results/v2/baselines-B.csv.gz"
+V2_RUNS_B = [f"docs/results/v2/design-b/{name}" for name in ("B1", "B2", "M-RV", "M-B1", "M-B2")]
+V2_COMPARISON_B = ["docs/results/v2/design-b/comparison.json", "docs/results/v2/design-b/REPORT.md"]
 
 
 def study_v2_block():
@@ -742,6 +747,7 @@ def study_v2_block():
     for run in V2_RUNS:
         if exists(run):
             block["runs"][Path(run).name] = {name: file_entry(f"{run}/{name}") for name in RUN_FILES if exists(f"{run}/{name}")}
+    block["design_b"] = design_b_block()
     if exists(V2_COMPARISON[0]):
         cmp = json.loads((ROOT/V2_COMPARISON[0]).read_text())
         block["design_a"] = dict(source=V2_COMPARISON[0], decision=cmp["decision"],
@@ -751,6 +757,35 @@ def study_v2_block():
                                                          zero_coverage_folds=v["learned_coverage"]["zero_coverage_folds"])
                                                  for k, v in cmp["configurations"].items()},
                                  bootstrap=cmp["bootstrap"])
+    return block
+
+
+def design_b_block():
+    """Set B, the per-observation baselines, the five Design B runs, and the comparison headline."""
+    block = dict(observation_set=None, baselines=None, runs={}, comparison=[file_entry(p) for p in V2_COMPARISON_B if exists(p)], headline=None)
+    if exists(V2_SET_B):
+        entry = file_entry(V2_SET_B, compression="gzip -n -9", uncompressed_sha256=sha256_file(ROOT/V2_SET_B, gz_member=True))
+        if exists(V2_SET_B_SIDECAR):
+            sidecar = json.loads((ROOT/V2_SET_B_SIDECAR).read_text())
+            entry["sidecar"] = file_entry(V2_SET_B_SIDECAR, rows=sidecar["observation_set"]["rows"], recorded_sha256=sidecar["observation_set"]["sha256"],
+                                          kept=sidecar["kept"], candidates=sidecar["candidates"], dropped_by_reason=sidecar["dropped_by_reason"],
+                                          b1_by_source=sidecar["b1_by_source"], b2_slice_fallback_rate=sidecar["b2"]["slice_fallback_rate"])
+            entry["uncompressed_matches_sidecar"] = entry["uncompressed_sha256"] == sidecar["observation_set"]["sha256"]
+            if exists(V2_BASELINES):
+                block["baselines"] = file_entry(V2_BASELINES, compression="gzip -n -9", uncompressed_sha256=sha256_file(ROOT/V2_BASELINES, gz_member=True),
+                                                recorded_sha256=sidecar["baselines"]["sha256"], rows=sidecar["baselines"]["rows"])
+                block["baselines"]["uncompressed_matches_sidecar"] = block["baselines"]["uncompressed_sha256"] == sidecar["baselines"]["sha256"]
+        block["observation_set"] = entry
+    for run in V2_RUNS_B:
+        if exists(run):
+            block["runs"][Path(run).name] = {name: file_entry(f"{run}/{name}") for name in RUN_FILES if exists(f"{run}/{name}")}
+    if exists(V2_COMPARISON_B[0]):
+        cmp = json.loads((ROOT/V2_COMPARISON_B[0]).read_text())
+        block["headline"] = dict(source=V2_COMPARISON_B[0], primary_claim=cmp["primary_claim"], b2_fallback_contaminated=cmp["b2_fallback_contaminated"],
+                                 comparisons={k: dict(mean_differential=v["mean_differential"], interval=v["interval"], sensitivity=v["sensitivity"],
+                                                      median_relative_improvement=v["median_relative_improvement"], win_rate=v["win_rate"], label=v["label"])
+                                              for k, v in cmp["comparisons"].items()},
+                                 set_b_control=cmp["set_b_control"], bootstrap=cmp["bootstrap"])
     return block
 
 
@@ -877,6 +912,17 @@ def check(manifest):
             v2_entries.append(v2["observation_set"]["sidecar"])
         if exists(v2["observation_set"]["path"]) and sha256_file(ROOT/v2["observation_set"]["path"], gz_member=True) != v2["observation_set"]["uncompressed_sha256"]:
             problems.append("observation set decompresses to a different hash than recorded")
+    design_b = v2.get("design_b") or {}
+    for compressed in (design_b.get("observation_set"), design_b.get("baselines")):
+        if compressed:
+            v2_entries.append(compressed)
+            if compressed.get("sidecar"):
+                v2_entries.append(compressed["sidecar"])
+            if exists(compressed["path"]) and sha256_file(ROOT/compressed["path"], gz_member=True) != compressed["uncompressed_sha256"]:
+                problems.append(f"{compressed['path']} decompresses to a different hash than recorded")
+    for files in design_b.get("runs", {}).values():
+        v2_entries += list(files.values())
+    v2_entries += list(design_b.get("comparison", []))
     for item in v2_entries:
         path = ROOT/item["path"]
         if not path.exists():
