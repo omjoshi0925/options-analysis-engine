@@ -1,0 +1,439 @@
+{
+  "bootstrap": {
+    "block_length": 21,
+    "confidence": 0.95,
+    "kind": "circular block, paired (identical block indices for every series)",
+    "replicates": 10000,
+    "seed": 20260908,
+    "sensitivity_blocks": [
+      10,
+      63,
+      126
+    ],
+    "sensitivity_blocks_skipped": []
+  },
+  "carry_only_check": {
+    "definition": "median(L_base,C3) - median(L_model,C0)",
+    "interval": [
+      2.581480305769066e-07,
+      3.859499465543497e-06
+    ],
+    "median_baseline_mse_treatment": 1.3989102215239915e-05,
+    "median_model_mse_control": 1.185351833788722e-05,
+    "value": 2.1355838773526954e-06
+  },
+  "configurations": {
+    "C0": {
+      "carry": {
+        "dividend": {
+          "mode": "constant",
+          "yields": {
+            "AAPL": 0.005,
+            "QQQ": 0.006,
+            "SPY": 0.014
+          }
+        },
+        "rate": {
+          "mode": "constant",
+          "value": 0.04
+        }
+      },
+      "config": {
+        "path": "config/v2/C0.json",
+        "sha256": "91f9c8e042f5bd6004c9291b705a29ca2d8fddfbf4e45885d1f755aca59725cc"
+      },
+      "diebold_mariano_hln": {
+        "lag1_autocorrelation": 0.8743841715835668,
+        "p_value": 0.00025227633030371576,
+        "statistic": 3.6724608898313558
+      },
+      "first_session": "2020-10-23",
+      "folds": 1056,
+      "last_session": "2026-09-04",
+      "learned_coverage": {
+        "mean": 0.9970146604193015,
+        "partial_coverage_folds": 7,
+        "zero_coverage_folds": 0
+      },
+      "mean_baseline_rmse": 0.007141553193169799,
+      "mean_d": 0.00047322889389532117,
+      "mean_model_rmse": 0.004115844536169886,
+      "median_baseline_mse": 1.418700720111467e-05,
+      "median_model_mse": 1.185351833788722e-05,
+      "median_rho": 0.10855818559605879,
+      "newey_west": {
+        "hac_lags": 15,
+        "p_value": 0.22106655600783123,
+        "statistic": 1.2244216211575212
+      },
+      "win_rate": 0.6638257575757576
+    },
+    "C1": {
+      "carry": {
+        "dividend": {
+          "mode": "constant",
+          "yields": {
+            "AAPL": 0.005,
+            "QQQ": 0.006,
+            "SPY": 0.014
+          }
+        },
+        "rate": {
+          "alignment": "strictly_prior",
+          "first_quote": "1981-09-01",
+          "last_quote": "2026-09-04",
+          "mode": "series",
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/DGS3MO.csv",
+          "quotes": 11253,
+          "sha256": "504030af381b2ee828c3012ba91dcc9ea7cdbbcaa3297026acd500ed9c4b4e44",
+          "stale_days": 10,
+          "units": "percent"
+        }
+      },
+      "config": {
+        "path": "config/v2/C1.json",
+        "sha256": "0284dfc50dc513094bc5dfcdbad7442ac05e42a3dcc40a237d120991356d54e1"
+      },
+      "diebold_mariano_hln": {
+        "lag1_autocorrelation": 0.8744987839119952,
+        "p_value": 0.00026780806675410823,
+        "statistic": 3.6569730542882146
+      },
+      "first_session": "2020-10-23",
+      "folds": 1056,
+      "last_session": "2026-09-04",
+      "learned_coverage": {
+        "mean": 0.9970146604193015,
+        "partial_coverage_folds": 7,
+        "zero_coverage_folds": 0
+      },
+      "mean_baseline_rmse": 0.007119567486909812,
+      "mean_d": 0.00047418392378395063,
+      "mean_model_rmse": 0.004208735173834824,
+      "median_baseline_mse": 1.4039114707857723e-05,
+      "median_model_mse": 1.1635397917784165e-05,
+      "median_rho": 0.10363679195890166,
+      "newey_west": {
+        "hac_lags": 15,
+        "p_value": 0.22299885570606032,
+        "statistic": 1.2193106143450032
+      },
+      "win_rate": 0.6373106060606061
+    },
+    "C2": {
+      "carry": {
+        "dividend": {
+          "files": {
+            "bars": {
+              "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/full_underlying.csv",
+              "sha256": "aa9e446dddf40682a68890a0b70f36a41c6d2f108d0777dddc1b7403801bc738"
+            },
+            "dividends": {
+              "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/dividends.csv",
+              "sha256": "7cc323daac11272eee3949729e7ee435ae865670ccb76b3424f80068cdbf39d2"
+            },
+            "splits": {
+              "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/splits.csv",
+              "sha256": "96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec"
+            }
+          },
+          "history_end": "2026-09-09",
+          "history_start": "2018-01-01",
+          "max_bar_gap_days": 10,
+          "mode": "series",
+          "stale_days": 100,
+          "window_days": 365
+        },
+        "rate": {
+          "mode": "constant",
+          "value": 0.04
+        }
+      },
+      "config": {
+        "path": "config/v2/C2.json",
+        "sha256": "36be1914e18628f2d67e24af3d643f6eaae990c30ffadda6c74721d9d5e90fd6"
+      },
+      "diebold_mariano_hln": {
+        "lag1_autocorrelation": 0.8744190481399343,
+        "p_value": 0.0002527163671016005,
+        "statistic": 3.67200991622656
+      },
+      "first_session": "2020-10-23",
+      "folds": 1056,
+      "last_session": "2026-09-04",
+      "learned_coverage": {
+        "mean": 0.9970146604193015,
+        "partial_coverage_folds": 7,
+        "zero_coverage_folds": 0
+      },
+      "mean_baseline_rmse": 0.00713939658098388,
+      "mean_d": 0.0004731611732433084,
+      "mean_model_rmse": 0.004108917486605742,
+      "median_baseline_mse": 1.4185506892712087e-05,
+      "median_model_mse": 1.1802532972729005e-05,
+      "median_rho": 0.10603160957948396,
+      "newey_west": {
+        "hac_lags": 15,
+        "p_value": 0.22112484151566722,
+        "statistic": 1.224266985887716
+      },
+      "win_rate": 0.6647727272727273
+    },
+    "C3": {
+      "carry": {
+        "dividend": {
+          "files": {
+            "bars": {
+              "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/full_underlying.csv",
+              "sha256": "aa9e446dddf40682a68890a0b70f36a41c6d2f108d0777dddc1b7403801bc738"
+            },
+            "dividends": {
+              "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/dividends.csv",
+              "sha256": "7cc323daac11272eee3949729e7ee435ae865670ccb76b3424f80068cdbf39d2"
+            },
+            "splits": {
+              "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/splits.csv",
+              "sha256": "96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec"
+            }
+          },
+          "history_end": "2026-09-09",
+          "history_start": "2018-01-01",
+          "max_bar_gap_days": 10,
+          "mode": "series",
+          "stale_days": 100,
+          "window_days": 365
+        },
+        "rate": {
+          "alignment": "strictly_prior",
+          "first_quote": "1981-09-01",
+          "last_quote": "2026-09-04",
+          "mode": "series",
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/DGS3MO.csv",
+          "quotes": 11253,
+          "sha256": "504030af381b2ee828c3012ba91dcc9ea7cdbbcaa3297026acd500ed9c4b4e44",
+          "stale_days": 10,
+          "units": "percent"
+        }
+      },
+      "config": {
+        "path": "config/v2/C3.json",
+        "sha256": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348"
+      },
+      "diebold_mariano_hln": {
+        "lag1_autocorrelation": 0.8745270968002933,
+        "p_value": 0.0002624700605663913,
+        "statistic": 3.6621985863069715
+      },
+      "first_session": "2020-10-23",
+      "folds": 1056,
+      "last_session": "2026-09-04",
+      "learned_coverage": {
+        "mean": 0.9970146604193015,
+        "partial_coverage_folds": 7,
+        "zero_coverage_folds": 0
+      },
+      "mean_baseline_rmse": 0.0071178154471436645,
+      "mean_d": 0.000474847531248505,
+      "mean_model_rmse": 0.004154084021980699,
+      "median_baseline_mse": 1.3989102215239915e-05,
+      "median_model_mse": 1.1462346386668883e-05,
+      "median_rho": 0.1070467797594387,
+      "newey_west": {
+        "hac_lags": 15,
+        "p_value": 0.22235995499550823,
+        "statistic": 1.2209970041814204
+      },
+      "win_rate": 0.6458333333333334
+    }
+  },
+  "control": "C0",
+  "decision": {
+    "headline": "S_3 = 0.986 with 95% interval [0.762, 1.281]: structure dominant",
+    "label": "structure dominant",
+    "s3": 0.9860774585691403,
+    "s3_interval": [
+      0.7616867511532046,
+      1.2805612644513384
+    ],
+    "v1_improvement_survives_carry_correction": true
+  },
+  "first_session": "2020-10-23",
+  "last_session": "2026-09-04",
+  "mean_d_treatment": {
+    "interval": [
+      6.320121947499345e-06,
+      0.001404195764720898
+    ],
+    "sensitivity": {
+      "10": [
+        9.124125324273795e-06,
+        0.0012478757043653493
+      ],
+      "126": [
+        4.227291049632705e-06,
+        0.0014023032999962493
+      ],
+      "21": [
+        6.320121947499345e-06,
+        0.001404195764720898
+      ],
+      "63": [
+        3.984852073765861e-06,
+        0.0014067921379788152
+      ]
+    },
+    "value": 0.000474847531248505
+  },
+  "runs": {
+    "C0": {
+      "files": {
+        "REPORT.md": {
+          "path": "docs/results/v2/design-a/C0/REPORT.md",
+          "sha256": "8514f146c48ad0556b964ab513532e6d043d5530bace7923f45dd61462d3268c"
+        },
+        "folds.csv": {
+          "path": "docs/results/v2/design-a/C0/folds.csv",
+          "sha256": "e3bdf0320721e2eef69933ca8801e98917f523e2be026f8bbbd418aa17e4a5d0"
+        },
+        "significance.json": {
+          "path": "docs/results/v2/design-a/C0/significance.json",
+          "sha256": "9a62a165e4f9eb0da597be03ca98160bd37790988fc27541f1e1aeaf5ed9231b"
+        }
+      },
+      "path": "docs/results/v2/design-a/C0"
+    },
+    "C1": {
+      "files": {
+        "REPORT.md": {
+          "path": "docs/results/v2/design-a/C1/REPORT.md",
+          "sha256": "7881b077bff34d30ccb470924d895f4a5876b49019f5d098b539a12d7caede0d"
+        },
+        "folds.csv": {
+          "path": "docs/results/v2/design-a/C1/folds.csv",
+          "sha256": "f915ec2f3f3cc854e97c4305af4909f152884b1d339319e63dd543e1ca401b34"
+        },
+        "significance.json": {
+          "path": "docs/results/v2/design-a/C1/significance.json",
+          "sha256": "7af21a5b02c93b837d2b806f2c8319bf7dbece1371c205dff2aa1f357fe3abbb"
+        }
+      },
+      "path": "docs/results/v2/design-a/C1"
+    },
+    "C2": {
+      "files": {
+        "REPORT.md": {
+          "path": "docs/results/v2/design-a/C2/REPORT.md",
+          "sha256": "0ab01c256fa4a7f6da44ba63be8ef1c0e1de15d362c7a001f509264d004725dc"
+        },
+        "folds.csv": {
+          "path": "docs/results/v2/design-a/C2/folds.csv",
+          "sha256": "771db83f3a91a4fb88385330756447430954014bb9000819eac8bdae968bdb95"
+        },
+        "significance.json": {
+          "path": "docs/results/v2/design-a/C2/significance.json",
+          "sha256": "f769cb231d7c925012af3b9fcd02c84b8a8353f6cd5f8d3bbfc92ade91dbd90b"
+        }
+      },
+      "path": "docs/results/v2/design-a/C2"
+    },
+    "C3": {
+      "files": {
+        "REPORT.md": {
+          "path": "docs/results/v2/design-a/C3/REPORT.md",
+          "sha256": "d5599af70a257d6ece76bbe5aae424640962ecb7317057eac9de6a4ee1a8847a"
+        },
+        "folds.csv": {
+          "path": "docs/results/v2/design-a/C3/folds.csv",
+          "sha256": "a0249049ebb6c1ff9d61b7c29737964e6304eaf3c0cf0fcd3f056303a9330a0e"
+        },
+        "significance.json": {
+          "path": "docs/results/v2/design-a/C3/significance.json",
+          "sha256": "35ac94e4434f42fe95b7d91757f04061b440589dab938587da0d3a6d8366fcd1"
+        }
+      },
+      "path": "docs/results/v2/design-a/C3"
+    }
+  },
+  "s": {
+    "C1": {
+      "interval": [
+        0.6652852898149378,
+        1.2299714012401048
+      ],
+      "median_rho": 0.10363679195890166,
+      "s": 0.9546658447713058,
+      "sensitivity": {
+        "10": [
+          0.7093651818982183,
+          1.194600587845577
+        ],
+        "126": [
+          0.6621343670868352,
+          1.342553931614944
+        ],
+        "21": [
+          0.6652852898149378,
+          1.2299714012401048
+        ],
+        "63": [
+          0.6571653785941848,
+          1.3005744640803645
+        ]
+      }
+    },
+    "C2": {
+      "interval": [
+        0.8907111681026388,
+        1.1207152931742184
+      ],
+      "median_rho": 0.10603160957948396,
+      "s": 0.9767260662777091,
+      "sensitivity": {
+        "10": [
+          0.903143106181066,
+          1.1047230362720857
+        ],
+        "126": [
+          0.8836025219231904,
+          1.1410485027762256
+        ],
+        "21": [
+          0.8907111681026388,
+          1.1207152931742184
+        ],
+        "63": [
+          0.8770119556083332,
+          1.1443338791127224
+        ]
+      }
+    },
+    "C3": {
+      "interval": [
+        0.7616867511532046,
+        1.2805612644513384
+      ],
+      "median_rho": 0.1070467797594387,
+      "s": 0.9860774585691403,
+      "sensitivity": {
+        "10": [
+          0.8003191475559344,
+          1.2417213646898877
+        ],
+        "126": [
+          0.77929305458811,
+          1.377315269794648
+        ],
+        "21": [
+          0.7616867511532046,
+          1.2805612644513384
+        ],
+        "63": [
+          0.753844220256928,
+          1.3576266822335763
+        ]
+      }
+    }
+  },
+  "sessions": 1056,
+  "treatment": "C3"
+}

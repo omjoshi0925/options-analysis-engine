@@ -265,3 +265,44 @@ section 3 requires, and CHECKPOINT 2 was reported with the open decisions
 from Stage 2 (support guard, target re-solve, conversion wording, coverage
 rules, config data_root).
 
+## 2026-09-13: study v2, Stage 4, Design A runs and comparison
+
+Amendment 3 was recorded first; the support guard change (3.3.1) was then
+verified as a no-op for the control by rerunning C0 on the amended code: all
+three output files are byte-identical to the committed Stage 3 run. C1, C2,
+and C3 ran on observation set A with the v1 walk-forward settings (rolling,
+120 minimum, 250 maximum, gap 1, per-fold alpha reselection), about 10.5
+minutes each in parallel; every run matched the set fully, dropped nothing,
+and has no zero-coverage fold (the same 7 partial-coverage folds as v1).
+
+| Run | Median rho | Mean d | Win rate | S_k [95% interval, block 21] |
+|---|---:|---:|---:|---:|
+| C0 | 0.1086 | 4.732e-04 | 0.664 | 1 (control) |
+| C1 | 0.1036 | 4.742e-04 | 0.637 | 0.955 [0.665, 1.230] |
+| C2 | 0.1060 | 4.732e-04 | 0.665 | 0.977 [0.891, 1.121] |
+| C3 | 0.1070 | 4.748e-04 | 0.646 | 0.986 [0.762, 1.281] |
+
+`compare-configs` (paired circular block bootstrap, block 21, 10,000
+replicates, seed 20260908; sensitivity at blocks 10, 63, 126 agrees) gives the
+section 3 label **structure dominant**: S_3 = 0.986 with the
+lower bound 0.762 above 0.5. The mean of d_3 is
+4.748e-04 with interval [6.32e-06,
+1.40e-03], so the v1 improvement survives full
+carry correction. The carry-only check, median(L_base,3) - median(L_model,0)
+= 2.136e-06 with interval [2.58e-07, 3.86e-06],
+says correcting carry in the baseline alone does not close the gap: the
+baseline priced under historical carry still loses to the model priced under
+the constant v1 carry. Two things to carry into the writeup rather than the
+decision: the historical rate lowers the win rate (0.664 to 0.637 in C1,
+0.646 in C3) while leaving the median rho and mean d essentially unchanged,
+and the S_1 interval is the widest of the three.
+
+Deviations from the plan text, all recorded in Amendment 3 before these runs:
+the target re-solve and its 2.6% intersection drop, the rate conversion in
+percent, the declared history and staleness guards (inert), the config/v2
+data_root, and the support guard. The manifest was rebuilt to cover the
+study v2 inputs and artifacts; its report hash now describes the corrected
+docs/RESULTS.md at ee8ce3c rather than the study-v1 tag. docs/TALK_OUTLINE.md
+still carries its fill slots; a guard-sensitivity run (C1 and C3 with the v1
+guard kept) has not been made.
+
