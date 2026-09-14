@@ -144,3 +144,17 @@ Reason: Stage 1 of v3.3 retrieved the external inputs named in section 2 and fou
 3. FRED DGS3MO was retrieved with curl's default User-Agent; requests imitating a browser received no response.
 
 Files, hashes, timestamps, and the cross-check results are in data/external/PROVENANCE.md.
+
+### Amendment 3, 2026-09-13
+
+Reason: Stage 2 of the v3.3 implementation (commits 2bafa6d, a4fad8c, 96d9b43) and its review found one interaction between the v1 estimator and dated carry inputs that would differ between the arms of Design A, and four points where the implementation had to interpret or extend the text above. Recorded at CHECKPOINT 2, after the C0 control run and before C1, C2, or C3 run. No estimand, threshold, or decision rule changes.
+
+1. Section 3, support guard. The v1 estimator replaces its learned volatility with the baseline for rows whose carry inputs fall outside the training window's range plus a 10% margin. Under constant carry that range has zero width and the guard never fires; under the historical rate it would fire on 21 of the 1,056 evaluated sessions (17 in the 2022 hiking cycle, 4 in late 2025), forcing rho and d to exactly zero in C1 and C3 only. Since the rate and yield enter the model only through the linear features r*T and q*T, the guard's r and q keys are removed for every configuration; the guard on maturity, baseline volatility, log-moneyness, and symbol is unchanged. This is a no-op for v1 and for C0, whose numbers are reproduced exactly on the amended code, and it is covered by a regression test. Every run's significance.json still records the folds with partial or zero learned coverage.
+
+2. Section 3, learning target. Under configuration k the model's target is the implied volatility of the session-t mid inverted under r_k,t and q_k,t, so target, carry features, and pricing share one carry; constant v1 carry reproduces every stored target exactly. Section 2's "prices without failure" therefore includes identification of that target within the v1 range under every configuration. Set A drops 6,742 of 260,296 eligible rows (2.6%) on this rule alone: in-the-money short-dated puts whose mid sits below the lower bound at a near-zero rate, 62% in 2020 to 2021; no session is lost and the fold boundaries are the v1 ones. The composition is recorded in docs/results/v2/observation-set-A.drops.json, and the writeup reports C0 on set A against the frozen v1 by calendar year as well as overall.
+
+3. Section 2, rate conversion. The FRED value y is a percentage; the applied conversion is r = ln(1 + y/100). Missing days in the download are blank and are skipped like ".", so a holiday session takes the last quoted business day.
+
+4. Section 2, coverage of the dividend inputs. The declared distribution history runs from 2018-01-01 to the 2026-09-09 retrieval; a 365-day window that starts before or ends after it is refused, as is a rate quote or underlying bar more than 10 calendar days old. None of these refusals occurs on any stored session, so they change no number in Design A; they exist so that later extensions cannot sum an incomplete history silently.
+
+5. Section 3, configuration files. config/v2/C0.json to C3.json sit one directory below config/eod-full.json, so their data_root reads ../../data/eod-live-full rather than ../data/eod-live-full and resolves to the same store; rate and dividend are the only other differences.
