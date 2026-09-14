@@ -106,6 +106,14 @@ def parser():
     compare.add_argument("--block-length", type=int, default=21)
     compare.add_argument("--replicates", type=int, default=10000)
     compare.add_argument("--seed", type=int, default=20260908)
+    compare_b = commands.add_parser("compare-baselines", help="Design B comparison: M(RV) versus B1 (primary) and the secondary pairs")
+    compare_b.add_argument("--runs", nargs="+", required=True, help="Directories named B1, B2, M-RV, M-B1, M-B2")
+    compare_b.add_argument("--out", required=True)
+    compare_b.add_argument("--set-b-sidecar", help="observation-set-B.drops.json, for the B2 fallback accounting")
+    compare_b.add_argument("--design-a", help="Design A comparison.json, for the set B control table")
+    compare_b.add_argument("--block-length", type=int, default=21)
+    compare_b.add_argument("--replicates", type=int, default=10000)
+    compare_b.add_argument("--seed", type=int, default=20260908)
     forward.add_argument("--baseline-file", help="Per-observation baselines CSV from `baselines build`; replaces baseline_sigma")
     forward.add_argument("--baseline-column", default="b1_sigma", help="Column of --baseline-file to use as the base volatility")
     forward.add_argument("--baseline-only", action="store_true", help="Evaluate the baseline alone; no model is fitted")
@@ -186,6 +194,16 @@ def run(args):
             figure.savefig(target, dpi=160, bbox_inches="tight")
             summary["plot"] = str(target)
         print(json.dumps(clean_json(summary), indent=2))
+        return 0
+    if args.command == "compare-baselines":
+        from .compare import run_baseline_comparison
+        result = run_baseline_comparison(args.runs, args.out, set_b_sidecar=args.set_b_sidecar, design_a=args.design_a,
+                                         block_length=args.block_length, replicates=args.replicates, seed=args.seed)
+        print(json.dumps(dict(primary_claim=result["primary_claim"],
+                              comparisons={k: dict(mean_differential=v["mean_differential"], interval=v["interval"],
+                                                   median_relative_improvement=v["median_relative_improvement"], label=v["label"])
+                                           for k, v in result["comparisons"].items()},
+                              b2_fallback_contaminated=result["b2_fallback_contaminated"], output=str(Path(args.out)/"comparison.json")), indent=2))
         return 0
     if args.command == "compare-configs":
         from .compare import run_comparison

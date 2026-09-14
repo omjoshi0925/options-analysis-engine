@@ -85,3 +85,81 @@ def test_cli_writes_comparison_and_report(tmp_path, capsys):
     loaded = load_run(tmp_path/"C3")
     assert loaded["files"]["folds.csv"]["path"].endswith("C3/folds.csv")
     assert run_comparison([tmp_path/n for n in ("C0", "C3")], tmp_path/"two", replicates=50)["s"]["C3"]["s"] == pytest.approx(.4)
+
+
+from options_engine.compare import compare_baselines, run_baseline_comparison, section_8_reading  # noqa: E402
+
+
+def design_b_runs(n=200, seed=4, rv_gain=.7, b1_gain=1.0, learn_gain=.9):
+    """Five synthetic runs: losses of B1, B2, RV and the three learned models, consistent across runs."""
+    rng = np.random.default_rng(seed)
+    sessions = [f"2024-{1+i//28:02d}-{1+i%28:02d}" for i in range(n)]
+    rv = rng.uniform(2e-5, 4e-5, n)
+    b1 = rv*b1_gain*rng.uniform(.8, 1.2, n)
+    b2 = b1*rng.uniform(.95, 1.05, n)
+    m_rv, m_b1, m_b2 = rv*rv_gain, b1*learn_gain, b2*learn_gain
+
+    def run(name, baseline, model, coverage=1.0):
+        folds = pd.DataFrame(dict(evaluated_session=sessions, baseline_mse=baseline, model_mse=model, rho=1-np.sqrt(model)/np.sqrt(baseline),
+                                  d=baseline-model, learned_coverage=coverage))
+        return dict(name=name, path=name, folds=folds, significance={}, files={})
+    return {"B1": run("B1", b1, b1, 0.0), "B2": run("B2", b2, b2, 0.0), "M-RV": run("M-RV", rv, m_rv), "M-B1": run("M-B1", b1, m_b1), "M-B2": run("M-B2", b2, m_b2)}
+
+
+def test_design_b_primary_holds_when_the_model_beats_b1():
+    runs = design_b_runs()
+    result = compare_baselines(runs, replicates=300)
+    primary = result["comparisons"]["M(RV) vs B1"]
+    assert primary["primary"] and primary["claim_holds"] and primary["label"] == "adds value" and primary["interval"][0] > 0
+    assert primary["median_relative_improvement"] > 0 and result["primary_claim"]["holds"] and "adds value beyond" in result["primary_claim"]["reading"]
+    assert set(result["comparisons"]) == {"M(RV) vs B1", "M(RV) vs B2", "M(B1) vs B1", "M(B2) vs B2"}
+    assert result["comparisons"]["M(B1) vs B1"]["label"] == "adds value"                      # learned relative to B1 with a 10% gain
+    assert result["runs"]["B1"]["learned_coverage"]["zero_coverage_folds"] == 200 and result["set_b_control"]["set_b"]["M_RV"]["folds"] == 200
+    assert result["comparisons"]["M(RV) vs B1"]["newey_west"]["hac_lags"] == 8
+
+
+def test_design_b_downgrade_and_contamination():
+    runs = design_b_runs(rv_gain=1.3, b1_gain=.6, learn_gain=1.0)                  # B1 beats M(RV); M(B1) equals B1
+    result = compare_baselines(runs, replicates=300, b2_fallback=dict(fallback_contaminated=True, slice_fallback_rate=.4))
+    primary = result["comparisons"]["M(RV) vs B1"]
+    assert primary["label"] == "baseline wins" and not result["primary_claim"]["holds"]
+    assert "downgraded" in result["primary_claim"]["reading"] and "no incremental value" in result["primary_claim"]["reading"]
+    assert result["b2_fallback_contaminated"] and result["comparisons"]["M(RV) vs B2"]["note"] and not result["comparisons"]["M(RV) vs B2"]["claim_holds"]
+    inconclusive = section_8_reading(dict(claim_holds=False, label="no evidence either way"), dict(claim_holds=False))
+    assert inconclusive.startswith("Inconclusive")
+
+
+def test_design_b_consistency_checks():
+    runs = design_b_runs()
+    broken = {k: dict(v, folds=v["folds"].copy()) for k, v in runs.items()}
+    broken["M-B1"]["folds"]["baseline_mse"] *= 1.01
+    with pytest.raises(ValueError, match="disagree"):
+        compare_baselines(broken, replicates=20)
+    not_alone = {k: dict(v, folds=v["folds"].copy()) for k, v in runs.items()}
+    not_alone["B1"]["folds"]["model_mse"] *= .5
+    with pytest.raises(ValueError, match="baseline-only"):
+        compare_baselines(not_alone, replicates=20)
+    with pytest.raises(ValueError, match="missing"):
+        compare_baselines({k: v for k, v in runs.items() if k != "B2"}, replicates=20)
+
+
+def test_compare_baselines_cli(tmp_path, capsys):
+    for name, synthetic in design_b_runs(n=150).items():
+        (tmp_path/name).mkdir()
+        synthetic["folds"].to_csv(tmp_path/name/"folds.csv", index=False)
+    (tmp_path/"set-B.drops.json").write_text(json.dumps(dict(b2=dict(slices_attempted=10, slices_fitted=9, slice_fallback_rate=.1, slices_fallback_by_reason={"butterfly": 1},
+                                                                    rows_by_source={"svi": 90, "fallback_b1": 10}, fallback_contaminated=False))))
+    (tmp_path/"design-a.json").write_text(json.dumps(dict(configurations=dict(C3=dict(folds=1056, median_rho=.107, mean_d=4.7e-4, win_rate=.646,
+                                                                                       median_baseline_mse=1.4e-5, median_model_mse=1.15e-5)))))
+    code = run(parser().parse_args(["compare-baselines", "--runs", *[str(tmp_path/n) for n in ("B1", "B2", "M-RV", "M-B1", "M-B2")],
+                                    "--out", str(tmp_path/"cmp"), "--set-b-sidecar", str(tmp_path/"set-B.drops.json"),
+                                    "--design-a", str(tmp_path/"design-a.json"), "--replicates", "200"]))
+    out = json.loads(capsys.readouterr().out)
+    assert code == 0 and out["primary_claim"]["holds"] and not out["b2_fallback_contaminated"]
+    saved = json.loads((tmp_path/"cmp"/"comparison.json").read_text())
+    assert saved["set_b_control"]["set_a_C3"]["folds"] == 1056 and saved["b2_fallback"]["slice_fallback_rate"] == .1
+    report = (tmp_path/"cmp"/"REPORT.md").read_text()
+    assert "M(RV) vs B1 (primary)" in report and "Set B control" in report and "C3 on set A" in report and "holds" in report
+    again = run_baseline_comparison([tmp_path/n for n in ("B1", "B2", "M-RV", "M-B1", "M-B2")], tmp_path/"again", replicates=50)
+    assert again["comparisons"]["M(RV) vs B1"]["claim_holds"]
+

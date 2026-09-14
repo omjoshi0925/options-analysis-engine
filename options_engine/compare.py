@@ -209,3 +209,157 @@ def run_comparison(run_dirs, output, control="C0", treatment="C3", block_length=
     (output/"comparison.json").write_text(json.dumps(result, indent=2, sort_keys=True)+"\n")
     write_report(result, output/"REPORT.md")
     return result
+
+
+# ----------------------------------------------------------------------------- Design B
+DESIGN_B_RUNS = ("B1", "B2", "M-RV", "M-B1", "M-B2")
+DESIGN_B_PAIRS = (("M(RV)", "B1", True), ("M(RV)", "B2", False), ("M(B1)", "B1", False), ("M(B2)", "B2", False))
+
+
+def design_b_series(runs):
+    """Session-level loss series for every competitor, with the consistency checks the five-run layout implies."""
+    for name in DESIGN_B_RUNS:
+        if name not in runs:
+            raise ValueError(f"Design B needs runs named {DESIGN_B_RUNS}; missing {name}")
+    aligned_sessions(runs)
+    folds = {name: run["folds"] for name, run in runs.items()}
+    for alone, learned in (("B1", "M-B1"), ("B2", "M-B2")):
+        if not np.allclose(folds[alone].baseline_mse, folds[learned].baseline_mse):
+            raise ValueError(f"{alone} alone and {learned} disagree on the {alone} baseline losses; the runs must share set B and folds")
+        if not np.allclose(folds[alone].model_mse, folds[alone].baseline_mse):
+            raise ValueError(f"{alone} alone must be a baseline-only run")
+    return {"B1": folds["B1"].baseline_mse.to_numpy(float), "B2": folds["B2"].baseline_mse.to_numpy(float),
+            "RV": folds["M-RV"].baseline_mse.to_numpy(float), "M(RV)": folds["M-RV"].model_mse.to_numpy(float),
+            "M(B1)": folds["M-B1"].model_mse.to_numpy(float), "M(B2)": folds["M-B2"].model_mse.to_numpy(float)}
+
+
+def pair_statistics(baseline, model, indices, block_length, primary=False):
+    """Mean of L_baseline - L_model with paired block-bootstrap intervals, the median relative improvement, and the label."""
+    diff = baseline-model
+    rho = 1-np.sqrt(model)/np.sqrt(baseline)
+    intervals = {str(block): list(percentile_interval(diff[idx].mean(axis=1))) for block, idx in indices.items()}
+    rho_intervals = {str(block): list(percentile_interval(np.median(rho[idx], axis=1))) for block, idx in indices.items()}
+    low, high = intervals[str(block_length)]
+    n = len(diff)
+    lags = max(1, math.floor(1.5*n**(1/3)))
+    dm = hln_diebold_mariano(baseline, model)
+    nw = hln_diebold_mariano(baseline, model, hac_lags=lags)
+    median_rho = float(np.median(rho))
+    if primary:
+        holds = low > 0 and median_rho > 0
+        label = "adds value" if holds else ("baseline wins" if high < 0 else "no evidence either way")
+    else:
+        label = "adds value" if low > 0 else ("baseline wins" if high < 0 else "no evidence either way")
+        holds = low > 0
+    return dict(mean_differential=float(diff.mean()), interval=list(intervals[str(block_length)]), sensitivity=intervals,
+                median_relative_improvement=median_rho, median_relative_improvement_interval=rho_intervals[str(block_length)],
+                win_rate=float((model < baseline).mean()), label=label, claim_holds=bool(holds),
+                diebold_mariano_hln=dict(statistic=dm["statistic"], p_value=dm["p_value"], lag1_autocorrelation=dm["lag1_autocorrelation"]),
+                newey_west=dict(statistic=nw["statistic"], p_value=nw["p_value"], hac_lags=lags))
+
+
+def section_8_reading(primary, incremental):
+    """What the primary result means, per Research Plan section 8."""
+    if primary["claim_holds"]:
+        return "The learned model adds value beyond the prior-session implied volatility: the interval for the mean of L_B1 - L_M(RV) lies above zero and the median relative improvement is positive."
+    if primary["label"] == "baseline wins":
+        reading = ("B1 beats M(RV): the v1 model captured structure that a flat baseline lacks but no more than persistence of the previous smile provides; "
+                   "the value claim is downgraded to that statement and M(B1) versus B1 becomes the relevant test of incremental value. ")
+        if incremental["claim_holds"]:
+            return reading+"M(B1) versus B1 excludes zero above, so the adjustment adds value beyond persistence when learned relative to it."
+        return reading+"M(B1) versus B1 does not exclude zero above: no incremental value beyond persistence."
+    return ("Inconclusive: the interval for the mean of L_B1 - L_M(RV) includes zero, so neither the value claim nor its downgrade is established; "
+            "the interval is reported as is and no setting is changed.")
+
+
+def compare_baselines(runs, block_length=BLOCK_LENGTH, replicates=REPLICATES, seed=SEED, sensitivity=SENSITIVITY_BLOCKS,
+                      b2_fallback=None, design_a=None):
+    series = design_b_series(runs)
+    sessions = aligned_sessions(runs)
+    n = len(sessions)
+    indices = {block_length: block_indices(n, block_length, replicates, seed)}
+    skipped = []
+    for block in sensitivity:
+        if block == block_length:
+            continue
+        if block > n:
+            skipped.append(block)
+            continue
+        indices[block] = block_indices(n, block, replicates, seed)
+    contaminated = bool(b2_fallback and b2_fallback.get("fallback_contaminated"))
+    comparisons = {}
+    for model, baseline, primary in DESIGN_B_PAIRS:
+        item = pair_statistics(series[baseline], series[model], indices, block_length, primary=primary)
+        item.update(model=model, baseline=baseline, primary=primary)
+        for key in ("sensitivity",):
+            item[key].update({str(block): None for block in skipped})
+        if baseline == "B2" and contaminated:
+            item["note"] = "B2 is fallback-contaminated (Amendment 4): reported, not used for the secondary claim"
+            item["claim_holds"] = False
+        comparisons[f"{model} vs {baseline}"] = item
+    primary = comparisons["M(RV) vs B1"]
+    reading = section_8_reading(primary, comparisons["M(B1) vs B1"])
+    control = dict(set_b=dict(M_RV=summarize(runs["M-RV"]), RV_median_mse=float(np.median(series["RV"])), M_RV_median_mse=float(np.median(series["M(RV)"]))))
+    if design_a:
+        c3 = design_a.get("configurations", {}).get("C3")
+        control["set_a_C3"] = {k: c3[k] for k in ("folds", "median_rho", "mean_d", "win_rate", "median_baseline_mse", "median_model_mse")} if c3 else None
+    return dict(sessions=n, first_session=sessions[0], last_session=sessions[-1],
+                bootstrap=dict(kind="circular block, paired (identical block indices for every series)", block_length=block_length,
+                               replicates=replicates, seed=seed, confidence=CONFIDENCE, sensitivity_blocks=list(sensitivity),
+                               sensitivity_blocks_skipped=skipped),
+                runs={name: summarize(run) for name, run in runs.items()},
+                comparisons=comparisons, primary_claim=dict(holds=primary["claim_holds"], label=primary["label"], reading=reading),
+                b2_fallback=b2_fallback, b2_fallback_contaminated=contaminated, set_b_control=control,
+                files={name: dict(path=run["path"], files=run["files"]) for name, run in runs.items()})
+
+
+def write_baselines_report(result, path):
+    b = result["bootstrap"]
+    lines = ["# Design B: stronger baselines on set B", "",
+             f"{result['sessions']} evaluated sessions from {result['first_session']} to {result['last_session']}, identical across the five runs. "
+             f"Intervals: paired circular block bootstrap, block {b['block_length']}, {b['replicates']:,} replicates, seed {b['seed']}, percentile {b['confidence']:.0%}.",
+             "", "| Comparison | Mean L_baseline - L_model | 95% interval (block 21) | " + " | ".join(f"block {x}" for x in b["sensitivity_blocks"]) +
+             " | Median relative improvement | Win rate | DM (HLN) | Newey-West | Label |",
+             "|---|---:|---:|" + "---:|"*len(b["sensitivity_blocks"]) + "---:|---:|---:|---:|---|"]
+    for name, item in result["comparisons"].items():
+        row = f"| {name}{' (primary)' if item['primary'] else ''} | {item['mean_differential']:.3e} | [{item['interval'][0]:.3e}, {item['interval'][1]:.3e}] |"
+        for x in b["sensitivity_blocks"]:
+            bounds = item["sensitivity"].get(str(x))
+            row += " n/a |" if bounds is None else f" [{bounds[0]:.2e}, {bounds[1]:.2e}] |"
+        dm, nw = item["diebold_mariano_hln"], item["newey_west"]
+        row += (f" {item['median_relative_improvement']:.4f} [{item['median_relative_improvement_interval'][0]:.3f}, {item['median_relative_improvement_interval'][1]:.3f}] | "
+                f"{item['win_rate']:.3f} | {_fmt(dm['statistic'], '.2f')} (p = {_fmt(dm['p_value'], '.2g')}) | {_fmt(nw['statistic'], '.2f')} (p = {_fmt(nw['p_value'], '.2g')}, {nw['hac_lags']} lags) | "
+                f"{item['label']}{' (fallback-contaminated B2)' if item.get('note') else ''} |")
+        lines.append(row)
+    lines += ["", "## Primary claim (section 4 rule, applied mechanically)", "",
+              f"**{'holds' if result['primary_claim']['holds'] else 'does not hold'}**: {result['primary_claim']['reading']}", "",
+              "The claim requires the interval for the mean of L_B1 - L_M(RV) to lie entirely above zero and the median relative improvement to be positive. "
+              "Secondary labels attach only where the interval excludes zero.", ""]
+    fb = result.get("b2_fallback") or {}
+    if fb:
+        lines += ["## B2 fallback accounting (Amendment 4)", "",
+                  f"- SVI slices attempted {fb.get('slices_attempted')}, fitted {fb.get('slices_fitted')}, fallback rate {fb.get('slice_fallback_rate', 0):.1%} by reason {fb.get('slices_fallback_by_reason')}; "
+                  f"rows by source {fb.get('rows_by_source')}. Fallback-contaminated: {result['b2_fallback_contaminated']}.", ""]
+    control = result["set_b_control"]
+    m_rv = control["set_b"]["M_RV"]
+    lines += ["## Set B control (Amendment 4)", "",
+              "| Run | Folds | Median rho | Mean d | Win rate | Median baseline MSE | Median model MSE |", "|---|---:|---:|---:|---:|---:|---:|",
+              f"| M(RV) on set B | {m_rv['folds']} | {m_rv['median_rho']:.4f} | {m_rv['mean_d']:.3e} | {m_rv['win_rate']:.3f} | {m_rv['median_baseline_mse']:.3e} | {m_rv['median_model_mse']:.3e} |"]
+    if control.get("set_a_C3"):
+        c3 = control["set_a_C3"]
+        lines.append(f"| C3 on set A (Design A) | {c3['folds']} | {c3['median_rho']:.4f} | {c3['mean_d']:.3e} | {c3['win_rate']:.3f} | {c3['median_baseline_mse']:.3e} | {c3['median_model_mse']:.3e} |")
+    lines += ["", "Diebold-Mariano and Newey-West values are reported for continuity with v1 and are not used for decisions."]
+    Path(path).write_text("\n".join(lines)+"\n")
+
+
+def run_baseline_comparison(run_dirs, output, set_b_sidecar=None, design_a=None, block_length=BLOCK_LENGTH, replicates=REPLICATES, seed=SEED):
+    runs = {Path(p).name: load_run(p) for p in run_dirs}
+    b2_fallback = json.loads(Path(set_b_sidecar).read_text()).get("b2") if set_b_sidecar else None
+    design = json.loads(Path(design_a).read_text()) if design_a else None
+    result = compare_baselines(runs, block_length=block_length, replicates=replicates, seed=seed, b2_fallback=b2_fallback, design_a=design)
+    output = Path(output)
+    output.mkdir(parents=True, exist_ok=True)
+    (output/"comparison.json").write_text(json.dumps(result, indent=2, sort_keys=True)+"\n")
+    write_baselines_report(result, output/"REPORT.md")
+    return result
+
