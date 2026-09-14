@@ -114,9 +114,26 @@ def parser():
     compare_b.add_argument("--block-length", type=int, default=21)
     compare_b.add_argument("--replicates", type=int, default=10000)
     compare_b.add_argument("--seed", type=int, default=20260908)
+    compare_b.add_argument("--stale-diagnostic", help="stale-quote-diagnostic.json to render as a section of the report")
+    stale = commands.add_parser("stale-quote-diagnostic", help="Amendment 5: unchanged-mid share of set B and the changed-mid sensitivity (exploratory)")
+    stale_commands = stale.add_subparsers(dest="stale_command", required=True)
+    stale_build = stale_commands.add_parser("build", help="Compute the mid-change statistics and write the evaluation subsets")
+    stale_build.add_argument("--config", required=True)
+    stale_build.add_argument("--observation-set", required=True, help="Set B keys")
+    stale_build.add_argument("--baselines", required=True, help="baselines-B table with prior_session and b1_source")
+    stale_build.add_argument("--out-dir", required=True, help="Directory for stale-quote-stats.json and subsets/")
+    stale_build.add_argument("--prior-universe", help="Keys of the rows B1 could draw on at t-1 (set A); prior quotes outside it are not compared")
+    stale_build.add_argument("--lookback-sessions", type=int, default=100000)
+    stale_report = stale_commands.add_parser("report", help="Assemble the diagnostic from the full and sensitivity runs")
+    stale_report.add_argument("--stats", required=True, help="stale-quote-stats.json from build")
+    stale_report.add_argument("--full-runs", required=True, help="Directory holding the pre-registered B1, M-RV, M-B1 runs")
+    stale_report.add_argument("--sensitivity-dir", required=True, help="Directory holding <subset>/<run> directories")
+    stale_report.add_argument("--out", required=True)
+    stale_report.add_argument("--replicates", type=int, default=10000)
     forward.add_argument("--baseline-file", help="Per-observation baselines CSV from `baselines build`; replaces baseline_sigma")
     forward.add_argument("--baseline-column", default="b1_sigma", help="Column of --baseline-file to use as the base volatility")
     forward.add_argument("--baseline-only", action="store_true", help="Evaluate the baseline alone; no model is fitted")
+    forward.add_argument("--evaluation-subset", help="CSV of observation_id: training is unchanged, session losses use only these rows")
     forward.add_argument("--allow-partial", action="store_true",
                          help="Proceed when the set is not fully matched, the config drops rows, or the config is not among the set's builders")
     obs = commands.add_parser("observation-set", help="Build a frozen observation set: v1-eligible rows that price under every listed config")
@@ -195,10 +212,34 @@ def run(args):
             summary["plot"] = str(target)
         print(json.dumps(clean_json(summary), indent=2))
         return 0
+    if args.command == "stale-quote-diagnostic":
+        from .stale_quotes import build_stale_quote_stats, report_stale_quote_diagnostic
+        from .live_utils import clean_json
+        if args.stale_command == "build":
+            from .carry_inputs import CarryInputs, apply_carry
+            from .live_config import LiveConfig
+            from .observation_set import read_observation_set, restrict_to_observation_set
+            from .store import ObservationStore
+            config, root = LiveConfig.load(args.config)
+            frame = ObservationStore(root).training_frame(before="9999-12-31", lookback_sessions=args.lookback_sessions,
+                                                          max_rows_per_symbol_session=config.max_rows_per_symbol_session)
+            ids, description = read_observation_set(args.observation_set)
+            if args.prior_universe:
+                universe, _ = read_observation_set(args.prior_universe)
+                frame, _ = restrict_to_observation_set(frame, universe)
+            frame, _ = apply_carry(frame, CarryInputs.from_config(config))
+            baselines = pd.read_csv(args.baselines)
+            baselines = baselines.loc[baselines.observation_id.isin(ids)]
+            result = build_stale_quote_stats(frame, baselines, args.out_dir, source_set=description, config=args.config)
+        else:
+            result = report_stale_quote_diagnostic(args.stats, args.full_runs, args.sensitivity_dir, args.out, replicates=args.replicates)
+        print(json.dumps(clean_json(result), indent=2))
+        return 0
     if args.command == "compare-baselines":
         from .compare import run_baseline_comparison
         result = run_baseline_comparison(args.runs, args.out, set_b_sidecar=args.set_b_sidecar, design_a=args.design_a,
-                                         block_length=args.block_length, replicates=args.replicates, seed=args.seed)
+                                         block_length=args.block_length, replicates=args.replicates, seed=args.seed,
+                                         stale_diagnostic=args.stale_diagnostic)
         print(json.dumps(dict(primary_claim=result["primary_claim"],
                               comparisons={k: dict(mean_differential=v["mean_differential"], interval=v["interval"],
                                                    median_relative_improvement=v["median_relative_improvement"], label=v["label"])
@@ -384,10 +425,20 @@ def run(args):
                     used = table.loc[table.observation_id.isin(frame.observation_id), source_column]
                     extra["baseline"]["by_source"] = {k: int(v) for k, v in used.value_counts().sort_index().items()}
             extra["baseline_only"] = bool(args.baseline_only)
+            evaluation_ids = None
+            if args.evaluation_subset:
+                from .carry_inputs import file_digest
+                subset = pd.read_csv(args.evaluation_subset)
+                evaluation_ids = set(subset.observation_id)
+                extra["evaluation_subset"] = dict(path=args.evaluation_subset, sha256=file_digest(args.evaluation_subset), ids=len(evaluation_ids),
+                                                  matched_rows=int(frame.observation_id.isin(evaluation_ids).sum()))
             spec = WalkForwardSpec(min_train_sessions=args.min_train_sessions, gap=args.gap,
                                    validation_sessions=args.validation_sessions, window=args.window,
                                    max_train_sessions=args.max_train_sessions)
-            result = walk_forward_report(walk_forward(frame, spec, baseline_only=args.baseline_only), args.output, n_boot=args.bootstrap, extra=extra)
+            outcome = walk_forward(frame, spec, baseline_only=args.baseline_only, evaluation_ids=evaluation_ids)
+            if evaluation_ids is not None:
+                extra["evaluation_subset"]["skipped_sessions"] = outcome["skipped_sessions"]
+            result = walk_forward_report(outcome, args.output, n_boot=args.bootstrap, extra=extra)
         else:
             from .learning import select_model
             result = select_model(root, args.model_id)

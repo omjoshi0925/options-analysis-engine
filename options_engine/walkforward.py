@@ -68,13 +68,17 @@ def fit_fold(train_frame, spec):
     return fit_ridge(train_frame, best_alpha), best_alpha
 
 
-def walk_forward(frame, spec=None, baseline_only=False):
+def walk_forward(frame, spec=None, baseline_only=False, evaluation_ids=None):
     """One fold per evaluable session; returns fold table and session-level loss series.
 
     With baseline_only the model is not fitted: the fold table scores the baseline alone and the model columns repeat it,
     which is how a competing baseline (Design B's B1, B2) is evaluated on exactly the folds the learned runs use.
+    With evaluation_ids the training windows, and therefore the fitted models, are unchanged, but each session's loss is
+    taken over the listed observations only; a session with none of them is skipped and reported in skipped_sessions
+    (Research Plan Amendment 5 sensitivity).
     """
     spec = spec or WalkForwardSpec()
+    evaluation_ids = None if evaluation_ids is None else set(evaluation_ids)
     if frame.empty or "session_date" not in frame:
         raise ValueError("Walk-forward needs a training frame with session_date")
     sessions = sorted(frame.session_date.unique())
@@ -82,13 +86,18 @@ def walk_forward(frame, spec=None, baseline_only=False):
     if len(sessions) < first_eval+1:
         raise ValueError(f"Need at least {first_eval+1} sessions for one fold; have {len(sessions)}")
     by_session = {day: group for day, group in frame.groupby("session_date")}
-    folds = []
+    folds, skipped = [], []
     for j in range(first_eval, len(sessions)):
         train_sessions = sessions[:j-spec.gap]
         if spec.window == "rolling":
             train_sessions = train_sessions[-spec.max_train_sessions:]
         train_frame = pd.concat([by_session[day] for day in train_sessions], ignore_index=True)
         evaluation = by_session[sessions[j]]
+        if evaluation_ids is not None:
+            evaluation = evaluation.loc[evaluation.observation_id.isin(evaluation_ids)]
+            if evaluation.empty:
+                skipped.append(sessions[j])
+                continue
         model, alpha = (None, None) if baseline_only else fit_fold(train_frame, spec)
         base_metrics, base_prices, _ = evaluate(None, evaluation)
         model_metrics, model_prices, _ = evaluate(model, evaluation)
@@ -115,8 +124,10 @@ def walk_forward(frame, spec=None, baseline_only=False):
                           model_within_spread=model_metrics["within_spread"],
                           baseline_within_spread=base_metrics["within_spread"],
                           learned_coverage=model_metrics["learned_coverage"]))
+    if not folds:
+        raise ValueError("No session has evaluation rows left")
     table = pd.DataFrame(folds)
-    return dict(folds=table, spec=asdict(spec), sessions=list(table.evaluated_session),
+    return dict(folds=table, spec=asdict(spec), sessions=list(table.evaluated_session), skipped_sessions=skipped,
                 baseline_losses=table.baseline_loss.to_numpy(), model_losses=table.model_loss.to_numpy())
 
 

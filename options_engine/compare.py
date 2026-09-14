@@ -313,7 +313,39 @@ def compare_baselines(runs, block_length=BLOCK_LENGTH, replicates=REPLICATES, se
                 files={name: dict(path=run["path"], files=run["files"]) for name, run in runs.items()})
 
 
-def write_baselines_report(result, path):
+def stale_section(stale):
+    """Report section for the Amendment 5 stale-quote diagnostic."""
+    overall = stale["stats"]["overall"]
+    pct = overall["relative_change_percentiles"]
+    lines = ["## Stale-quote diagnostic (exploratory, Amendment 5)", "",
+             f"Of set B's {overall['rows']:,} observations, {overall['comparable']:,} have the same contract quoted at the prior available session; "
+             f"{overall['unchanged']:,} of those ({overall['unchanged_share_of_comparable']:.1%}; {overall['unchanged_share_of_rows']:.1%} of set B) have a mid identical to "
+             f"the prior session's. Among comparable rows |mid_t - mid_(t-1)| / mid_(t-1) has percentiles p10 {pct['p10']:.3f}, p25 {pct['p25']:.3f}, p50 {pct['p50']:.3f}, "
+             f"p75 {pct['p75']:.3f}, p90 {pct['p90']:.3f}.", "",
+             "| Breakdown | Group | Rows | Comparable | Unchanged share of comparable | Median relative change |", "|---|---|---:|---:|---:|---:|"]
+    for key, title in (("by_symbol", "symbol"), ("by_maturity_bucket", "maturity"), ("by_moneyness_tercile", "moneyness tercile"), ("by_gap_days", "gap in days"),
+                       ("by_b1_source", "B1 source")):
+        for group, item in stale["stats"].get(key, {}).items():
+            median = item["relative_change_percentiles"].get("p50")
+            lines.append(f"| {title} | {group} | {item['rows']:,} | {item['comparable']:,} | {item['unchanged_share_of_comparable']:.1%} | "
+                         f"{'n/a' if median is None else format(median, '.3f')} |")
+    lines += ["", "Sensitivity: the two Design B comparisons recomputed on evaluation subsets, with the pre-registered training windows and models "
+              "(only the rows entering each session's loss change) and the same bootstrap settings. The full-set-B figures are the pre-registered ones.", "",
+              "| Subset | Sessions | Comparison | Mean L_baseline - L_model | 95% interval | Median relative improvement | Win rate | Label |",
+              "|---|---:|---|---:|---:|---:|---:|---|"]
+    for name, sub in stale["sensitivity"].items():
+        for cmp_name, item in sub["comparisons"].items():
+            lines.append(f"| {name} | {sub['sessions']} | {cmp_name} | {item['mean_differential']:.3e} | [{item['interval'][0]:.2e}, {item['interval'][1]:.2e}] | "
+                         f"{item['median_relative_improvement']:.4f} | {item['win_rate']:.3f} | {item['label']} |")
+    rmse = stale["b1_rmse_by_subset"]
+    lines += ["", "B1's median session RMSE: " + "; ".join(f"{k} {v['b1_median_session_rmse']:.4e} ({v['sessions']} sessions" +
+                                                          (f", M(RV) {v['m_rv_median_session_rmse']:.4e}" if v.get('m_rv_median_session_rmse') is not None else "") + ")"
+                                                          for k, v in rmse.items()) + ".",
+              "", "Label changes against the pre-registered labels: " + ("; ".join(stale["label_changes"]) if stale["label_changes"] else "none") + ".", ""]
+    return lines
+
+
+def write_baselines_report(result, path, stale=None):
     b = result["bootstrap"]
     lines = ["# Design B: stronger baselines on set B", "",
              f"{result['sessions']} evaluated sessions from {result['first_session']} to {result['last_session']}, identical across the five runs. "
@@ -365,17 +397,23 @@ def write_baselines_report(result, path):
         c3 = control["set_a_C3"]
         lines.append(f"| C3 on set A (Design A) | {c3['folds']} | {c3['median_rho']:.4f} | {c3['mean_d']:.3e} | {c3['win_rate']:.3f} | {c3['median_baseline_mse']:.3e} | {c3['median_model_mse']:.3e} |")
     lines += ["", "Diebold-Mariano and Newey-West values are reported for continuity with v1 and are not used for decisions."]
+    if stale:
+        lines += [""]+stale_section(stale)
     Path(path).write_text("\n".join(lines)+"\n")
 
 
-def run_baseline_comparison(run_dirs, output, set_b_sidecar=None, design_a=None, block_length=BLOCK_LENGTH, replicates=REPLICATES, seed=SEED):
+def run_baseline_comparison(run_dirs, output, set_b_sidecar=None, design_a=None, block_length=BLOCK_LENGTH, replicates=REPLICATES, seed=SEED,
+                            stale_diagnostic=None):
     runs = {Path(p).name: load_run(p) for p in run_dirs}
     b2_fallback = json.loads(Path(set_b_sidecar).read_text()).get("b2") if set_b_sidecar else None
     design = json.loads(Path(design_a).read_text()) if design_a else None
     result = compare_baselines(runs, block_length=block_length, replicates=replicates, seed=seed, b2_fallback=b2_fallback, design_a=design)
+    stale = json.loads(Path(stale_diagnostic).read_text()) if stale_diagnostic else None
+    if stale:
+        result["stale_quote_diagnostic"] = dict(path=str(stale_diagnostic), sha256=file_digest(stale_diagnostic), exploratory=True)
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     (output/"comparison.json").write_text(json.dumps(result, indent=2, sort_keys=True)+"\n")
-    write_baselines_report(result, output/"REPORT.md")
+    write_baselines_report(result, output/"REPORT.md", stale=stale)
     return result
 
