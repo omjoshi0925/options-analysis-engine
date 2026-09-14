@@ -123,7 +123,10 @@ def test_report_assembly_and_rendered_section(tmp_path, capsys):
     stats = dict(amendment=5, exploratory=True, note="test",
                  stats=dict(overall=dict(rows=100, comparable=90, unchanged=30, unchanged_share_of_comparable=1/3, unchanged_share_of_rows=.3,
                                          relative_change_percentiles={"p10": .0, "p25": .01, "p50": .03, "p75": .06, "p90": .1}, relative_change_mean=.04),
-                            by_symbol={}, by_maturity_bucket={}, by_moneyness_tercile={}, by_gap_days={}, by_b1_source={}, moneyness_tercile_edges=[.02, .05]),
+                            by_symbol={}, by_maturity_bucket={}, by_moneyness_tercile={}, by_gap_days={},
+                            by_b1_source=dict(interpolated=dict(rows=10, comparable=0, unchanged=0, unchanged_share_of_comparable=None, unchanged_share_of_rows=0.0,
+                                                                relative_change_percentiles={"p50": None}, relative_change_mean=None)),
+                            moneyness_tercile_edges=[.02, .05]),
                  subsets={})
     (tmp_path/"stats.json").write_text(json.dumps(stats))
     result = report_stale_quote_diagnostic(tmp_path/"stats.json", tmp_path/"full", tmp_path/"sens", tmp_path/"diag.json", replicates=100)
@@ -137,4 +140,5 @@ def test_report_assembly_and_rendered_section(tmp_path, capsys):
     assert code == 0
     report = (tmp_path/"cmp"/"REPORT.md").read_text()
     assert "Stale-quote diagnostic (exploratory, Amendment 5)" in report and "| changed-mid |" in report and "Label changes" in report
+    assert "| B1 source | interpolated | 10 | 0 | n/a | n/a |" in report                      # groups without comparable rows render, not crash
     assert json.loads((tmp_path/"cmp"/"comparison.json").read_text())["stale_quote_diagnostic"]["exploratory"]

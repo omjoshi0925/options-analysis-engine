@@ -327,7 +327,8 @@ def stale_section(stale):
                        ("by_b1_source", "B1 source")):
         for group, item in stale["stats"].get(key, {}).items():
             median = item["relative_change_percentiles"].get("p50")
-            lines.append(f"| {title} | {group} | {item['rows']:,} | {item['comparable']:,} | {item['unchanged_share_of_comparable']:.1%} | "
+            share = item["unchanged_share_of_comparable"]
+            lines.append(f"| {title} | {group} | {item['rows']:,} | {item['comparable']:,} | {'n/a' if share is None else format(share, '.1%')} | "
                          f"{'n/a' if median is None else format(median, '.3f')} |")
     lines += ["", "Sensitivity: the two Design B comparisons recomputed on evaluation subsets, with the pre-registered training windows and models "
               "(only the rows entering each session's loss change) and the same bootstrap settings. The full-set-B figures are the pre-registered ones.", "",
