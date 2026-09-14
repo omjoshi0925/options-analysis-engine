@@ -335,6 +335,22 @@ def write_baselines_report(result, path):
               f"**{'holds' if result['primary_claim']['holds'] else 'does not hold'}**: {result['primary_claim']['reading']}", "",
               "The claim requires the interval for the mean of L_B1 - L_M(RV) to lie entirely above zero and the median relative improvement to be positive. "
               "Secondary labels attach only where the interval excludes zero.", ""]
+    caveats = []
+    for name, item in result["comparisons"].items():
+        if item["label"] != "adds value":
+            continue
+        weak = []
+        if item["median_relative_improvement"] <= 0:
+            weak.append(f"the median relative improvement is {item['median_relative_improvement']:.4f}, so the mean gain comes from a minority of sessions")
+        if item["win_rate"] < .5:
+            weak.append(f"the model loses in {1-item['win_rate']:.1%} of sessions")
+        wide = [b for b, bounds in item["sensitivity"].items() if bounds and bounds[0] <= 0 <= bounds[1]]
+        if wide:
+            weak.append("the interval includes zero at block length" + ("s " if len(wide) > 1 else " ") + ", ".join(wide))
+        if weak:
+            caveats.append(f"- {name}: labeled by the block-21 interval alone; " + "; ".join(weak) + ".")
+    if caveats:
+        lines += ["## Caveats on labels that rest on the mean alone", "", *caveats, ""]
     fb = result.get("b2_fallback") or {}
     if fb:
         lines += ["## B2 fallback accounting (Amendment 4)", "",

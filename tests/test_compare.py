@@ -160,6 +160,14 @@ def test_compare_baselines_cli(tmp_path, capsys):
     assert saved["set_b_control"]["set_a_C3"]["folds"] == 1056 and saved["b2_fallback"]["slice_fallback_rate"] == .1
     report = (tmp_path/"cmp"/"REPORT.md").read_text()
     assert "M(RV) vs B1 (primary)" in report and "Set B control" in report and "C3 on set A" in report and "holds" in report
+    assert "Caveats" not in report                                                    # every label here is backed by the median and win rate
+    fragile = design_b_runs(n=150, seed=9)
+    fragile["M-B1"]["folds"]["model_mse"] = fragile["B1"]["folds"]["baseline_mse"]*np.where(np.arange(150) % 10 == 0, .2, 1.01)
+    fragile_result = compare_baselines(fragile, replicates=200)
+    if fragile_result["comparisons"]["M(B1) vs B1"]["label"] == "adds value":
+        from options_engine.compare import write_baselines_report
+        write_baselines_report(fragile_result, tmp_path/"fragile.md")
+        assert "Caveats" in (tmp_path/"fragile.md").read_text() and "minority of sessions" in (tmp_path/"fragile.md").read_text()
     again = run_baseline_comparison([tmp_path/n for n in ("B1", "B2", "M-RV", "M-B1", "M-B2")], tmp_path/"again", replicates=50)
     assert again["comparisons"]["M(RV) vs B1"]["claim_holds"]
 
