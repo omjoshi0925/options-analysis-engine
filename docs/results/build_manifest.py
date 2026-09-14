@@ -658,9 +658,12 @@ def gather(check_mode):
                runs={}, exports={}, derived={}, coverage={}, snapshots={}, config_values={})
     # The report's version claim describes the frozen study, so read the version at the study-v1 tag when it exists
     # and fall back to the working tree (which is what later releases have).
-    tagged = git("show", f"{STUDY['tag']}:options_engine/__init__.py") or (ROOT/"options_engine/__init__.py").read_text()
-    version = re.search(r'__version__\s*=\s*"([^"]+)"', tagged)
-    ctx["code"]["version"] = version.group(1) if version else None
+    tagged = git("show", f"{STUDY['tag']}:options_engine/__init__.py")
+    if tagged is None and check_mode:
+        ctx["code"]["version"] = None        # shallow checkouts (CI) have no tag: the claim is skipped, not recomputed from a later release
+    else:
+        version = re.search(r'__version__\s*=\s*"([^"]+)"', tagged or (ROOT/"options_engine/__init__.py").read_text())
+        ctx["code"]["version"] = version.group(1) if version else None
     current = re.search(r'__version__\s*=\s*"([^"]+)"', (ROOT/"options_engine/__init__.py").read_text())
     ctx["code"]["working_tree_version"] = current.group(1) if current else None
     for name in RUNS:
