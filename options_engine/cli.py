@@ -88,6 +88,14 @@ def parser():
     forward.add_argument("--lookback-sessions", type=int, default=100000, help="How much stored history to load")
     forward.add_argument("--bootstrap", type=int, default=2000)
     forward.add_argument("--observation-set", help="Keys CSV (or .csv.gz) from `observation-set build`; restricts training and evaluation to it")
+    compare = commands.add_parser("compare-configs", help="Design A comparison: S_k with paired block-bootstrap intervals and the section 3 decision")
+    compare.add_argument("--runs", nargs="+", required=True, help="Walk-forward output directories named by configuration (C0 C1 C2 C3)")
+    compare.add_argument("--out", required=True, help="Directory for comparison.json and REPORT.md")
+    compare.add_argument("--control", default="C0")
+    compare.add_argument("--treatment", default="C3")
+    compare.add_argument("--block-length", type=int, default=21)
+    compare.add_argument("--replicates", type=int, default=10000)
+    compare.add_argument("--seed", type=int, default=20260908)
     forward.add_argument("--allow-partial", action="store_true",
                          help="Proceed when the set is not fully matched, the config drops rows, or the config is not among the set's builders")
     obs = commands.add_parser("observation-set", help="Build a frozen observation set: v1-eligible rows that price under every listed config")
@@ -165,6 +173,14 @@ def run(args):
             figure.savefig(target, dpi=160, bbox_inches="tight")
             summary["plot"] = str(target)
         print(json.dumps(clean_json(summary), indent=2))
+        return 0
+    if args.command == "compare-configs":
+        from .compare import run_comparison
+        result = run_comparison(args.runs, args.out, control=args.control, treatment=args.treatment,
+                                block_length=args.block_length, replicates=args.replicates, seed=args.seed)
+        print(json.dumps(dict(decision=result["decision"], s={k: dict(s=v["s"], interval=v["interval"]) for k, v in result["s"].items()},
+                              carry_only_check=result["carry_only_check"], mean_d_treatment=result["mean_d_treatment"],
+                              output=str(Path(args.out)/"comparison.json")), indent=2))
         return 0
     if args.command == "observation-set":
         from .carry_inputs import CarryInputs

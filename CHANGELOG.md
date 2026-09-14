@@ -8,6 +8,9 @@
   which never happens under constant carry. Maturity, baseline volatility,
   log-moneyness, and symbol are still guarded; v1 and C0 numbers are
   unchanged.
+- Add `compare-configs`: Design A comparison across carry configurations with
+  S_k, paired circular block-bootstrap intervals and sensitivity blocks, the
+  carry-only check, the mean-d_3 interval, and the section 3 decision label.
 
 ## 3.3.0 - 2026-09-09
 

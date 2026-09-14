@@ -119,6 +119,16 @@ and rows whose target does not identify, or leaves the v1 range [3%, 300%],
 are drop reasons (`iv_not_identified`, `iv_outside_training_range`); constant
 v1 carry reproduces every stored target exactly.
 
+`compare-configs --runs docs/results/v2/design-a/C0 ... C3 --out docs/results/v2/design-a`
+reads the four fold tables (which must evaluate identical sessions) and writes
+comparison.json and REPORT.md: per configuration the median rho, mean d, win
+rate, median session MSEs, coverage, and the continuity statistics; S_k as the
+ratio of median rho to the control's with paired circular block bootstrap
+intervals (identical block indices for numerator and denominator; block 21,
+10,000 replicates, seed 20260908, percentile 95%, sensitivity at blocks 10,
+63, 126); the carry-only check; the interval for the mean of d_3; and the
+section 3 decision label applied mechanically.
+
 Column semantics: in `export` output, `r`, `q`, `iv_brent_*`, `baseline_*` and
 the bound columns are the values stored at import (constant v1 carry), while
 `effective_r`/`effective_q` are the config's carry for that session and symbol
