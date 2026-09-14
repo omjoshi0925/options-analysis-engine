@@ -158,3 +158,11 @@ Reason: Stage 2 of the v3.3 implementation (commits 2bafa6d, a4fad8c, 96d9b43) a
 4. Section 2, coverage of the dividend inputs. The declared distribution history runs from 2018-01-01 to the 2026-09-09 retrieval; a 365-day window that starts before or ends after it is refused, as is a rate quote or underlying bar more than 10 calendar days old. None of these refusals occurs on any stored session, so they change no number in Design A; they exist so that later extensions cannot sum an incomplete history silently.
 
 5. Section 3, configuration files. config/v2/C0.json to C3.json sit one directory below config/eod-full.json, so their data_root reads ../../data/eod-live-full rather than ../data/eod-live-full and resolves to the same store; rate and dividend are the only other differences.
+
+### Amendment 4, 2026-09-13
+
+Reason: Design B (section 4) leaves three operational points open that the v3.4 implementation has to fix before any run. Recorded before any Design B code was written. No estimand, threshold, or decision-rule changes.
+
+- B1 inversion carry. The prior-session implied volatility is inverted from the t-1 mid using r_{t-1}, q_{t-1}, S_{t-1}, and time to expiry measured from t-1. The resulting sigma is applied at t with r_t, q_t, S_t, and time to expiry from t. Rationale: the mid was observed under t-1 conditions, and using t's carry to invert a t-1 price would mix regimes.
+- Set B control. M(RV) is rerun on set B so the effect of restricting from set A to set B is visible before any B1 or B2 comparison is interpreted, exactly as C0 on set A controlled for the A intersection.
+- SVI fallback. Slices whose fit fails convergence or the butterfly check fall back to B1 and are counted; if fallbacks exceed 20% of slices, B2 is reported as a fallback-contaminated benchmark and not used for the secondary claim.
