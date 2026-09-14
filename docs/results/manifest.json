@@ -6,9 +6,9 @@
   "report": "docs/RESULTS.md",
   "code_version": "3.2.1",
   "repository": "https://github.com/omjoshi0925/options-analysis-engine",
-  "code_commit": "65d15db9ed8f498fc0649ca04a4f530cbcb57af8",
-  "code_commit_short": "65d15db",
-  "working_tree_version": "3.3.1",
+  "code_commit": "3c32dcb1a76a93a6403f3b4e6fe0cbac421c57ef",
+  "code_commit_short": "3c32dcb",
+  "working_tree_version": "3.4.0",
   "report_sha256": "74a6e12ff4f54e7ec4dc230582e372ff74506a1683dcaa52ec84a90763b12447",
   "description": "1,056-fold rolling-origin walk-forward over DoltHub end-of-day chains (SPY and AAPL; QQQ configured but absent from the export) plus a single-year SPY 2023 run, constant rate and dividend yields.",
   "built_with": {
@@ -10234,8 +10234,8 @@
  "study_v2": {
   "plan": {
    "path": "docs/RESEARCH_PLAN.md",
-   "sha256": "3b2c6f4342a324ede90bdefc4f832d605b39e4bb7d137cd35b950d2be8a030ae",
-   "bytes": 19585
+   "sha256": "35564db7a269bf0587e8405850f8be9d57bef7cbd064ff9892e965020d0ce234",
+   "bytes": 20630
   },
   "external_inputs": [
    {
@@ -10589,6 +10589,362 @@
      126
     ],
     "sensitivity_blocks_skipped": []
+   }
+  },
+  "design_b": {
+   "observation_set": {
+    "path": "docs/results/v2/observation-set-B.csv.gz",
+    "sha256": "12a371b4837d190c5eb43314304863de49edfb25004845180681a3dcef5d5051",
+    "bytes": 6045666,
+    "compression": "gzip -n -9",
+    "uncompressed_sha256": "5136adc81d154fa3b1e793a006bd1bacbf0bd1367724fd49c5f8672ff7810217",
+    "sidecar": {
+     "path": "docs/results/v2/observation-set-B.drops.json",
+     "sha256": "7b40b405fb0e7839c430576027311af7d191a50ff4a4b268f5972609b354d2e3",
+     "bytes": 5647,
+     "rows": 154110,
+     "recorded_sha256": "5136adc81d154fa3b1e793a006bd1bacbf0bd1367724fd49c5f8672ff7810217",
+     "kept": 154110,
+     "candidates": 253554,
+     "dropped_by_reason": {
+      "expiry_absent_at_prior_session": 88753,
+      "no_prior_session": 111,
+      "single_strike_at_prior_session": 48,
+      "strike_outside_prior_range": 10504,
+      "type_absent_at_prior_session": 28
+     },
+     "b1_by_source": {
+      "interpolated": 65702,
+      "same_contract": 88408
+     },
+     "b2_slice_fallback_rate": 0.03915929203539823
+    },
+    "uncompressed_matches_sidecar": true
+   },
+   "baselines": {
+    "path": "docs/results/v2/baselines-B.csv.gz",
+    "sha256": "d4f886aaefbd202f86d03b065dbdc76e7915a3f9aa72bb3d545b3c4f64bcd99e",
+    "bytes": 10138175,
+    "compression": "gzip -n -9",
+    "uncompressed_sha256": "df2ad8f0cca8be329e63b5c7ef857fe5f211e56398962266fccb3f00972784fe",
+    "recorded_sha256": "df2ad8f0cca8be329e63b5c7ef857fe5f211e56398962266fccb3f00972784fe",
+    "rows": 154110,
+    "uncompressed_matches_sidecar": true
+   },
+   "runs": {
+    "B1": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-b/B1/folds.csv",
+      "sha256": "436d8f9eff9135c1ed667edd06cc03928a03c966a2b3bfde8b83ec1ee2acd850",
+      "bytes": 377288
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-b/B1/significance.json",
+      "sha256": "a6c426d89b7617eb6796a8d5a6886b2108170dc04f9d3845234132e7d70c25a2",
+      "bytes": 24081
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-b/B1/REPORT.md",
+      "sha256": "21d9507a16f6ce93c597ff395031da2ef49a39d8575f59ebf929413f93104c5f",
+      "bytes": 1014
+     }
+    },
+    "B2": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-b/B2/folds.csv",
+      "sha256": "daa78381f749930c9ae9c54f880d988e6de400c2aaaee7be2d597a2cbec32ff4",
+      "bytes": 377602
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-b/B2/significance.json",
+      "sha256": "ef230b00c4c858e23e20c627ffcbc34ca3da50996d3db3a27593a041868aa449",
+      "bytes": 24070
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-b/B2/REPORT.md",
+      "sha256": "21d9507a16f6ce93c597ff395031da2ef49a39d8575f59ebf929413f93104c5f",
+      "bytes": 1014
+     }
+    },
+    "M-RV": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-b/M-RV/folds.csv",
+      "sha256": "dec15e5b2697f80cb70c6f8be500caf0ed9797cd712dae9fb64a79aa4ff62a21",
+      "bytes": 416491
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-b/M-RV/significance.json",
+      "sha256": "1db565df66c156ae915fa97522e9f03c00acea5b193caa7ef6fe0ba12a07b0fe",
+      "bytes": 3746
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-b/M-RV/REPORT.md",
+      "sha256": "8f9a662c9fdceeaa9a8423eed7880bf13c4d4c69fb1bfb44731a8dc47d78c6c5",
+      "bytes": 996
+     }
+    },
+    "M-B1": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-b/M-B1/folds.csv",
+      "sha256": "6b59b51136973d44b27d60a3b412b68fe9cac213d0caa3a8a2adaef7672f0853",
+      "bytes": 417533
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-b/M-B1/significance.json",
+      "sha256": "a8054c3ef4ca231a6f8be720735b004a09b0bf2501cad68d890313ef83eba6c3",
+      "bytes": 4064
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-b/M-B1/REPORT.md",
+      "sha256": "ef986fc623c8ae8a0312181de5e4a767c60b737522dc509fc4cc5d5065d9cd07",
+      "bytes": 998
+     }
+    },
+    "M-B2": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-b/M-B2/folds.csv",
+      "sha256": "8218d828cc7a16adf135ceeabf149124d69af7e8d1e765983cbc677da4aa2da7",
+      "bytes": 417839
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-b/M-B2/significance.json",
+      "sha256": "ed22e3f91d59c241121b18657d67ff1a837b6a8b993a547f6aab0e0c9c3ecac6",
+      "bytes": 4067
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-b/M-B2/REPORT.md",
+      "sha256": "97fa484dfb11d8563291577986ae9ec3ff81bbba2f522829479ab151ab451562",
+      "bytes": 1006
+     }
+    }
+   },
+   "comparison": [
+    {
+     "path": "docs/results/v2/design-b/comparison.json",
+     "sha256": "584c93eb7b960642a0e3d9e71a5901c57695f37a466735ecb47fe5107c34f464",
+     "bytes": 24929
+    },
+    {
+     "path": "docs/results/v2/design-b/REPORT.md",
+     "sha256": "3f76701bfdf994f84c1deb16f65697b2e4f07b3a7c8d94e2021ed92085a01055",
+     "bytes": 3057
+    }
+   ],
+   "headline": {
+    "source": "docs/results/v2/design-b/comparison.json",
+    "primary_claim": {
+     "holds": false,
+     "label": "baseline wins",
+     "reading": "B1 beats M(RV): the v1 model captured structure that a flat baseline lacks but no more than persistence of the previous smile provides; the value claim is downgraded to that statement and M(B1) versus B1 becomes the relevant test of incremental value. M(B1) versus B1 excludes zero above, so the adjustment adds value beyond persistence when learned relative to it."
+    },
+    "b2_fallback_contaminated": false,
+    "comparisons": {
+     "M(B1) vs B1": {
+      "mean_differential": 4.1044095721071574e-07,
+      "interval": [
+       5.392776397656485e-08,
+       8.396805280822089e-07
+      ],
+      "sensitivity": {
+       "10": [
+        9.144665478771704e-08,
+        7.715967384591638e-07
+       ],
+       "126": [
+        -9.782004296929247e-08,
+        1.1673103762114844e-06
+       ],
+       "21": [
+        5.392776397656485e-08,
+        8.396805280822089e-07
+       ],
+       "63": [
+        -4.544677294855009e-08,
+        1.0109232026069904e-06
+       ]
+      },
+      "median_relative_improvement": -0.011913211052866357,
+      "win_rate": 0.4626865671641791,
+      "label": "adds value"
+     },
+     "M(B2) vs B2": {
+      "mean_differential": -4.825266026670301e-06,
+      "interval": [
+       -8.199687894840596e-06,
+       -2.5022432509508228e-06
+      ],
+      "sensitivity": {
+       "10": [
+        -7.599854466904898e-06,
+        -2.903208058483675e-06
+       ],
+       "126": [
+        -9.755455245982649e-06,
+        -1.4756756415030295e-06
+       ],
+       "21": [
+        -8.199687894840596e-06,
+        -2.5022432509508228e-06
+       ],
+       "63": [
+        -9.312827666918173e-06,
+        -1.8371989148979774e-06
+       ]
+      },
+      "median_relative_improvement": -0.23820081182004071,
+      "win_rate": 0.2407960199004975,
+      "label": "baseline wins"
+     },
+     "M(RV) vs B1": {
+      "mean_differential": -1.6915184051002517e-05,
+      "interval": [
+       -2.407279383354626e-05,
+       -1.1367388929669549e-05
+      ],
+      "sensitivity": {
+       "10": [
+        -2.3469355609977888e-05,
+        -1.2017844727369947e-05
+       ],
+       "126": [
+        -2.469832279570756e-05,
+        -1.0079068702865933e-05
+       ],
+       "21": [
+        -2.407279383354626e-05,
+        -1.1367388929669549e-05
+       ],
+       "63": [
+        -2.5226769218235446e-05,
+        -1.0316383017912262e-05
+       ]
+      },
+      "median_relative_improvement": -1.8899642173013946,
+      "win_rate": 0.05373134328358209,
+      "label": "baseline wins"
+     },
+     "M(RV) vs B2": {
+      "mean_differential": -1.3156380417775617e-05,
+      "interval": [
+       -2.0409048371253716e-05,
+       -7.642079232726333e-06
+      ],
+      "sensitivity": {
+       "10": [
+        -1.9616326211087975e-05,
+        -8.356311706075167e-06
+       ],
+       "126": [
+        -2.1451867044902175e-05,
+        -6.161015186660983e-06
+       ],
+       "21": [
+        -2.0409048371253716e-05,
+        -7.642079232726333e-06
+       ],
+       "63": [
+        -2.1751934383994527e-05,
+        -6.39890178133184e-06
+       ]
+      },
+      "median_relative_improvement": -0.4544559888792241,
+      "win_rate": 0.15422885572139303,
+      "label": "baseline wins"
+     }
+    },
+    "set_b_control": {
+     "set_a_C3": {
+      "folds": 1056,
+      "mean_d": 0.000474847531248505,
+      "median_baseline_mse": 1.3989102215239915e-05,
+      "median_model_mse": 1.1462346386668883e-05,
+      "median_rho": 0.1070467797594387,
+      "win_rate": 0.6458333333333334
+     },
+     "set_b": {
+      "M_RV": {
+       "carry": {
+        "dividend": {
+         "files": {
+          "bars": {
+           "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/full_underlying.csv",
+           "sha256": "aa9e446dddf40682a68890a0b70f36a41c6d2f108d0777dddc1b7403801bc738"
+          },
+          "dividends": {
+           "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/dividends.csv",
+           "sha256": "7cc323daac11272eee3949729e7ee435ae865670ccb76b3424f80068cdbf39d2"
+          },
+          "splits": {
+           "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/splits.csv",
+           "sha256": "96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec"
+          }
+         },
+         "history_end": "2026-09-09",
+         "history_start": "2018-01-01",
+         "max_bar_gap_days": 10,
+         "mode": "series",
+         "stale_days": 100,
+         "window_days": 365
+        },
+        "rate": {
+         "alignment": "strictly_prior",
+         "first_quote": "1981-09-01",
+         "last_quote": "2026-09-04",
+         "mode": "series",
+         "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/DGS3MO.csv",
+         "quotes": 11253,
+         "sha256": "504030af381b2ee828c3012ba91dcc9ea7cdbbcaa3297026acd500ed9c4b4e44",
+         "stale_days": 10,
+         "units": "percent"
+        }
+       },
+       "config": {
+        "path": "config/v2/C3.json",
+        "sha256": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348"
+       },
+       "diebold_mariano_hln": {
+        "lag1_autocorrelation": 0.7130601268884611,
+        "p_value": 0.034778603533040804,
+        "statistic": 2.1137984362371465
+       },
+       "first_session": "2020-11-16",
+       "folds": 1005,
+       "last_session": "2026-09-04",
+       "learned_coverage": {
+        "mean": 0.9968463028895309,
+        "partial_coverage_folds": 7,
+        "zero_coverage_folds": 0
+       },
+       "mean_baseline_rmse": 0.006027188810588324,
+       "mean_d": 0.00025303472220692693,
+       "mean_model_rmse": 0.004064479144015025,
+       "median_baseline_mse": 1.6092035958221377e-05,
+       "median_model_mse": 1.1324494176165072e-05,
+       "median_rho": 0.1623330888452132,
+       "newey_west": {
+        "hac_lags": 15,
+        "p_value": 0.26534268336516525,
+        "statistic": 1.1144738111012413
+       },
+       "win_rate": 0.708457711442786
+      },
+      "M_RV_median_mse": 1.1324494176165072e-05,
+      "RV_median_mse": 1.6092035958221377e-05
+     }
+    },
+    "bootstrap": {
+     "block_length": 21,
+     "confidence": 0.95,
+     "kind": "circular block, paired (identical block indices for every series)",
+     "replicates": 10000,
+     "seed": 20260908,
+     "sensitivity_blocks": [
+      10,
+      63,
+      126
+     ],
+     "sensitivity_blocks_skipped": []
+    }
    }
   }
  },
