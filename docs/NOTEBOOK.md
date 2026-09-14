@@ -306,3 +306,43 @@ docs/RESULTS.md at ee8ce3c rather than the study-v1 tag. docs/TALK_OUTLINE.md
 still carries its fill slots; a guard-sensitivity run (C1 and C3 with the v1
 guard kept) has not been made.
 
+## 2026-09-13: study v2, Design B, Stage 1 (baselines and set B)
+
+Amendment 4 was recorded first. Implemented `options_engine.baselines` (3.4
+series): B1 takes the same contract's implied volatility at the prior
+available session, which under Amendment 4 is exactly the target apply_carry
+solves on the t-1 row (S_{t-1}, time to expiry from t-1, r_{t-1}, q_{t-1});
+absent contracts are interpolated linearly in strike within the same expiry
+and option type at t-1, never beyond the quoted range. B2 fits raw SVI total
+variance per t-1 expiry slice to the out-of-the-money mids by vega-weighted
+least squares, keeps the standard bounds and the butterfly check, and is
+evaluated at t's strikes against t's forward; failures fall back to B1.
+
+Set B: 154,110 of set A's 253,554 rows (60.8%), 1,126 of 1,177 sessions,
+144,072 evaluated rows in 1,015 sessions from 2020-10-23. The drop is a
+property of the source: each date's chain carries three (sometimes four)
+expirations at fixed offsets of about 14, 28, and 65 days, so the two short
+ones roll with the date and only the monthly expiry exists at the prior
+session; 88,753 of the 99,444 drops are `expiry_absent_at_prior_session`,
+10,504 `strike_outside_prior_range`, and the rest are first sessions, single
+strikes, or a missing type. 51 sessions lose every row, mostly the sessions
+just after a monthly roll. Kept rows: 57.4% same contract, 42.6%
+interpolated; median gap to the prior session 2 days, maximum 14. Median
+|B1 - RV| is 0.0765 (median B1 0.281 against RV 0.212).
+
+SVI: a first pass fell back on 49.7% of slices, which a diagnosis traced to
+the optimizer, not the data: the raw-parameter least squares surface is flat
+along a degenerate direction (b toward 2, |rho| toward 1, negative a) that
+fits the quoted range but fails the bounds, and a quarter of fits hit the
+evaluation cap. Refitting in (w_min, b, rho, m, sigma) with the minimum total
+variance as a box bound, a penalty for Lee's wing bound, an analytic Jacobian
+and data-driven starts (commit 4e5ffa4) gives 3.9% slice fallbacks (117 too
+few strikes, 56 butterfly, 3 no convergence, 1 bounds), 2.6% of rows, so B2
+is not fallback-contaminated under Amendment 4. Median |B2 - B1| on fitted
+rows is 0.0105. B1 is byte-identical between the two passes.
+
+Reported at the CHECKPOINT with one open point for the writeup: the plan's
+exclusion rule makes set B lean toward monthly expiries (median 39 days to
+expiry against 28 for the dropped rows), so Design B answers its question on
+a longer-dated subset than Design A.
+

@@ -1,0 +1,211 @@
+{
+  "b1_by_source": {
+    "interpolated": 65702,
+    "same_contract": 88408
+  },
+  "b1_vs_rv": {
+    "median_abs_difference": 0.07649115902885979,
+    "median_b1": 0.28055992014655395,
+    "median_rv": 0.2116092572668013
+  },
+  "b2": {
+    "fallback_contaminated": false,
+    "rows_by_source": {
+      "fallback_b1": 4072,
+      "svi": 150038
+    },
+    "rows_fallback_by_reason": {
+      "butterfly": 1661,
+      "no_convergence": 89,
+      "parameter_bounds": 24,
+      "too_few_strikes": 2298
+    },
+    "slice_fallback_rate": 0.03915929203539823,
+    "slices_attempted": 4520,
+    "slices_fallback_by_reason": {
+      "butterfly": 56,
+      "no_convergence": 3,
+      "parameter_bounds": 1,
+      "too_few_strikes": 117
+    },
+    "slices_fitted": 4343
+  },
+  "baselines": {
+    "columns": [
+      "observation_id",
+      "session_date",
+      "symbol",
+      "contractSymbol",
+      "expiration",
+      "strike",
+      "option_type",
+      "prior_session",
+      "gap_days",
+      "b1_sigma",
+      "b1_source",
+      "b1_reason",
+      "b2_sigma",
+      "b2_source",
+      "b2_reason",
+      "rv_sigma"
+    ],
+    "path": "docs/results/v2/baselines-B.csv",
+    "rows": 154110,
+    "sha256": "df2ad8f0cca8be329e63b5c7ef857fe5f211e56398962266fccb3f00972784fe"
+  },
+  "candidate_sessions": 1177,
+  "candidates": 253554,
+  "carry": {
+    "dividend": {
+      "files": {
+        "bars": {
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/full_underlying.csv",
+          "sha256": "aa9e446dddf40682a68890a0b70f36a41c6d2f108d0777dddc1b7403801bc738"
+        },
+        "dividends": {
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/dividends.csv",
+          "sha256": "7cc323daac11272eee3949729e7ee435ae865670ccb76b3424f80068cdbf39d2"
+        },
+        "splits": {
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/splits.csv",
+          "sha256": "96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec"
+        }
+      },
+      "history_end": "2026-09-09",
+      "history_start": "2018-01-01",
+      "max_bar_gap_days": 10,
+      "mode": "series",
+      "stale_days": 100,
+      "window_days": 365
+    },
+    "rate": {
+      "alignment": "strictly_prior",
+      "first_quote": "1981-09-01",
+      "last_quote": "2026-09-04",
+      "mode": "series",
+      "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/DGS3MO.csv",
+      "quotes": 11253,
+      "sha256": "504030af381b2ee828c3012ba91dcc9ea7cdbbcaa3297026acd500ed9c4b4e44",
+      "stale_days": 10,
+      "units": "percent"
+    }
+  },
+  "configs": {
+    "C3": {
+      "path": "config/v2/C3.json",
+      "sha256": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348"
+    }
+  },
+  "dropped": 99444,
+  "dropped_by_reason": {
+    "expiry_absent_at_prior_session": 88753,
+    "no_prior_session": 111,
+    "single_strike_at_prior_session": 48,
+    "strike_outside_prior_range": 10504,
+    "type_absent_at_prior_session": 28
+  },
+  "dropped_by_symbol": {
+    "AAPL": 39801,
+    "SPY": 59643
+  },
+  "gap_days": {
+    "distribution": {
+      "1": 63427,
+      "14": 37,
+      "2": 39315,
+      "3": 45644,
+      "4": 2026,
+      "5": 3563,
+      "7": 98
+    },
+    "max": 14,
+    "mean": 1.9863214586983324,
+    "median": 2.0
+  },
+  "kept": 154110,
+  "kept_by_symbol": {
+    "AAPL": 87852,
+    "SPY": 66258
+  },
+  "kept_sessions": 1126,
+  "observation_set": {
+    "columns": [
+      "observation_id",
+      "session_date",
+      "symbol"
+    ],
+    "note": "sha256 is of the uncompressed CSV bytes",
+    "path": "docs/results/v2/observation-set-B.csv",
+    "rows": 154110,
+    "sha256": "5136adc81d154fa3b1e793a006bd1bacbf0bd1367724fd49c5f8672ff7810217"
+  },
+  "rule": "kept only if a same-contract or strike-interpolated prior-session implied volatility exists (Amendment 4 carry)",
+  "sessions_lost": [
+    "2019-05-10",
+    "2020-01-06",
+    "2020-01-15",
+    "2020-02-19",
+    "2020-03-11",
+    "2020-04-15",
+    "2020-06-17",
+    "2020-07-15",
+    "2020-09-16",
+    "2020-10-14",
+    "2020-12-16",
+    "2021-01-13",
+    "2021-03-17",
+    "2021-04-14",
+    "2021-05-14",
+    "2021-06-15",
+    "2021-07-14",
+    "2021-09-15",
+    "2021-10-13",
+    "2021-11-17",
+    "2021-12-15",
+    "2022-01-12",
+    "2022-01-19",
+    "2022-03-16",
+    "2022-04-13",
+    "2022-06-15",
+    "2022-07-13",
+    "2022-08-17",
+    "2022-09-14",
+    "2022-10-12",
+    "2022-11-16",
+    "2022-12-14",
+    "2023-01-11",
+    "2023-01-20",
+    "2023-02-15",
+    "2023-03-15",
+    "2023-04-12",
+    "2023-05-17",
+    "2023-06-14",
+    "2023-07-12",
+    "2023-08-16",
+    "2023-09-13",
+    "2023-10-11",
+    "2023-11-16",
+    "2024-04-17",
+    "2024-05-15",
+    "2024-07-17",
+    "2024-10-15",
+    "2025-01-14",
+    "2025-07-15",
+    "2025-10-14"
+  ],
+  "source_set": {
+    "configs": {
+      "C0": "91f9c8e042f5bd6004c9291b705a29ca2d8fddfbf4e45885d1f755aca59725cc",
+      "C1": "0284dfc50dc513094bc5dfcdbad7442ac05e42a3dcc40a237d120991356d54e1",
+      "C2": "36be1914e18628f2d67e24af3d643f6eaae990c30ffadda6c74721d9d5e90fd6",
+      "C3": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348"
+    },
+    "path": "docs/results/v2/observation-set-A.csv.gz",
+    "recorded_rows": 253554,
+    "recorded_sha256": "0f6c47bf691a90a2ceb60e6b5fdf447fed4d04cb8fa3334a121316dc8448f57c",
+    "rows": 253554,
+    "sha256": "81234b995f154331a190c9e0e126308b386d217957dcb99e3c5f228404f846df",
+    "sidecar": "docs/results/v2/observation-set-A.drops.json",
+    "uncompressed_sha256": "0f6c47bf691a90a2ceb60e6b5fdf447fed4d04cb8fa3334a121316dc8448f57c"
+  }
+}
