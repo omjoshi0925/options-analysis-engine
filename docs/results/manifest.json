@@ -6,8 +6,9 @@
   "report": "docs/RESULTS.md",
   "code_version": "3.2.1",
   "repository": "https://github.com/omjoshi0925/options-analysis-engine",
-  "code_commit": "fbfa43aaf81722b46303be41b25a0f10dd6c7fe7",
-  "code_commit_short": "fbfa43a",
+  "code_commit": "65d15db9ed8f498fc0649ca04a4f530cbcb57af8",
+  "code_commit_short": "65d15db",
+  "working_tree_version": "3.3.1",
   "report_sha256": "74a6e12ff4f54e7ec4dc230582e372ff74506a1683dcaa52ec84a90763b12447",
   "description": "1,056-fold rolling-origin walk-forward over DoltHub end-of-day chains (SPY and AAPL; QQQ configured but absent from the export) plus a single-year SPY 2023 run, constant rate and dividend yields.",
   "built_with": {
@@ -11748,11 +11749,11 @@
    "section": "Header; Reproducibility",
    "text": "options_engine 3.2.1",
    "reported": "3.2.1",
-   "value": "3.3.1",
-   "rendered": "3.3.1",
-   "matches_reported": false,
-   "source": "pyproject.toml; options_engine/__init__.py",
-   "field": "version / __version__",
+   "value": "3.2.1",
+   "rendered": "3.2.1",
+   "matches_reported": true,
+   "source": "options_engine/__init__.py at tag study-v1",
+   "field": "__version__ (the working tree may be a later release; see study.working_tree_version)",
    "status": "traced"
   },
   {

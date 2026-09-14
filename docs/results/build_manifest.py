@@ -568,7 +568,8 @@ def make_claims(ctx):
     add("spy2023.ci.low", "Results", "[8.4e-07, ...]", "8.4e-07", sci["low"], "{:.1e}", SPY_SIG, "bootstrap_mean_differential.low")
     add("spy2023.ci.high", "Results", "[..., 6.0e-06]", "6.0e-06", sci["high"], "{:.1e}", SPY_SIG, "bootstrap_mean_differential.high")
     # --- Reproducibility
-    add("repro.version", "Header; Reproducibility", "options_engine 3.2.1", "3.2.1", ctx["code"]["version"], None, "pyproject.toml; options_engine/__init__.py", "version / __version__")
+    add("repro.version", "Header; Reproducibility", "options_engine 3.2.1", "3.2.1", ctx["code"]["version"], None,
+        f"options_engine/__init__.py at tag {STUDY['tag']}", "__version__ (the working tree may be a later release; see study.working_tree_version)")
     add("repro.tests", "Reproducibility", "181 offline tests", "181", ctx["verification"].get("tests_passed"), "{}", ctx["verification"]["path"],
         "'N passed' in the pytest -q summary recorded at the freeze", status="verified_by_run")
     add("repro.lint", "Reproducibility", "lint clean", "clean", ctx["verification"].get("lint"), None, ctx["verification"]["path"], "ruff check output", status="verified_by_run")
@@ -655,8 +656,13 @@ def make_claims(ctx):
 def gather(check_mode):
     ctx = dict(code=dict(version=None, commit=git("rev-parse", "HEAD"), commit_short=git("rev-parse", "--short", "HEAD")),
                runs={}, exports={}, derived={}, coverage={}, snapshots={}, config_values={})
-    version = re.search(r'__version__\s*=\s*"([^"]+)"', (ROOT/"options_engine/__init__.py").read_text())
+    # The report's version claim describes the frozen study, so read the version at the study-v1 tag when it exists
+    # and fall back to the working tree (which is what later releases have).
+    tagged = git("show", f"{STUDY['tag']}:options_engine/__init__.py") or (ROOT/"options_engine/__init__.py").read_text()
+    version = re.search(r'__version__\s*=\s*"([^"]+)"', tagged)
     ctx["code"]["version"] = version.group(1) if version else None
+    current = re.search(r'__version__\s*=\s*"([^"]+)"', (ROOT/"options_engine/__init__.py").read_text())
+    ctx["code"]["working_tree_version"] = current.group(1) if current else None
     for name in RUNS:
         run = load_run(name)
         if run:
@@ -779,6 +785,7 @@ def build_manifest(ctx):
     manifest = dict(
         schema="options_engine study manifest, version 1",
         study=dict(**STUDY, code_commit=ctx["code"]["commit"], code_commit_short=ctx["code"]["commit_short"],
+                   working_tree_version=ctx["code"]["working_tree_version"],
                    report_sha256=sha256_file(ROOT/STUDY["report"]),
                    description="1,056-fold rolling-origin walk-forward over DoltHub end-of-day chains (SPY and AAPL; QQQ configured but absent from the export) "
                                "plus a single-year SPY 2023 run, constant rate and dividend yields.",
