@@ -1,5 +1,36 @@
 # Changelog
 
+## 3.5.0 - 2026-09-15
+
+Design C of the study v2 research plan (section 5, Amendment 5), all of it
+exploratory:
+
+- `walk-forward --exclude-features` refits the learner without a feature
+  group (moneyness, maturity_interactions, symbol); the exclusion is stored on
+  the model and applied at prediction. `--save-predictions` writes per-row
+  baseline and model prices for every evaluated session.
+- Add `options_engine.attribution` and the `design-c` command: ablation
+  tables with the paired block-bootstrap interval for the change in mean d
+  against the full model; breakdowns of d and rho by symbol, maturity bucket,
+  moneyness tercile of |log(K/F)|, VIX regime (FRED VIXCLS strictly before
+  the session, terciles over the evaluation window, cut points recorded),
+  and gap to the prior available session, each cell with counts, median rho,
+  mean d, win rate, and an interval only with 30 or more sessions; a report
+  that labels every table exploratory.
+- FRED VIXCLS added to data/external with provenance.
+- Design C outputs under docs/results/v2/design-c/: the nine runs with saved
+  predictions, ablations.json, breakdowns.json, and REPORT.md. Ablation
+  tables also record the median differential and the share of the summed
+  differential carried by the ten largest sessions; breakdown entries record
+  the observed maturity range and the empty section 5 buckets; the report
+  reads both in words.
+- Research Plan Amendment 6 (exploratory scope): the source lists no expiry
+  beyond 67 calendar days, so the more-than-90-day bucket is empty and no
+  term-structure claim can be made; noted in RESULTS.md's limitations and in
+  the talk outline.
+- The manifest covers Design C (runs, saved predictions with uncompressed
+  hashes, files, headline).
+
 ## 3.4.1 - 2026-09-14
 
 - Add the Amendment 5 stale-quote diagnostic (exploratory): `stale-quote-diagnostic

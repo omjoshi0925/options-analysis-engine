@@ -6,10 +6,10 @@
   "report": "docs/RESULTS.md",
   "code_version": "3.2.1",
   "repository": "https://github.com/omjoshi0925/options-analysis-engine",
-  "code_commit": "a0b65880e9bc67c2514bf6ca1c17290224c1b24c",
-  "code_commit_short": "a0b6588",
-  "working_tree_version": "3.4.1",
-  "report_sha256": "74a6e12ff4f54e7ec4dc230582e372ff74506a1683dcaa52ec84a90763b12447",
+  "code_commit": "08095d74f1266fbdfea8c4f06e91b7794a0480b9",
+  "code_commit_short": "08095d7",
+  "working_tree_version": "3.5.0",
+  "report_sha256": "58176ad35103769ce771183898b8a940a2c0ca38ad8f53e26c31a5d3dd4022b8",
   "description": "1,056-fold rolling-origin walk-forward over DoltHub end-of-day chains (SPY and AAPL; QQQ configured but absent from the export) plus a single-year SPY 2023 run, constant rate and dividend yields.",
   "built_with": {
    "python": "3.13.1",
@@ -10234,14 +10234,14 @@
  "study_v2": {
   "plan": {
    "path": "docs/RESEARCH_PLAN.md",
-   "sha256": "4d2feadc3902734bf5d4067e755bf753fd55c80656c279ea135fa924f05e0168",
-   "bytes": 22432
+   "sha256": "7e1a75b870a10d21286bffec2dcfe882d68a851a06b2564aacff3c550747ccc6",
+   "bytes": 23858
   },
   "external_inputs": [
    {
     "path": "data/external/PROVENANCE.md",
-    "sha256": "37a7b8af7b7342d9b36c69e5a42bc0e2ea2f8eede03bb72420487d4cc922e44b",
-    "bytes": 9003
+    "sha256": "aadfb73653b6ffa5c0a1c3af2197118d8bc5d2ab715748869704b307404da869",
+    "bytes": 9695
    },
    {
     "path": "data/external/dividends.csv",
@@ -10282,6 +10282,11 @@
     "path": "data/external/raw/dolt-stocks-split-aapl-spy.csv",
     "sha256": "bb5ac4164132bf351052e7f4c95345c31878f3f7b33fddc1993fa176f5234681",
     "bytes": 104
+   },
+   {
+    "path": "data/external/raw/VIXCLS.csv",
+    "sha256": "60f2ec1ea081cf27427b8a24930a2ebee7c1992aad14119e9380673cc85fb9c1",
+    "bytes": 161204
    },
    {
     "path": "scripts/build_external_inputs.py",
@@ -11228,6 +11233,441 @@
        "m_rv_median_session_rmse": 0.0017844326089290167,
        "rv_median_session_rmse": 0.0014401956696011215,
        "sessions": 379
+      }
+     }
+    }
+   }
+  },
+  "design_c": {
+   "exploratory": true,
+   "files": [
+    {
+     "path": "docs/results/v2/design-c/ablations.json",
+     "sha256": "1aeb8b6add96cb4b018bf18fc66157509e1f4cb38a4d2ed37a1d96ae68737e68",
+     "bytes": 17051
+    },
+    {
+     "path": "docs/results/v2/design-c/breakdowns.json",
+     "sha256": "653daff234824a97b9847f43594d44ee557dbe6a65357d45a7b3e4fd59bb6def",
+     "bytes": 27674
+    },
+    {
+     "path": "docs/results/v2/design-c/REPORT.md",
+     "sha256": "3a5a8bc241e1c599b156f20b111fc0a9e7d266ec3a60a1dea418611328a79999",
+     "bytes": 12109
+    }
+   ],
+   "runs": {
+    "set-a/full": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-c/runs/set-a/full/folds.csv",
+      "sha256": "a0249049ebb6c1ff9d61b7c29737964e6304eaf3c0cf0fcd3f056303a9330a0e",
+      "bytes": 444429
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-c/runs/set-a/full/significance.json",
+      "sha256": "a8b01f9ff4810b3e4b5323eb61dc6f610343ee9671622ba1349ae5803990dda7",
+      "bytes": 4193
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-c/runs/set-a/full/REPORT.md",
+      "sha256": "d5599af70a257d6ece76bbe5aae424640962ecb7317057eac9de6a4ee1a8847a",
+      "bytes": 998
+     },
+     "predictions.csv.gz": {
+      "path": "docs/results/v2/design-c/runs/set-a/full/predictions.csv.gz",
+      "sha256": "64f454013622f3877e1389aedf4a96014509e5ff2d409bc7796d6bfeec590725",
+      "bytes": 21149594,
+      "compression": "gzip",
+      "uncompressed_sha256": "321b5802a58c7ca951bbdaceb7d51225f1663099a34ddc7fecadfc5c28aedcd2"
+     }
+    },
+    "set-a/no-moneyness": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-c/runs/set-a/no-moneyness/folds.csv",
+      "sha256": "dae25d53faeab27c3b6d6363c4d6709ed4becf1381be3965b0b7182320db1d11",
+      "bytes": 445227
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-c/runs/set-a/no-moneyness/significance.json",
+      "sha256": "ee96dcb809ed9c6bd617838cf83be910affb67afd9a62296e34623034a7fccfc",
+      "bytes": 4038
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-c/runs/set-a/no-moneyness/REPORT.md",
+      "sha256": "80ea593804835f86aff67ac7b715260b858ebb0a15cb0a9eb6acb103948419ee",
+      "bytes": 1000
+     }
+    },
+    "set-a/no-maturity-interactions": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-c/runs/set-a/no-maturity-interactions/folds.csv",
+      "sha256": "8ac070fbbbff3640bd1fab13f5f1312c89a4010223829d38c6f3708b513f056a",
+      "bytes": 444743
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-c/runs/set-a/no-maturity-interactions/significance.json",
+      "sha256": "9785cbf32a130268141ef6c356778e7f8454884cf329306da226f7707b80d106",
+      "bytes": 4043
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-c/runs/set-a/no-maturity-interactions/REPORT.md",
+      "sha256": "171b676b54144e1beb4a79a7dcf93b582255372c4c513c89c45d8cd4eff117ff",
+      "bytes": 998
+     }
+    },
+    "set-a/no-symbol": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-c/runs/set-a/no-symbol/folds.csv",
+      "sha256": "738c264cf2ee48f0804573da3a992aaa1f1001daaebf36c6533b941c62117f12",
+      "bytes": 444419
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-c/runs/set-a/no-symbol/significance.json",
+      "sha256": "faf89d8b2f5eb752ae16e0fe362ccd0c6de1132cf0005d4c9489068582f3d14b",
+      "bytes": 4030
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-c/runs/set-a/no-symbol/REPORT.md",
+      "sha256": "360f2ef8457d1a727739a594c71e7974990dd7a5982d8f5aa7c16cc930a44d3b",
+      "bytes": 998
+     }
+    },
+    "set-b/m-rv/full": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-rv/full/folds.csv",
+      "sha256": "dec15e5b2697f80cb70c6f8be500caf0ed9797cd712dae9fb64a79aa4ff62a21",
+      "bytes": 416491
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-rv/full/significance.json",
+      "sha256": "a942a70a7a693c56f6a87e7fff234c8fbb6fb22661feb59112b34754d2027b23",
+      "bytes": 3951
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-rv/full/REPORT.md",
+      "sha256": "8f9a662c9fdceeaa9a8423eed7880bf13c4d4c69fb1bfb44731a8dc47d78c6c5",
+      "bytes": 996
+     },
+     "predictions.csv.gz": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-rv/full/predictions.csv.gz",
+      "sha256": "1620a63d92daad718f6f66450554e31eef181315d299acc3480f54a53337394e",
+      "bytes": 13082363,
+      "compression": "gzip",
+      "uncompressed_sha256": "478b3e98471f28f4d9f55ecacc412f7117fb8359c04db61a6f88bfc037849e9a"
+     }
+    },
+    "set-b/m-b1/full": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/full/folds.csv",
+      "sha256": "6b59b51136973d44b27d60a3b412b68fe9cac213d0caa3a8a2adaef7672f0853",
+      "bytes": 417533
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/full/significance.json",
+      "sha256": "e8b38acec79974227ba8e4c2cdf53e911e6dd4d5c6241a22b18ecc8f48820187",
+      "bytes": 4269
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/full/REPORT.md",
+      "sha256": "ef986fc623c8ae8a0312181de5e4a767c60b737522dc509fc4cc5d5065d9cd07",
+      "bytes": 998
+     },
+     "predictions.csv.gz": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/full/predictions.csv.gz",
+      "sha256": "d0f681018829cf63c6352540f31402c0b5f8194dd7da177fa3e8b75655e3632d",
+      "bytes": 14256421,
+      "compression": "gzip",
+      "uncompressed_sha256": "e497b2c11bb0a9192c5737d76b2f3410f84cd1edd1a44eff48879313dc7ea623"
+     }
+    },
+    "set-b/m-b1/no-moneyness": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-moneyness/folds.csv",
+      "sha256": "8cc5665f66a95d461fa4d4e1b7ff2aa72f62963d2602220c34f4952924aad065",
+      "bytes": 417686
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-moneyness/significance.json",
+      "sha256": "eff573855fced0828f70888c5540322a125779713a72fea44c68e69a31e739ff",
+      "bytes": 4114
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-moneyness/REPORT.md",
+      "sha256": "08c2ffe2ecdab8b329bd77fe380e62fdc6ecd0d4cea08199e11d58ea6ed7c579",
+      "bytes": 999
+     }
+    },
+    "set-b/m-b1/no-maturity-interactions": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-maturity-interactions/folds.csv",
+      "sha256": "16e28577ca1cc8f5ee5b26c22be3dd80028e7ad9c3f5e239d4339e26de4ba198",
+      "bytes": 417624
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-maturity-interactions/significance.json",
+      "sha256": "1136df8bc440541f28c08c73069ba4ebee1620db18858c446b232c2e5ef92e48",
+      "bytes": 4123
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-maturity-interactions/REPORT.md",
+      "sha256": "222ded54196ce4e6c95db309d762d6ad3733c2a7ec9616deb6435d0bb34f737d",
+      "bytes": 998
+     }
+    },
+    "set-b/m-b1/no-symbol": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-symbol/folds.csv",
+      "sha256": "0a9229825b812638a807d6f9447f06666ef79503b82c4f8f8296c7ab86d6f237",
+      "bytes": 417598
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-symbol/significance.json",
+      "sha256": "5f79b8f077cedadb6a4ade56e4e72789d830626f5f8d735d2e3c4c6f3993c438",
+      "bytes": 4104
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-symbol/REPORT.md",
+      "sha256": "0a3881c70750c49c0e4e7c6f64cda3c161cbc67a8c895271a383dda7571a61f9",
+      "bytes": 997
+     }
+    }
+   },
+   "headline": {
+    "cut_points": {
+     "moneyness_cuts_from": "M(RV) vs RV baseline on set A",
+     "moneyness_rows": 230927,
+     "moneyness_terciles": [
+      0.05565588351887279,
+      0.13496431965251243
+     ],
+     "vix_cuts_from": "M(RV) vs RV baseline on set A",
+     "vix_sessions": 1056,
+     "vix_terciles": [
+      16.446666666666665,
+      20.156666666666666
+     ]
+    },
+    "ablations": {
+     "M(B1) on set B, reference B1": {
+      "no-maturity-interactions": {
+       "delta_median_rho": -0.0167353906818452,
+       "mean_d": 3.619591861284546e-07,
+       "median_d": -4.9221710015171706e-08,
+       "win_rate": 0.43980099502487563,
+       "change_in_mean_d": -4.8481771082374556e-08,
+       "change_interval": [
+        -8.7154861042763e-08,
+        -1.5215491645273708e-08
+       ],
+       "concentration": {
+        "mean_d_without_top": 1.569456055424646e-08,
+        "share_of_sum_d": 0.9570714147669181,
+        "top_sessions": 10
+       }
+      },
+      "no-moneyness": {
+       "delta_median_rho": -0.0107196183260518,
+       "mean_d": 2.7993564057596506e-07,
+       "median_d": -2.3992625064712005e-08,
+       "win_rate": 0.4368159203980099,
+       "change_in_mean_d": -1.3050531663486424e-07,
+       "change_interval": [
+        -2.6285894675712914e-07,
+        -5.175896317928669e-09
+       ],
+       "concentration": {
+        "mean_d_without_top": 1.977628231441311e-08,
+        "share_of_sum_d": 0.930057125467744,
+        "top_sessions": 10
+       }
+      },
+      "no-symbol": {
+       "delta_median_rho": -0.0106129074584579,
+       "mean_d": 3.595499565755664e-07,
+       "median_d": -2.9043053392358434e-08,
+       "win_rate": 0.4606965174129353,
+       "change_in_mean_d": -5.089100063526292e-08,
+       "change_interval": [
+        -1.0088758877958548e-07,
+        -1.4143207212049808e-08
+       ],
+       "concentration": {
+        "mean_d_without_top": 9.971691963995244e-09,
+        "share_of_sum_d": 0.9725421433993187,
+        "top_sessions": 10
+       }
+      },
+      "full": {
+       "concentration": {
+        "mean_d_without_top": 3.939803883849247e-08,
+        "share_of_sum_d": 0.904965579418269,
+        "top_sessions": 10
+       },
+       "delta_median_rho": -0.0119132110528663,
+       "folds": 1005,
+       "learned_coverage_mean": 0.9999900942065121,
+       "mean_d": 4.104409572108293e-07,
+       "median_d": -3.3809450220406635e-08,
+       "win_rate": 0.4626865671641791
+      }
+     },
+     "M(RV) on set A, reference RV baseline": {
+      "no-maturity-interactions": {
+       "delta_median_rho": 0.0456050685898992,
+       "mean_d": 0.000470647886173554,
+       "median_d": 1.2163579244183768e-06,
+       "win_rate": 0.5445075757575758,
+       "change_in_mean_d": -4.199645074951061e-06,
+       "change_interval": [
+        -6.61606803676742e-06,
+        -2.3767294798423484e-06
+       ],
+       "concentration": {
+        "mean_d_without_top": 0.00010375349218722339,
+        "share_of_sum_d": 0.7816393506147287,
+        "top_sessions": 10
+       }
+      },
+      "no-moneyness": {
+       "delta_median_rho": -0.11612373977268331,
+       "mean_d": 0.0004643119419854802,
+       "median_d": -3.1590395341655545e-06,
+       "win_rate": 0.39015151515151514,
+       "change_in_mean_d": -1.0535589263024868e-05,
+       "change_interval": [
+        -1.3749098298230031e-05,
+        -7.875709348908271e-06
+       ],
+       "concentration": {
+        "mean_d_without_top": 9.75904087913478e-05,
+        "share_of_sum_d": 0.7918075146213496,
+        "top_sessions": 10
+       }
+      },
+      "no-symbol": {
+       "delta_median_rho": 0.07747638168564325,
+       "mean_d": 0.00047242123459942034,
+       "median_d": 2.048337812838254e-06,
+       "win_rate": 0.6259469696969697,
+       "change_in_mean_d": -2.426296649084736e-06,
+       "change_interval": [
+        -4.464591130615768e-06,
+        -9.187980174813606e-07
+       ],
+       "concentration": {
+        "mean_d_without_top": 0.00010584429500804845,
+        "share_of_sum_d": 0.7780752135385075,
+        "top_sessions": 10
+       }
+      },
+      "full": {
+       "concentration": {
+        "mean_d_without_top": 0.0001079482989774815,
+        "share_of_sum_d": 0.7748202227847064,
+        "top_sessions": 10
+       },
+       "delta_median_rho": 0.1070467797594387,
+       "folds": 1056,
+       "learned_coverage_mean": 0.9970146604193015,
+       "mean_d": 0.000474847531248505,
+       "median_d": 2.703107007192203e-06,
+       "win_rate": 0.6458333333333334
+      }
+     }
+    },
+    "breakdown_entries": {
+     "M(B1) vs B1 on set B": {
+      "sessions": 1005,
+      "observations": 142942,
+      "overall": {
+       "interval": [
+        5.392776397649803e-08,
+        8.396805280827021e-07
+       ],
+       "interval_block_length": 21,
+       "mean_d": 4.1044095721082914e-07,
+       "median_rho": -0.011913211052866579,
+       "observations": 142942,
+       "sessions": 1005,
+       "thin": false,
+       "win_rate": 0.4626865671641791
+      },
+      "maturity_range": {
+       "T_max": 0.1781963470319634,
+       "T_min": 0.0273972602739726,
+       "bucket_edges_days": [
+        30.0,
+        90.0
+       ],
+       "days_to_expiry_max": 65.04166666666667,
+       "days_to_expiry_min": 10.0,
+       "empty_buckets": [
+        ">90d"
+       ],
+       "note": "An empty bucket means the source lists no expiry in it; the study covers only the realized range (Research Plan Amendment 6)."
+      }
+     },
+     "M(RV) vs B1 on set B": {
+      "sessions": 1005,
+      "observations": 142942,
+      "overall": {
+       "interval": [
+        -2.4072793833547216e-05,
+        -1.136738892966923e-05
+       ],
+       "interval_block_length": 21,
+       "mean_d": -1.6915184051003025e-05,
+       "median_rho": -1.889964217301396,
+       "observations": 142942,
+       "sessions": 1005,
+       "thin": false,
+       "win_rate": 0.05373134328358209
+      },
+      "maturity_range": {
+       "T_max": 0.1781963470319634,
+       "T_min": 0.0273972602739726,
+       "bucket_edges_days": [
+        30.0,
+        90.0
+       ],
+       "days_to_expiry_max": 65.04166666666667,
+       "days_to_expiry_min": 10.0,
+       "empty_buckets": [
+        ">90d"
+       ],
+       "note": "An empty bucket means the source lists no expiry in it; the study covers only the realized range (Research Plan Amendment 6)."
+      }
+     },
+     "M(RV) vs RV baseline on set A": {
+      "sessions": 1056,
+      "observations": 230927,
+      "overall": {
+       "interval": [
+        6.3201219474999645e-06,
+        0.0014041957647209012
+       ],
+       "interval_block_length": 21,
+       "mean_d": 0.00047484753124850724,
+       "median_rho": 0.10704677975943905,
+       "observations": 230927,
+       "sessions": 1056,
+       "thin": false,
+       "win_rate": 0.6458333333333334
+      },
+      "maturity_range": {
+       "T_max": 0.1834474885844748,
+       "T_min": 0.0273972602739726,
+       "bucket_edges_days": [
+        30.0,
+        90.0
+       ],
+       "days_to_expiry_max": 66.95833333333333,
+       "days_to_expiry_min": 10.0,
+       "empty_buckets": [
+        ">90d"
+       ],
+       "note": "An empty bucket means the source lists no expiry in it; the study covers only the realized range (Research Plan Amendment 6)."
       }
      }
     }

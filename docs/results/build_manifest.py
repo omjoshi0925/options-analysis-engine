@@ -716,7 +716,7 @@ def gather(check_mode):
 V2_EXTERNAL = ["data/external/PROVENANCE.md", "data/external/dividends.csv", "data/external/splits.csv", "data/external/raw/DGS3MO.csv",
                "data/external/raw/full_underlying.csv", "data/external/raw/apple-dividend-history-table.html",
                "data/external/raw/spdr-etf-historical-distributions.xlsx", "data/external/raw/dolt-stocks-dividend-aapl-spy.csv",
-               "data/external/raw/dolt-stocks-split-aapl-spy.csv", "scripts/build_external_inputs.py"]
+               "data/external/raw/dolt-stocks-split-aapl-spy.csv", "data/external/raw/VIXCLS.csv", "scripts/build_external_inputs.py"]
 V2_CONFIGS = ["config/v2/C0.json", "config/v2/C1.json", "config/v2/C2.json", "config/v2/C3.json"]
 V2_SET = "docs/results/v2/observation-set-A.csv.gz"
 V2_SET_SIDECAR = "docs/results/v2/observation-set-A.drops.json"
@@ -727,6 +727,12 @@ V2_SET_B_SIDECAR = "docs/results/v2/observation-set-B.drops.json"
 V2_BASELINES = "docs/results/v2/baselines-B.csv.gz"
 V2_RUNS_B = [f"docs/results/v2/design-b/{name}" for name in ("B1", "B2", "M-RV", "M-B1", "M-B2")]
 V2_COMPARISON_B = ["docs/results/v2/design-b/comparison.json", "docs/results/v2/design-b/REPORT.md"]
+V2_DESIGN_C = ["docs/results/v2/design-c/ablations.json", "docs/results/v2/design-c/breakdowns.json", "docs/results/v2/design-c/REPORT.md"]
+V2_DESIGN_C_RUNS = ["docs/results/v2/design-c/runs/set-a/full", "docs/results/v2/design-c/runs/set-a/no-moneyness",
+                    "docs/results/v2/design-c/runs/set-a/no-maturity-interactions", "docs/results/v2/design-c/runs/set-a/no-symbol",
+                    "docs/results/v2/design-c/runs/set-b/m-rv/full", "docs/results/v2/design-c/runs/set-b/m-b1/full",
+                    "docs/results/v2/design-c/runs/set-b/m-b1/no-moneyness", "docs/results/v2/design-c/runs/set-b/m-b1/no-maturity-interactions",
+                    "docs/results/v2/design-c/runs/set-b/m-b1/no-symbol"]
 V2_STALE = "docs/results/v2/design-b/stale-quote-diagnostic.json"
 V2_STALE_STATS = "docs/results/v2/design-b/sensitivity/stale-quote-stats.json"
 V2_STALE_SUBSETS = [f"docs/results/v2/design-b/sensitivity/subsets/{name}.csv.gz" for name in ("changed-mid", "unchanged-mid", "not-unchanged-mid")]
@@ -753,6 +759,7 @@ def study_v2_block():
         if exists(run):
             block["runs"][Path(run).name] = {name: file_entry(f"{run}/{name}") for name in RUN_FILES if exists(f"{run}/{name}")}
     block["design_b"] = design_b_block()
+    block["design_c"] = design_c_block()
     if exists(V2_COMPARISON[0]):
         cmp = json.loads((ROOT/V2_COMPARISON[0]).read_text())
         block["design_a"] = dict(source=V2_COMPARISON[0], decision=cmp["decision"],
@@ -803,6 +810,32 @@ def design_b_block():
                                                       median_relative_improvement=v["median_relative_improvement"], win_rate=v["win_rate"], label=v["label"])
                                               for k, v in cmp["comparisons"].items()},
                                  set_b_control=cmp["set_b_control"], bootstrap=cmp["bootstrap"])
+    return block
+
+
+def design_c_block():
+    """Design C (exploratory): the nine runs with their saved predictions, and the ablation, breakdown, and report files."""
+    runs = {}
+    for run in V2_DESIGN_C_RUNS:
+        if exists(run):
+            key = str(Path(run).relative_to("docs/results/v2/design-c/runs"))
+            files = {name: file_entry(f"{run}/{name}") for name in RUN_FILES if exists(f"{run}/{name}")}
+            if exists(f"{run}/predictions.csv.gz"):
+                files["predictions.csv.gz"] = file_entry(f"{run}/predictions.csv.gz", compression="gzip", uncompressed_sha256=sha256_file(ROOT/f"{run}/predictions.csv.gz", gz_member=True))
+            runs[key] = files
+    block = dict(exploratory=True, files=[file_entry(p) for p in V2_DESIGN_C if exists(p)], runs=runs, headline=None)
+    if exists(V2_DESIGN_C[0]) and exists(V2_DESIGN_C[1]):
+        ablations = json.loads((ROOT/V2_DESIGN_C[0]).read_text())
+        breakdowns = json.loads((ROOT/V2_DESIGN_C[1]).read_text())
+        block["headline"] = dict(cut_points=breakdowns["cut_points"],
+                                 ablations={label: {name: dict(delta_median_rho=item["delta_median_rho"], mean_d=item["mean_d"], median_d=item.get("median_d"),
+                                                               win_rate=item["win_rate"], change_in_mean_d=item["change_in_mean_d"],
+                                                               change_interval=item["change_interval"], concentration=item.get("concentration"))
+                                                    for name, item in table["ablations"].items()} | dict(full=table["full"])
+                                            for label, table in ablations["entries"].items()},
+                                 breakdown_entries={label: dict(sessions=entry["sessions"], observations=entry["observations"], overall=entry["overall"],
+                                                                maturity_range=entry.get("maturity_range"))
+                                                    for label, entry in breakdowns["entries"].items()})
     return block
 
 
@@ -949,6 +982,13 @@ def check(manifest):
     for runs in stale.get("runs", {}).values():
         for files in runs.values():
             v2_entries += list(files.values())
+    design_c = v2.get("design_c") or {}
+    v2_entries += list(design_c.get("files", []))
+    for files in design_c.get("runs", {}).values():
+        for name, item in files.items():
+            v2_entries.append(item)
+            if name.endswith(".gz") and exists(item["path"]) and sha256_file(ROOT/item["path"], gz_member=True) != item["uncompressed_sha256"]:
+                problems.append(f"{item['path']} decompresses to a different hash than recorded")
     for item in v2_entries:
         path = ROOT/item["path"]
         if not path.exists():
