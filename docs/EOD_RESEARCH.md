@@ -143,6 +143,14 @@ Design C (exploratory): `walk-forward --exclude-features <group>...` and
 `--vix-cuts`/`--moneyness-cuts`), and `design-c report` write
 docs/results/v2/design-c/ablations.json, breakdowns.json, and REPORT.md.
 
+Design D (locked, docs/LOCK.md): `lock-record` writes docs/lock.json;
+`predict-locked --session DATE --underlying-csv <bars through DATE>` writes
+docs/results/v2/fresh/predictions-DATE.csv and its sidecar before the chain
+for DATE is imported (it refuses otherwise); `score-locked --session DATE`
+scores the committed predictions against the imported chain and appends a
+line to docs/FRESH_EVAL.md; `fresh-eval-report` refuses until the sample rule
+is met. Both locked commands verify the hashes in docs/lock.json first.
+
 Column semantics: in `export` output, `r`, `q`, `iv_brent_*`, `baseline_*` and
 the bound columns are the values stored at import (constant v1 carry), while
 `effective_r`/`effective_q` are the config's carry for that session and symbol
