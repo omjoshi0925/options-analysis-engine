@@ -1,0 +1,41 @@
+{
+  "commit": "f3e85ec8dca2de36abbb8c30fdbfc0d32a6f015e",
+  "config": "config/v2/C3.json",
+  "files": {
+    "config/eod-full.json": "34efc9fa9e2aecf414fac04686fb320934cef0ef51200241b5079e181cf1100d",
+    "config/v2/C3.json": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348",
+    "options_engine/analysis.py": "936c31d3ba5740e4e8ecde549d39daf84e6e44165b1fa9d7a048c340b06fffc0",
+    "options_engine/baselines.py": "3224e01c48f6cfc4f5ea09c71aacabdbb7058a0f018c708a7d1f0e6c55ba414d",
+    "options_engine/carry_inputs.py": "642656c19f2e0afb9e94808ec7502ff67ef3efd65bf5047bcdcc82a2facbd504",
+    "options_engine/compare.py": "5e5bd5a2c1fd379948986a93b7c6148ad65e6f44c2bc09b70f26079423c2650a",
+    "options_engine/core.py": "9a80208e1ca5d12b7c52a4c0f15ac0ef79605bfbbecc70dd44a473ab06d4245d",
+    "options_engine/data.py": "2eaf9bc6e397b61a295f0b84bd45e19db964a54ce462678aa69d91db70fff3ec",
+    "options_engine/eod_import.py": "fca9097773865695a08713562fae23208940f3c15bae0a879f0477262c3ece28",
+    "options_engine/iv.py": "fefac0e5ec89d5a7865362d089dc17f11c25ce001d1a8cc30d55c050220ab094",
+    "options_engine/learning.py": "21118f3aab2a83b34112319fc574266390b9d32dc83ed224b113dfd52a9620ac",
+    "options_engine/live_config.py": "39817fc78cfadea26eca975bcd23ecb5224a9128225c64f78eb06caa56891106",
+    "options_engine/locked.py": "4399723df7d931ffca7b00887a1dbb7d452557cecb431c1bfdaa64118c29de9d",
+    "options_engine/store.py": "9b59289a6cb9777e90bc0de6291efcfdff8a4a4c714a752780c5fd8546c5165d",
+    "options_engine/volatility.py": "7baea2216fb1e8d8556c77dd6c7a4b5f27c9113073354dfa2907a07df56c8a45",
+    "options_engine/walkforward.py": "1399ffa4e0c7e77300df90f55a5d19b4b2e41d102b5b00d9c893f509dae59092"
+  },
+  "lock_date": "2026-09-15",
+  "sample_rule": {
+    "deadline": "2027-03-31",
+    "interim_stopping": "none",
+    "sessions": 60
+  },
+  "spec": {
+    "alphas": [
+      0.01,
+      1.0,
+      100.0
+    ],
+    "gap": 1,
+    "max_train_sessions": 250,
+    "min_train_sessions": 120,
+    "validation_sessions": 2,
+    "window": "rolling"
+  },
+  "version": "3.6.0"
+}

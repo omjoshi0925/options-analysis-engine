@@ -760,6 +760,7 @@ def study_v2_block():
             block["runs"][Path(run).name] = {name: file_entry(f"{run}/{name}") for name in RUN_FILES if exists(f"{run}/{name}")}
     block["design_b"] = design_b_block()
     block["design_c"] = design_c_block()
+    block["lock"] = {name: file_entry(path) for name, path in (("record", "docs/lock.json"), ("document", "docs/LOCK.md")) if exists(path)} or None
     if exists(V2_COMPARISON[0]):
         cmp = json.loads((ROOT/V2_COMPARISON[0]).read_text())
         block["design_a"] = dict(source=V2_COMPARISON[0], decision=cmp["decision"],
@@ -982,6 +983,7 @@ def check(manifest):
     for runs in stale.get("runs", {}).values():
         for files in runs.values():
             v2_entries += list(files.values())
+    v2_entries += list((v2.get("lock") or {}).values())
     design_c = v2.get("design_c") or {}
     v2_entries += list(design_c.get("files", []))
     for files in design_c.get("runs", {}).values():
