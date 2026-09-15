@@ -164,3 +164,70 @@ table and the price step.
   hash docs/results/manifest.json records for the import. Committed so the
   dividend yield's prior bar close is reproducible from the repository.
 
+## 8. Refresh before the first fresh session (2026-09-15)
+
+Retrieved on 2026-09-15 (UTC) under docs/LOCK.md step 1, in one pass, with
+the locked configuration untouched: config/v2/C3.json still declares
+history_end 2026-09-09, and the refreshed coverage is declared at run time
+with `--dividend-history-end 2026-09-15`. The versions the pre-registered
+Design A to C runs used remain at tag study-v2-locked and are hashed in each
+run's significance.json; docs/results/manifest.json was rebuilt to the files
+below.
+
+- FRED DGS3MO, raw/DGS3MO.csv: retrieved 2026-09-15T22:46:32Z with curl 8.7.1
+  (default User-Agent, HTTP 200). SHA-256
+  95e9fcd7cbee9426d86b432ed6d681915dc4f4db2754912c6bfac006a62ba9c5; 186,435
+  bytes; 11,750 rows from 1981-09-01 to 2026-09-14, 11,258 quoted and 492
+  blank. Coverage end: 2026-09-14 (4.11 percent).
+- Underlying bars, raw/full_underlying.csv: the local clone of
+  post-no-preference/stocks was pulled at 2026-09-15T22:47:27Z to head
+  a4pca9k9acjef0067beascu5468134fp ("ohlcv 2026-09-14 update") and exported
+  at 2026-09-15T22:47:35Z with `dolt sql -r csv -q "SELECT date, act_symbol,
+  open, high, low, close FROM ohlcv WHERE act_symbol IN ('AAPL','QQQ','SPY')
+  AND date >= '2018-06-01' ORDER BY act_symbol, date"`. SHA-256
+  57f6a8464afe3c831b418c9ff6d5b9126b3d8edf5c5a2eda1158d8bb344ef1f9; 320,407
+  bytes; 6,241 rows (AAPL 2,080, QQQ 2,081, SPY 2,080). Every row of the
+  previous file is present byte for byte; the 15 new rows are 2026-09-08 to
+  2026-09-14 for the three symbols (2026-09-07 was Labor Day). Coverage end:
+  2026-09-14 for every symbol.
+- SPY distributions, raw/spdr-etf-historical-distributions.xlsx: retrieved
+  2026-09-15T22:46:33Z with curl (HTTP 200). SHA-256
+  18ae096941de56b8cb7e9f9d8041d23665c5aa99813163e578546e406c5fa137; 575,420
+  bytes (13,228 data rows; 575,400 bytes and 13,227 rows at the previous
+  retrieval, the additions concerning other funds). SPY rows unchanged:
+  135 in total, 34 with ex-dates from 2018-01-01, last 2026-06-18.
+- AAPL dividends, raw/apple-dividend-history-table.html: curl again received
+  HTTP 403; the page was opened in the in-app browser (loaded
+  2026-09-15T22:48:01Z), the dividend table's outerHTML read from the DOM
+  and hashed in place: c49fdd6e815165034a51deb3d0f3fe9444699d7165bbae54a9fcc2404024b8f1,
+  identical to the committed file, which was left as is. 97 rows; the latest
+  regular cash dividend was declared July 30, 2026 with record date August
+  10, 2026 ($0.27).
+- DoltHub stocks exports, raw/dolt-stocks-dividend-aapl-spy.csv and
+  raw/dolt-stocks-split-aapl-spy.csv: re-exported at 2026-09-15T22:47:35Z
+  from the pulled clone with the section 4 queries; both byte-identical to
+  the committed files (SHA-256 3e7dee01... and bb5ac416...). The options
+  clone was pulled at 2026-09-15T22:47:31Z to head
+  8u03gqhnbrni438fuvc3b1611fbblcui ("volatility_history 2026-09-14 update")
+  to check availability only; it holds SPY and AAPL chains for 2026-09-08 to
+  2026-09-14 (plus rows stamped 2026-09-07, a holiday) and nothing later, so
+  no chain dated after the lock exists yet and none was read.
+- Parser run 2026-09-15T22:49:04Z: `python scripts/build_external_inputs.py
+  --start 2018-01-01 --crosscheck data/external/raw/dolt-stocks-dividend-aapl-spy.csv`
+  (script SHA-256 c45e9b53... unchanged). dividends.csv and splits.csv are
+  byte-identical to the committed files (SHA-256 7cc323da... and
+  96053ba6...): 69 rows, AAPL last ex-date 2026-08-10, SPY last ex-date
+  2026-06-18. The cross-check reports 24 differences, exactly as at the
+  original retrieval: 23 three-decimal roundings of SPY amounts by the
+  DoltHub table and the AAPL 2020-08-07 amount, which the table carries on
+  the post-split basis (0.205) while the issuer's declared 0.82 is used
+  (section 4); no date disagreement.
+- Coverage declared for the fresh evaluation: distribution history
+  2018-01-01 to 2026-09-15 (this retrieval), passed as
+  `--dividend-history-end 2026-09-15`; bars through 2026-09-14; rate through
+  2026-09-14. A fresh session t needs the bars through t (S_t, and S_t-1
+  for q_t) and a distribution retrieval dated t-1 or later, so each fresh
+  session repeats this pass on the morning its chain becomes available; the
+  declared dates and hashes of every repeat are recorded in that session's
+  prediction sidecar.
+

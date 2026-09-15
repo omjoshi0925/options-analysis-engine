@@ -6,8 +6,8 @@
   "report": "docs/RESULTS.md",
   "code_version": "3.2.1",
   "repository": "https://github.com/omjoshi0925/options-analysis-engine",
-  "code_commit": "f3e85ec8dca2de36abbb8c30fdbfc0d32a6f015e",
-  "code_commit_short": "f3e85ec",
+  "code_commit": "e55cad89af31b8eaba745c2969ab2f3b0773b07f",
+  "code_commit_short": "e55cad8",
   "working_tree_version": "3.6.0",
   "report_sha256": "58176ad35103769ce771183898b8a940a2c0ca38ad8f53e26c31a5d3dd4022b8",
   "description": "1,056-fold rolling-origin walk-forward over DoltHub end-of-day chains (SPY and AAPL; QQQ configured but absent from the export) plus a single-year SPY 2023 run, constant rate and dividend yields.",
@@ -24,9 +24,9 @@
   "post-no-preference/options": {
    "clone_dir": "options",
    "dolt_dir_created": "2026-09-08T11:50:07.158757687-07:00",
-   "head_commit": "66gs0ag3jlqu4ckm6vlgq1kgp511vqk3",
-   "head_date": "Mon Sep 07 23:34:38 -0700 2026",
-   "head_message": "volatility_history 2026-09-07 update",
+   "head_commit": "8u03gqhnbrni438fuvc3b1611fbblcui",
+   "head_date": "Mon Sep 14 23:34:42 -0700 2026",
+   "head_message": "volatility_history 2026-09-14 update",
    "remote": "https://doltremoteapi.dolthub.com/post-no-preference/options",
    "qqq_option_chain_rows": {
     "query": "SELECT COUNT(*) AS n FROM option_chain WHERE act_symbol='QQQ'",
@@ -36,9 +36,9 @@
   "post-no-preference/stocks": {
    "clone_dir": "stocks",
    "dolt_dir_created": "2026-09-08T11:58:46.015671729-07:00",
-   "head_commit": "rf9dcnjl1ouulr92j9u3d38nr4lnpvi4",
-   "head_date": "Sun Sep 06 05:48:44 -0700 2026",
-   "head_message": "dividend 2026-09-06 update",
+   "head_commit": "a4pca9k9acjef0067beascu5468134fp",
+   "head_date": "Mon Sep 14 22:30:38 -0700 2026",
+   "head_message": "ohlcv 2026-09-14 update",
    "remote": "https://doltremoteapi.dolthub.com/post-no-preference/stocks"
   }
  },
@@ -10240,8 +10240,8 @@
   "external_inputs": [
    {
     "path": "data/external/PROVENANCE.md",
-    "sha256": "aadfb73653b6ffa5c0a1c3af2197118d8bc5d2ab715748869704b307404da869",
-    "bytes": 9695
+    "sha256": "7b8fb8d3c3840685a8783c75fdd5acf5e865f74d1ee6b73c2b49dcc804e01a37",
+    "bytes": 14035
    },
    {
     "path": "data/external/dividends.csv",
@@ -10255,13 +10255,13 @@
    },
    {
     "path": "data/external/raw/DGS3MO.csv",
-    "sha256": "504030af381b2ee828c3012ba91dcc9ea7cdbbcaa3297026acd500ed9c4b4e44",
-    "bytes": 186343
+    "sha256": "95e9fcd7cbee9426d86b432ed6d681915dc4f4db2754912c6bfac006a62ba9c5",
+    "bytes": 186435
    },
    {
     "path": "data/external/raw/full_underlying.csv",
-    "sha256": "aa9e446dddf40682a68890a0b70f36a41c6d2f108d0777dddc1b7403801bc738",
-    "bytes": 319637
+    "sha256": "57f6a8464afe3c831b418c9ff6d5b9126b3d8edf5c5a2eda1158d8bb344ef1f9",
+    "bytes": 320407
    },
    {
     "path": "data/external/raw/apple-dividend-history-table.html",
@@ -10270,8 +10270,8 @@
    },
    {
     "path": "data/external/raw/spdr-etf-historical-distributions.xlsx",
-    "sha256": "1b952f87ca60ece4080b446d6c3b580f640d893ed33641797a2dd22dd61beca9",
-    "bytes": 575400
+    "sha256": "18ae096941de56b8cb7e9f9d8041d23665c5aa99813163e578546e406c5fa137",
+    "bytes": 575420
    },
    {
     "path": "data/external/raw/dolt-stocks-dividend-aapl-spy.csv",
