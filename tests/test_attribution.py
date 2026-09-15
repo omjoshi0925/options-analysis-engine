@@ -6,7 +6,8 @@ import pandas as pd
 import pytest
 
 from options_engine.attribution import (DatedSeries, EXPLORATORY, SYMBOL_NOTE, ablation_table, assign_tercile, build_cells, cell_statistics,
-                                        gap_bucket, run_ablations, run_breakdowns, session_gaps, tercile_cuts, write_design_c_report)
+                                        gap_bucket, maturity_range, mean_d_concentration, run_ablations, run_breakdowns, session_gaps, tercile_cuts,
+                                        write_design_c_report)
 from options_engine.cli import parser, run
 from options_engine.learning import FEATURE_GROUPS, basis, excluded_names, fit_ridge, predict_volatility
 from options_engine.walkforward import WalkForwardSpec, walk_forward
@@ -79,6 +80,10 @@ def test_ablation_table_pairs_the_change():
     item = table["ablations"]["no-moneyness"]
     assert item["change_in_mean_d"] == pytest.approx(-1e-6) and item["change_interval"] == pytest.approx([-1e-6, -1e-6])
     assert item["hurts"] and not item["helps"] and item["excluded_features"] == ["moneyness"] and item["delta_median_rho"] < table["full"]["delta_median_rho"]
+    assert item["median_d"] == pytest.approx(table["full"]["median_d"]-1e-6) and item["concentration"]["top_sessions"] == 10
+    concentration = mean_d_concentration([5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1])
+    assert concentration == dict(top_sessions=10, share_of_sum_d=pytest.approx(14/15), mean_d_without_top=pytest.approx((1+1-1)/3))
+    assert mean_d_concentration([0.0, 0.0])["share_of_sum_d"] is None and mean_d_concentration([1.0])["mean_d_without_top"] is None
     misaligned = dict(shifted, folds=shifted["folds"].iloc[1:].reset_index(drop=True))
     with pytest.raises(ValueError, match="sessions"):
         ablation_table(full, {"bad": misaligned}, replicates=20)
@@ -119,6 +124,9 @@ def test_breakdowns_cells_and_thin_rule(tmp_path):
     assert overall["sessions"] == 60 and overall["observations"] == 720 and overall["interval"] is not None and not overall["thin"]
     thin = cell_statistics(rows.loc[rows.evaluated_session.isin(sessions[:10])], replicates=100)
     assert thin["thin"] and thin["interval"] is None and thin["sessions"] == 10 and thin["median_rho"] is not None
+    coverage = maturity_range(rows)
+    assert coverage["days_to_expiry_min"] == 15 and coverage["days_to_expiry_max"] == 35 and coverage["T_max"] == pytest.approx(35/365)
+    assert coverage["empty_buckets"] == [">90d"] and coverage["bucket_edges_days"] == [30.0, 90.0]
     # a reference run whose baseline is the model's own reference: identical cell losses give d = 0 exactly
     same = build_cells(model, model, "baseline", vix, cuts, tercile_cuts(np.abs(np.log(model.strike/model.spot))), gaps)
     assert np.allclose(same.reference_error, rows.reference_error)
@@ -165,11 +173,14 @@ def test_design_c_cli_end_to_end(tmp_path, capsys):
     entry = breakdowns["entries"]["M(RV) vs B1"]
     assert entry["reference"]["role"] == "baseline" and set(entry["breakdowns"]) == {"symbol", "maturity_bucket", "moneyness_tercile", "vix_tercile", "gap_bucket"}
     assert entry["breakdowns"]["maturity_bucket"]["cells"][">90d"]["sessions"] == 0 and entry["breakdowns"]["symbol"]["cells"]["SPY"]["interval"] is not None
+    assert entry["maturity_range"]["days_to_expiry_max"] == 35 and entry["maturity_range"]["empty_buckets"] == [">90d"]
     code = run(parser().parse_args(["design-c", "report", "--ablations", str(tmp_path/"ablations.json"), "--breakdowns", str(tmp_path/"breakdowns.json"),
                                     "--out", str(tmp_path/"REPORT.md")]))
     capsys.readouterr()
     report = (tmp_path/"REPORT.md").read_text()
     assert code == 0 and report.count(EXPLORATORY) >= 4 and SYMBOL_NOTE in report and "| >90d | 0 | 0 |" in report and "none (fewer than 30 sessions)" in report
+    assert "## Maturity coverage (Amendment 6)" in report and "no expiry beyond 35.000 days" in report and "short-dated options only" in report
+    assert "dominated by a few high-error sessions" in report and "Delta moves from" in report
     again = write_design_c_report(tmp_path/"ablations.json", tmp_path/"breakdowns.json", tmp_path/"again.md")
     assert set(again["breakdown_entries"]) == {"M(RV) vs RV", "M(RV) vs B1"}                     # JSON entries are written with sorted keys
     direct = run_ablations([["x", str(tmp_path/"runs"/"M-RV"), str(tmp_path/"runs"/"no-symbol")]], tmp_path/"a2.json", replicates=50)

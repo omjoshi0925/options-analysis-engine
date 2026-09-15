@@ -26,6 +26,7 @@ EXPLORATORY = ("Exploratory (Research Plan section 5, Amendment 5): no claim in 
                "multiplicity adjustment.")
 SYMBOL_NOTE = "With two symbols the symbol ablation removes one indicator, a single SPY/AAPL contrast, not a group of features."
 MIN_SESSIONS_FOR_INTERVAL = 30
+TOP_SESSIONS = 10
 MATURITY_EDGES = [0, 30, 90, np.inf]
 MATURITY_LABELS = ["<=30d", "31-90d", ">90d"]
 TERCILE_LABELS = ("low", "middle", "high")
@@ -75,6 +76,15 @@ def gap_bucket(gap_days):
 
 
 # ----------------------------------------------------------------------------- ablations
+def mean_d_concentration(d, top=TOP_SESSIONS):
+    """How much of the mean differential a few sessions carry: the share of the sum of d held by the `top` largest sessions
+    (above 1 when the remaining sessions net negative) and the mean of d with those sessions removed."""
+    d = np.sort(np.asarray(d, float))[::-1]
+    total = float(d.sum())
+    return dict(top_sessions=int(top), share_of_sum_d=(float(d[:top].sum()/total) if total != 0 else None),
+                mean_d_without_top=(float(d[top:].mean()) if len(d) > top else None))
+
+
 def ablation_table(full, ablated, block_length=BLOCK_LENGTH, replicates=REPLICATES, seed=SEED, sensitivity=SENSITIVITY_BLOCKS):
     """Delta (median rho), mean d, win rate per ablation, and the change in mean d against the full model with paired intervals."""
     sessions = list(full["folds"].evaluated_session)
@@ -90,9 +100,10 @@ def ablation_table(full, ablated, block_length=BLOCK_LENGTH, replicates=REPLICAT
     rho_full = full["folds"].rho.to_numpy(float)
 
     def summary(folds):
-        return dict(folds=int(len(folds)), delta_median_rho=float(folds.rho.median()), mean_d=float(folds.d.mean()),
+        d = folds.d.to_numpy(float)
+        return dict(folds=int(len(folds)), delta_median_rho=float(folds.rho.median()), mean_d=float(d.mean()), median_d=float(np.median(d)),
                     win_rate=float((folds.model_mse < folds.baseline_mse).mean()),
-                    learned_coverage_mean=float(folds.learned_coverage.mean()))
+                    learned_coverage_mean=float(folds.learned_coverage.mean()), concentration=mean_d_concentration(d))
     out = dict(full=summary(full["folds"]), ablations={}, sessions=n, first_session=sessions[0], last_session=sessions[-1])
     for name, run in ablated.items():
         d, rho = run["folds"].d.to_numpy(float), run["folds"].rho.to_numpy(float)
@@ -167,6 +178,15 @@ def build_cells(model, reference, reference_role, vix, vix_cuts, moneyness_cuts,
     return rows
 
 
+def maturity_range(rows):
+    """Observed time to expiry of the evaluated rows and the section 5 maturity buckets the source leaves empty."""
+    days = rows.days_to_expiry.to_numpy(float)
+    counts = rows.maturity_bucket.value_counts()
+    return dict(days_to_expiry_min=float(days.min()), days_to_expiry_max=float(days.max()), T_min=float(rows["T"].min()), T_max=float(rows["T"].max()),
+                bucket_edges_days=[float(e) for e in MATURITY_EDGES[1:-1]], empty_buckets=[label for label in MATURITY_LABELS if int(counts.get(label, 0)) == 0],
+                note="An empty bucket means the source lists no expiry in it; the study covers only the realized range (Research Plan Amendment 6).")
+
+
 def cell_statistics(rows, block_length=BLOCK_LENGTH, replicates=REPLICATES, seed=SEED):
     per_session = rows.groupby("evaluated_session").agg(reference=("reference_error", "mean"), model=("model_error", "mean"), n=("model_error", "size")).sort_index()
     d = (per_session.reference-per_session.model).to_numpy(float)
@@ -232,7 +252,8 @@ def run_breakdowns(entries, out_path, vix_path, vix_cuts=None, moneyness_cuts=No
                                         reference=(dict(path=str(reference_path), sha256=file_digest(reference_path), role=role) if reference is not None
                                                    else dict(path=None, role="the model run's own baseline")),
                                         session_calendar=str(calendar_path), sessions=int(rows.evaluated_session.nunique()), observations=int(len(rows)),
-                                        overall=cell_statistics(rows, replicates=replicates), breakdowns=breakdown_tables(rows, replicates=replicates))
+                                        maturity_range=maturity_range(rows), overall=cell_statistics(rows, replicates=replicates),
+                                        breakdowns=breakdown_tables(rows, replicates=replicates))
     result["cut_points"] = dict(vix_terciles=list(map(float, vix_cuts)), moneyness_terciles=list(map(float, moneyness_cuts)), **(cut_source or {}))
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text(json.dumps(result, indent=2, sort_keys=True)+"\n")
@@ -242,6 +263,44 @@ def run_breakdowns(entries, out_path, vix_path, vix_cuts=None, moneyness_cuts=No
 # ----------------------------------------------------------------------------- report
 def _fmt(value, spec):
     return "n/a" if value is None else format(value, spec)
+
+
+def ablation_reading(table):
+    """How Delta and the mean differential move under each ablation, and how concentrated the mean differential is."""
+    full = table["full"]
+    lines = []
+    for name, item in table["ablations"].items():
+        crossing = " and crosses zero" if (item["delta_median_rho"] < 0) != (full["delta_median_rho"] < 0) else ""
+        relative = f" ({(item['mean_d']-full['mean_d'])/abs(full['mean_d']):+.1%})" if full["mean_d"] else ""
+        lines.append(f"- Without {name.replace('no-', '').replace('-', ' ')}: Delta moves from {full['delta_median_rho']:+.4f} to {item['delta_median_rho']:+.4f}{crossing}; "
+                     f"the mean differential moves from {full['mean_d']:.3e} to {item['mean_d']:.3e}{relative}.")
+    conc = full.get("concentration") or {}
+    if conc.get("share_of_sum_d") is not None:
+        lines.append(f"- The mean differential is dominated by a few high-error sessions: the {conc['top_sessions']} largest of {table['sessions']} sessions carry "
+                     f"{conc['share_of_sum_d']:.1%} of the sum of d in the full model (median d {full['median_d']:.3e} against mean d {full['mean_d']:.3e}; mean without "
+                     f"them {_fmt(conc['mean_d_without_top'], '.3e')}). Where Delta crosses zero while the mean differential barely moves, the median describes the "
+                     "typical session and the mean does not.")
+    return lines
+
+
+def maturity_coverage_lines(breakdowns):
+    """The observed maturity range per entry and what the empty section 5 bucket means for the study (Amendment 6)."""
+    ranges = {label: entry["maturity_range"] for label, entry in breakdowns["entries"].items() if entry.get("maturity_range")}
+    if not ranges:
+        return []
+    lines = ["## Maturity coverage (Amendment 6)", "", EXPLORATORY, ""]
+    for label, m in ranges.items():
+        lines.append(f"- {label}: time to expiry from {m['days_to_expiry_min']:.3f} to {m['days_to_expiry_max']:.3f} days (T up to {m['T_max']:.5f} years); "
+                     f"empty maturity buckets: {', '.join(m['empty_buckets']) or 'none'}.")
+    lines.append("")
+    if all(">90d" in m["empty_buckets"] for m in ranges.values()):
+        longest = max(m["days_to_expiry_max"] for m in ranges.values())
+        lines += [f"The source lists no expiry beyond {longest:.3f} days to expiry, so the plan's more-than-90-day maturity bucket is empty in every breakdown and the "
+                  "realized buckets are 30 days or fewer and 31 days to that maximum. The study covers short-dated options only, and no term-structure claim can "
+                  "be made from it.", ""]
+    else:
+        lines += ["Every section 5 maturity bucket is populated.", ""]
+    return lines
 
 
 def write_design_c_report(ablations_path, breakdowns_path, out_path):
@@ -260,7 +319,8 @@ def write_design_c_report(ablations_path, breakdowns_path, out_path):
             lines.append(f"| without {name.replace('no-', '')} | {item['delta_median_rho']:.4f} | {item['mean_d']:.3e} | {item['win_rate']:.3f} | "
                          f"{item['change_in_mean_d']:+.3e} | [{item['change_interval'][0]:+.2e}, {item['change_interval'][1]:+.2e}] | "
                          f"{item['change_in_delta']:+.4f} | [{item['delta_change_interval'][0]:+.4f}, {item['delta_change_interval'][1]:+.4f}] |")
-        lines.append("")
+        lines += [""]+ablation_reading(table)+[""]
+    lines += maturity_coverage_lines(breakdowns)
     cuts = breakdowns["cut_points"]
     lines += ["## Breakdowns of d and rho", "", EXPLORATORY, "",
               f"VIX regime: VIXCLS at the most recent observation strictly before the session, terciles cut at {cuts['vix_terciles'][0]:.2f} and {cuts['vix_terciles'][1]:.2f}. "
