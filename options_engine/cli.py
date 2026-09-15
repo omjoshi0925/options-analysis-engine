@@ -163,6 +163,30 @@ def parser():
     obs.add_argument("--configs", nargs="+", required=True, help="Carry configurations; all must share one data root")
     obs.add_argument("--out", required=True, help="New keys CSV; a <stem>.drops.json sidecar records drops and the hash")
     obs.add_argument("--lookback-sessions", type=int, default=100000)
+    predict_locked = commands.add_parser("predict-locked", help="Design D: blind predictions for a fresh session before its chain is imported (docs/LOCK.md)")
+    predict_locked.add_argument("--session", required=True, help="Session date (YYYY-MM-DD), strictly after the lock date and after every stored session")
+    predict_locked.add_argument("--config", default="config/v2/C3.json", help="The locked configuration")
+    predict_locked.add_argument("--underlying-csv", required=True, help="Stocks database export with daily bars through the session: S_t and the RV baseline")
+    predict_locked.add_argument("--rate-csv", help="Refreshed FRED DGS3MO file; default: the configuration's file")
+    predict_locked.add_argument("--dividends-csv", help="Refreshed issuer distribution file; default: the configuration's file")
+    predict_locked.add_argument("--dividend-history-end", help="Retrieval date of the refreshed distribution history (YYYY-MM-DD)")
+    predict_locked.add_argument("--out-dir", default="docs/results/v2/fresh")
+    predict_locked.add_argument("--lock", help="Lock record to verify against; default: the repository's docs/lock.json")
+    score_locked = commands.add_parser("score-locked", help="Design D: score a fresh session's committed predictions against its imported chain")
+    score_locked.add_argument("--session", required=True)
+    score_locked.add_argument("--config", default="config/v2/C3.json")
+    score_locked.add_argument("--predictions-dir", default="docs/results/v2/fresh")
+    score_locked.add_argument("--log", default="docs/FRESH_EVAL.md", help="One line per scored session is appended here")
+    score_locked.add_argument("--lock", help="Lock record to verify against; default: the repository's docs/lock.json")
+    fresh_report = commands.add_parser("fresh-eval-report", help="Design D inference over the scored sessions; refuses until the sample rule is met")
+    fresh_report.add_argument("--scores-dir", default="docs/results/v2/fresh")
+    fresh_report.add_argument("--out", default="docs/results/v2/fresh/report")
+    fresh_report.add_argument("--as-of", help="Date the sample rule is judged at (default: today)")
+    fresh_report.add_argument("--vix", help="FRED VIXCLS file for the regime expectation")
+    fresh_report.add_argument("--replicates", type=int, default=10000)
+    lock_record = commands.add_parser("lock-record", help="Write docs/lock.json: hashes of the locked modules and configuration")
+    lock_record.add_argument("--out", default="docs/lock.json")
+    lock_record.add_argument("--commit", help="The locked code commit")
     collect = commands.add_parser("collect", help="Run the continuous collector; Ctrl+C stops it")
     collect.add_argument("--config", default="config/collector.json")
     collect.add_argument("--once", action="store_true", help="One scheduled check, respecting market hours")
@@ -232,6 +256,26 @@ def run(args):
             figure = strategy_figure(position, args.S, T, args.r, args.sigma, args.q)
             figure.savefig(target, dpi=160, bbox_inches="tight")
             summary["plot"] = str(target)
+        print(json.dumps(clean_json(summary), indent=2))
+        return 0
+    if args.command in ("predict-locked", "score-locked", "fresh-eval-report", "lock-record"):
+        from . import locked
+        from .live_utils import clean_json
+        if args.command == "predict-locked":
+            result = locked.predict_session(args.config, args.session, args.underlying_csv, args.out_dir, rate_csv=args.rate_csv,
+                                            dividends_csv=args.dividends_csv, dividend_history_end=args.dividend_history_end, lock_path=args.lock)
+            summary = {key: result[key] for key in ("session", "prior_session", "gap_days", "predicted_at_utc", "predictions", "counts", "models", "sidecar")}
+        elif args.command == "score-locked":
+            result = locked.score_session(args.config, args.session, args.predictions_dir, args.log, lock_path=args.lock)
+            summary = {key: result[key] for key in ("session", "prior_session", "counts", "losses", "pairs", "consistency", "scores", "log_line")}
+        elif args.command == "fresh-eval-report":
+            result = locked.fresh_eval_report(args.scores_dir, args.out, as_of=args.as_of, vix_path=args.vix, replicates=args.replicates)
+            summary = dict(sample=result["sample"], expectations={name: item["met"] for name, item in result["expectations"].items()},
+                           comparisons={name: dict(mean_differential=item["mean_differential"], interval=item["interval"],
+                                                   median_relative_improvement=item["median_relative_improvement"], win_rate=item["win_rate"], label=item["label"])
+                                        for name, item in result["comparisons"].items()}, output=result["output"])
+        else:
+            summary = locked.write_lock_record(args.out, commit=args.commit)
         print(json.dumps(clean_json(summary), indent=2))
         return 0
     if args.command == "design-c":
