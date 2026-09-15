@@ -257,6 +257,19 @@ claims. Fourth, evaluation begins in late 2020 because the source's 2019 data
 is weekly-stamped, so the COVID crash itself is in early training windows,
 not in evaluation.
 
+Fifth, added 2026-09-15 from the exploratory study v2 Design C (Research
+Plan Amendment 6, `docs/results/v2/design-c/REPORT.md`): the source lists no
+expiry beyond 67 calendar days. The maximum time to expiry is 66.958 days in
+observation set A and 65.042 days in set B, so the plan's more-than-90-day
+maturity bucket is empty in every breakdown, the study covers short-dated
+options only, and no term-structure claim can be made from it. The same
+exploratory ablations show that removing the moneyness features moves the
+median per-session improvement negative (Delta from +0.107 to -0.116 on set
+A) while the mean loss differential barely changes (4.75e-04 to 4.64e-04):
+the mean is dominated by a few high-error sessions (the ten largest of 1,056
+carry 77.5% of the summed differential), so the median improvement, not the
+mean differential, describes the typical session.
+
 ## Conclusion and future work
 
 On seven years of real end-of-day data spanning multiple volatility regimes,

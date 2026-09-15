@@ -6,6 +6,7 @@
 4. What survives (3 min). S_1, S_2, S_3 with intervals: [fill from docs/results/v2/design-a/comparison.json]. Carry-only check: [fill]. Decision label: [fill]. Guard sensitivity agreement: [fill].
 5. Stronger baselines (2 min, if Design B is done). Prior-session IV and SVI: does the model add anything beyond yesterday's smile? [fill]
 6. Limitations (1 min). Two symbols; source missing 36% of sessions; EOD only; continuous-yield dividend approximation; the mids that violate no-arbitrage bounds under near-zero rates.
+   Added 2026-09-15 (Design C, exploratory, Amendment 6): short-dated only, no expiry beyond 67 calendar days (66.958 days to expiry in set A, 65.042 in set B), so the more-than-90-day bucket is empty and there is no term-structure claim; dropping the moneyness features flips the median improvement negative (+0.107 to -0.116) while the mean differential barely moves, because a few high-error sessions carry the mean.
 7. Reproducibility (1 min). Tag, manifest, one command to verify, pre-registered plan with amendments.
 
 Backup slides: observation-set drop breakdown; per-year ratio-of-means versus per-fold median; the 21 rate-jump sessions.

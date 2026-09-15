@@ -137,6 +137,12 @@ only those rows entering each session's loss; `stale-quote-diagnostic report`
 assembles stale-quote-diagnostic.json from the full and subset runs, and
 `compare-baselines --stale-diagnostic` renders it in the Design B report.
 
+Design C (exploratory): `walk-forward --exclude-features <group>...` and
+`--save-predictions <file>` produce the ablation runs and the per-row prices;
+`design-c ablations`, `design-c breakdowns` (with `--vix` and optional
+`--vix-cuts`/`--moneyness-cuts`), and `design-c report` write
+docs/results/v2/design-c/ablations.json, breakdowns.json, and REPORT.md.
+
 Column semantics: in `export` output, `r`, `q`, `iv_brent_*`, `baseline_*` and
 the bound columns are the values stored at import (constant v1 carry), while
 `effective_r`/`effective_q` are the config's carry for that session and symbol

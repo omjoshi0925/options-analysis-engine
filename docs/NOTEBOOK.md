@@ -438,3 +438,83 @@ docs/results/v2/design-b/stale-quote-diagnostic.json, the sensitivity/ tree,
 and a section of the Design B report; the pre-registered numbers are
 unchanged. Version 3.4.1.
 
+## 2026-09-14: study v2, Design C, Stages 0 to 2 (exploratory)
+
+Everything in this phase is exploratory (plan section 5, Amendment 5) and
+labeled so in every output. Stage 0: FRED VIXCLS retrieved 2026-09-14
+20:52:03 UTC with curl's default User-Agent (9,574 rows, 302 blank; sha256
+60f2ec1e...), recorded in data/external/PROVENANCE.md section 7. The regime
+for session t is the most recent VIXCLS observation dated strictly before t;
+terciles over the 1,056 set A evaluation sessions cut at 16.45 and 20.16
+(352 sessions each; 344, 335, and 326 on set B). Moneyness terciles of
+|log(K/F)| over the 230,927 set A evaluation rows cut at 0.0557 and 0.1350
+and are reused on set B; both cut points are recorded in breakdowns.json.
+
+Stage 1: `walk-forward --exclude-features` refits the learner without one
+feature group (moneyness; maturity interactions; the symbol indicator, which
+with two symbols is one SPY/AAPL contrast, not a group) on the same folds
+under C3, for M(RV) on set A and M(B1) on set B. The full models were rerun
+with `--save-predictions` and reproduce the pre-registered C3, M(RV), and
+M(B1) fold tables byte for byte. Two launches failed before the runs
+counted: unsplit zsh variables (argparse saw one token), and the saved
+predictions creating the report directory ahead of the report, fixed in
+08095d7 with a test; the three full runs were relaunched after the fix.
+
+M(RV) on set A, paired block bootstrap (block 21, 10,000 replicates, seed
+20260908) for the change against the full model:
+
+| Model | Delta (median rho) | Mean d | Win rate | Change in mean d [95%] | Change in Delta [95%] |
+|---|---:|---:|---:|---:|---:|
+| full | 0.1070 | 4.748e-04 | 0.646 | | |
+| without moneyness | -0.1161 | 4.643e-04 | 0.390 | -1.054e-05 [-1.37e-05, -7.88e-06] | -0.2232 [-0.2616, -0.1835] |
+| without maturity interactions | 0.0456 | 4.706e-04 | 0.545 | -4.200e-06 [-6.62e-06, -2.38e-06] | -0.0614 [-0.1034, -0.0332] |
+| without symbol | 0.0775 | 4.724e-04 | 0.626 | -2.426e-06 [-4.46e-06, -9.19e-07] | -0.0296 [-0.0529, -0.0064] |
+
+Every ablation hurts; moneyness carries the result. M(B1) on set B: every
+ablation also hurts, by -4.8e-08 to -1.3e-07 in mean d with intervals below
+zero, while Delta stays near -0.01, consistent with that model adding almost
+nothing to B1.
+
+Stage 2 breakdowns (d and rho by symbol, maturity bucket, moneyness tercile,
+VIX tercile, and gap to the prior available session; an interval only with
+30 or more sessions). M(RV) vs RV on set A: 31 to 90 days median rho +0.189
+(win 0.760) against -0.009 (win 0.493) at 30 days or fewer; middle moneyness
+tercile +0.374 (win 0.909) against -0.021 in the low tercile; high-VIX
++0.191 against low-VIX +0.038; AAPL +0.141 against SPY +0.074. M(RV) vs B1
+on set B: every cell strongly negative (median rho -1.1 to -3.3, win rates
+at or below 0.09). M(B1) vs B1: mean d slightly positive in most cells with
+median rho near zero or negative (SPY -0.067, low moneyness -0.053).
+Sparsest cells: the more-than-90-day bucket is empty in every entry; gap "4"
+on set A has 16 sessions (3,951 observations, no interval) and "5+" 40; on
+set B gap "4" has 45 and "5+" 41. CHECKPOINT reported with the VIX cut
+points, the M(RV) ablation table, and these counts.
+
+## 2026-09-15: study v2, Design C, Stage 3 and Amendment 6 (exploratory)
+
+CHECKPOINT confirmed with two additions. The empty more-than-90-day bucket
+is a property of the source, not of the sets: the imported DoltHub chains
+list two to four expirations per symbol and session and none beyond 67
+calendar days. Measured over the whole sets and over their evaluated rows
+alike, the maximum time to expiry is 66.958 days (T = 0.18345) in set A and
+65.042 days (T = 0.17820) in set B, the minimum 10.000 days in both; the odd
+hour is the daylight-saving offset between the session close and the
+expiration close. The instruction that accompanied the confirmation put the
+ceiling at roughly 45 days; the data do not (81,482 of set A's 253,554 rows
+expire more than 45 calendar days out), so Amendment 6 records the measured
+values. Amendment 6 is exploratory in scope, changes no estimand or rule,
+and states that the study covers short-dated options only and supports no
+term-structure claim.
+
+Stage 3: `design-c breakdowns` now records each entry's observed maturity
+range and empty buckets, and `design-c ablations` records the median
+differential and the share of the summed differential carried by the ten
+largest sessions (77.5% of 1,056 for M(RV) on set A; 90.5% of 1,005 for
+M(B1) on set B). Both files were regenerated; every previously recorded
+number is unchanged and the new fields are additions. The report reads the
+ablations in words: removing the moneyness features moves Delta from +0.107
+to -0.116 while the mean differential moves from 4.75e-04 to 4.64e-04,
+because a few high-error sessions dominate the mean (without the ten
+largest, the set A mean d is 1.08e-04). The same two points went into
+RESULTS.md's limitations and section 6 of the talk outline. Version 3.5.0;
+manifest rebuilt with the design_c block (nine runs, saved predictions with
+uncompressed hashes, the three files, and the headline); `--check` passes.
