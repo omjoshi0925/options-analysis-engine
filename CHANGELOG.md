@@ -1,5 +1,29 @@
 # Changelog
 
+## 3.6.0 - 2026-09-15
+
+Study v2 locked (Research Plan section 7 and Amendment 7; tag study-v2-locked):
+
+- Add `options_engine.locked` and four commands. `lock-record` writes
+  docs/lock.json with the SHA-256 of the locked configuration and modules,
+  which the other commands verify before running. `predict-locked --session
+  DATE` forms the blind prediction set for a fresh session (contracts present
+  at the prior available session and not expired at DATE's close, priced
+  under the RV baseline, B1, M(RV), and M(B1) with S_t, r_t, q_t and
+  prior-session information only), writes predictions-DATE.csv with a UTC
+  timestamp and a sidecar carrying its SHA-256, and refuses if the chain for
+  DATE is already in the store, if the store holds a later session, if the
+  files exist, or if any locked file has changed. `score-locked --session
+  DATE` runs only after the prediction file is committed and the chain was
+  imported after that commit, matches on the contract key, ignores contracts
+  absent from the prediction set, and appends one line to docs/FRESH_EVAL.md.
+  `fresh-eval-report` applies the section 6 inference to the scored sessions
+  against the Amendment 7 expectations and refuses until the sample rule is
+  met.
+- docs/LOCK.md records the locked commit and version, the hashes, the exact
+  invocations, the sample rule, and the per-session protocol;
+  docs/FRESH_EVAL.md is the session log.
+
 ## 3.5.0 - 2026-09-15
 
 Design C of the study v2 research plan (section 5, Amendment 5), all of it
