@@ -1,0 +1,474 @@
+{
+  "bootstrap": {
+    "block_length": 21,
+    "paired": "the same block indices resample the ablated and full differentials, so every change is computed within a replicate",
+    "replicates": 10000,
+    "seed": 20260908,
+    "sensitivity_blocks": [
+      10,
+      63,
+      126
+    ]
+  },
+  "entries": {
+    "M(B1) on set B, reference B1": {
+      "ablations": {
+        "no-maturity-interactions": {
+          "change_in_delta": -0.004822179628978901,
+          "change_in_mean_d": -4.8481771082374556e-08,
+          "change_interval": [
+            -8.7154861042763e-08,
+            -1.5215491645273708e-08
+          ],
+          "change_sensitivity": {
+            "10": [
+              -8.057670052596932e-08,
+              -1.7294008569333783e-08
+            ],
+            "126": [
+              -1.1457162008698214e-07,
+              -8.375370646637407e-10
+            ],
+            "21": [
+              -8.7154861042763e-08,
+              -1.5215491645273708e-08
+            ],
+            "63": [
+              -1.008477376731735e-07,
+              -7.037498162705152e-09
+            ]
+          },
+          "concentration": {
+            "mean_d_without_top": 1.569456055424646e-08,
+            "share_of_sum_d": 0.9570714147669181,
+            "top_sessions": 10
+          },
+          "delta_change_interval": [
+            -0.009830270695007014,
+            -0.0008618705538186553
+          ],
+          "delta_median_rho": -0.0167353906818452,
+          "excluded_features": [
+            "maturity_interactions"
+          ],
+          "folds": 1005,
+          "helps": false,
+          "hurts": true,
+          "learned_coverage_mean": 0.9999900942065121,
+          "mean_d": 3.619591861284546e-07,
+          "median_d": -4.9221710015171706e-08,
+          "win_rate": 0.43980099502487563
+        },
+        "no-moneyness": {
+          "change_in_delta": 0.0011935927268144995,
+          "change_in_mean_d": -1.3050531663486424e-07,
+          "change_interval": [
+            -2.6285894675712914e-07,
+            -5.175896317928669e-09
+          ],
+          "change_sensitivity": {
+            "10": [
+              -2.5834543365696324e-07,
+              2.0342039202138137e-09
+            ],
+            "126": [
+              -3.3476395720165347e-07,
+              1.641062151648901e-08
+            ],
+            "21": [
+              -2.6285894675712914e-07,
+              -5.175896317928669e-09
+            ],
+            "63": [
+              -2.974886070440624e-07,
+              2.685754636056746e-09
+            ]
+          },
+          "concentration": {
+            "mean_d_without_top": 1.977628231441311e-08,
+            "share_of_sum_d": 0.930057125467744,
+            "top_sessions": 10
+          },
+          "delta_change_interval": [
+            -0.006264155288707199,
+            0.0105266505875563
+          ],
+          "delta_median_rho": -0.0107196183260518,
+          "excluded_features": [
+            "moneyness"
+          ],
+          "folds": 1005,
+          "helps": false,
+          "hurts": true,
+          "learned_coverage_mean": 0.9999900942065121,
+          "mean_d": 2.7993564057596506e-07,
+          "median_d": -2.3992625064712005e-08,
+          "win_rate": 0.4368159203980099
+        },
+        "no-symbol": {
+          "change_in_delta": 0.0013003035944084002,
+          "change_in_mean_d": -5.089100063526292e-08,
+          "change_interval": [
+            -1.0088758877958548e-07,
+            -1.4143207212049808e-08
+          ],
+          "change_sensitivity": {
+            "10": [
+              -9.216697780894778e-08,
+              -1.8845307312641753e-08
+            ],
+            "126": [
+              -1.0675446807305263e-07,
+              -3.90048443568027e-09
+            ],
+            "21": [
+              -1.0088758877958548e-07,
+              -1.4143207212049808e-08
+            ],
+            "63": [
+              -1.0510835867049232e-07,
+              -8.51003327187477e-09
+            ]
+          },
+          "concentration": {
+            "mean_d_without_top": 9.971691963995244e-09,
+            "share_of_sum_d": 0.9725421433993187,
+            "top_sessions": 10
+          },
+          "delta_change_interval": [
+            -0.002695494944286801,
+            0.004385828177792201
+          ],
+          "delta_median_rho": -0.0106129074584579,
+          "excluded_features": [
+            "symbol"
+          ],
+          "folds": 1005,
+          "helps": false,
+          "hurts": true,
+          "learned_coverage_mean": 0.9999900942065121,
+          "mean_d": 3.595499565755664e-07,
+          "median_d": -2.9043053392358434e-08,
+          "win_rate": 0.4606965174129353
+        }
+      },
+      "first_session": "2020-11-16",
+      "full": {
+        "concentration": {
+          "mean_d_without_top": 3.939803883849247e-08,
+          "share_of_sum_d": 0.904965579418269,
+          "top_sessions": 10
+        },
+        "delta_median_rho": -0.0119132110528663,
+        "folds": 1005,
+        "learned_coverage_mean": 0.9999900942065121,
+        "mean_d": 4.104409572108293e-07,
+        "median_d": -3.3809450220406635e-08,
+        "win_rate": 0.4626865671641791
+      },
+      "last_session": "2026-09-04",
+      "runs": {
+        "full": {
+          "files": {
+            "REPORT.md": {
+              "path": "docs/results/v2/design-c/runs/set-b/m-b1/full/REPORT.md",
+              "sha256": "ef986fc623c8ae8a0312181de5e4a767c60b737522dc509fc4cc5d5065d9cd07"
+            },
+            "folds.csv": {
+              "path": "docs/results/v2/design-c/runs/set-b/m-b1/full/folds.csv",
+              "sha256": "6b59b51136973d44b27d60a3b412b68fe9cac213d0caa3a8a2adaef7672f0853"
+            },
+            "significance.json": {
+              "path": "docs/results/v2/design-c/runs/set-b/m-b1/full/significance.json",
+              "sha256": "e8b38acec79974227ba8e4c2cdf53e911e6dd4d5c6241a22b18ecc8f48820187"
+            }
+          },
+          "path": "docs/results/v2/design-c/runs/set-b/m-b1/full"
+        },
+        "no-maturity-interactions": {
+          "files": {
+            "REPORT.md": {
+              "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-maturity-interactions/REPORT.md",
+              "sha256": "222ded54196ce4e6c95db309d762d6ad3733c2a7ec9616deb6435d0bb34f737d"
+            },
+            "folds.csv": {
+              "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-maturity-interactions/folds.csv",
+              "sha256": "16e28577ca1cc8f5ee5b26c22be3dd80028e7ad9c3f5e239d4339e26de4ba198"
+            },
+            "significance.json": {
+              "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-maturity-interactions/significance.json",
+              "sha256": "1136df8bc440541f28c08c73069ba4ebee1620db18858c446b232c2e5ef92e48"
+            }
+          },
+          "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-maturity-interactions"
+        },
+        "no-moneyness": {
+          "files": {
+            "REPORT.md": {
+              "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-moneyness/REPORT.md",
+              "sha256": "08c2ffe2ecdab8b329bd77fe380e62fdc6ecd0d4cea08199e11d58ea6ed7c579"
+            },
+            "folds.csv": {
+              "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-moneyness/folds.csv",
+              "sha256": "8cc5665f66a95d461fa4d4e1b7ff2aa72f62963d2602220c34f4952924aad065"
+            },
+            "significance.json": {
+              "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-moneyness/significance.json",
+              "sha256": "eff573855fced0828f70888c5540322a125779713a72fea44c68e69a31e739ff"
+            }
+          },
+          "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-moneyness"
+        },
+        "no-symbol": {
+          "files": {
+            "REPORT.md": {
+              "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-symbol/REPORT.md",
+              "sha256": "0a3881c70750c49c0e4e7c6f64cda3c161cbc67a8c895271a383dda7571a61f9"
+            },
+            "folds.csv": {
+              "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-symbol/folds.csv",
+              "sha256": "0a9229825b812638a807d6f9447f06666ef79503b82c4f8f8296c7ab86d6f237"
+            },
+            "significance.json": {
+              "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-symbol/significance.json",
+              "sha256": "5f79b8f077cedadb6a4ade56e4e72789d830626f5f8d735d2e3c4c6f3993c438"
+            }
+          },
+          "path": "docs/results/v2/design-c/runs/set-b/m-b1/no-symbol"
+        }
+      },
+      "sessions": 1005
+    },
+    "M(RV) on set A, reference RV baseline": {
+      "ablations": {
+        "no-maturity-interactions": {
+          "change_in_delta": -0.061441711169539504,
+          "change_in_mean_d": -4.199645074951061e-06,
+          "change_interval": [
+            -6.61606803676742e-06,
+            -2.3767294798423484e-06
+          ],
+          "change_sensitivity": {
+            "10": [
+              -6.014611423931256e-06,
+              -2.7133217776832655e-06
+            ],
+            "126": [
+              -8.143002472412276e-06,
+              -1.5853330492128234e-06
+            ],
+            "21": [
+              -6.61606803676742e-06,
+              -2.3767294798423484e-06
+            ],
+            "63": [
+              -7.732400904558838e-06,
+              -1.8102302841649074e-06
+            ]
+          },
+          "concentration": {
+            "mean_d_without_top": 0.00010375349218722339,
+            "share_of_sum_d": 0.7816393506147287,
+            "top_sessions": 10
+          },
+          "delta_change_interval": [
+            -0.10344425475286777,
+            -0.033151764001564984
+          ],
+          "delta_median_rho": 0.0456050685898992,
+          "excluded_features": [
+            "maturity_interactions"
+          ],
+          "folds": 1056,
+          "helps": false,
+          "hurts": true,
+          "learned_coverage_mean": 0.9970146604193015,
+          "mean_d": 0.000470647886173554,
+          "median_d": 1.2163579244183768e-06,
+          "win_rate": 0.5445075757575758
+        },
+        "no-moneyness": {
+          "change_in_delta": -0.22317051953212202,
+          "change_in_mean_d": -1.0535589263024868e-05,
+          "change_interval": [
+            -1.3749098298230031e-05,
+            -7.875709348908271e-06
+          ],
+          "change_sensitivity": {
+            "10": [
+              -1.3278122244153613e-05,
+              -8.209284907882308e-06
+            ],
+            "126": [
+              -1.509827790077353e-05,
+              -6.6938482116012e-06
+            ],
+            "21": [
+              -1.3749098298230031e-05,
+              -7.875709348908271e-06
+            ],
+            "63": [
+              -1.4763611034650482e-05,
+              -7.070540492144128e-06
+            ]
+          },
+          "concentration": {
+            "mean_d_without_top": 9.75904087913478e-05,
+            "share_of_sum_d": 0.7918075146213496,
+            "top_sessions": 10
+          },
+          "delta_change_interval": [
+            -0.2615884576943035,
+            -0.1834820309207101
+          ],
+          "delta_median_rho": -0.11612373977268331,
+          "excluded_features": [
+            "moneyness"
+          ],
+          "folds": 1056,
+          "helps": false,
+          "hurts": true,
+          "learned_coverage_mean": 0.9970146604193015,
+          "mean_d": 0.0004643119419854802,
+          "median_d": -3.1590395341655545e-06,
+          "win_rate": 0.39015151515151514
+        },
+        "no-symbol": {
+          "change_in_delta": -0.029570398073795454,
+          "change_in_mean_d": -2.426296649084736e-06,
+          "change_interval": [
+            -4.464591130615768e-06,
+            -9.187980174813606e-07
+          ],
+          "change_sensitivity": {
+            "10": [
+              -4.206687120319876e-06,
+              -1.1025270771620206e-06
+            ],
+            "126": [
+              -4.450607960111757e-06,
+              -7.307042134998697e-07
+            ],
+            "21": [
+              -4.464591130615768e-06,
+              -9.187980174813606e-07
+            ],
+            "63": [
+              -4.5974796471493065e-06,
+              -7.410042055743854e-07
+            ]
+          },
+          "concentration": {
+            "mean_d_without_top": 0.00010584429500804845,
+            "share_of_sum_d": 0.7780752135385075,
+            "top_sessions": 10
+          },
+          "delta_change_interval": [
+            -0.05288140476018033,
+            -0.006385507719923609
+          ],
+          "delta_median_rho": 0.07747638168564325,
+          "excluded_features": [
+            "symbol"
+          ],
+          "folds": 1056,
+          "helps": false,
+          "hurts": true,
+          "learned_coverage_mean": 0.9970146604193015,
+          "mean_d": 0.00047242123459942034,
+          "median_d": 2.048337812838254e-06,
+          "win_rate": 0.6259469696969697
+        }
+      },
+      "first_session": "2020-10-23",
+      "full": {
+        "concentration": {
+          "mean_d_without_top": 0.0001079482989774815,
+          "share_of_sum_d": 0.7748202227847064,
+          "top_sessions": 10
+        },
+        "delta_median_rho": 0.1070467797594387,
+        "folds": 1056,
+        "learned_coverage_mean": 0.9970146604193015,
+        "mean_d": 0.000474847531248505,
+        "median_d": 2.703107007192203e-06,
+        "win_rate": 0.6458333333333334
+      },
+      "last_session": "2026-09-04",
+      "runs": {
+        "full": {
+          "files": {
+            "REPORT.md": {
+              "path": "docs/results/v2/design-c/runs/set-a/full/REPORT.md",
+              "sha256": "d5599af70a257d6ece76bbe5aae424640962ecb7317057eac9de6a4ee1a8847a"
+            },
+            "folds.csv": {
+              "path": "docs/results/v2/design-c/runs/set-a/full/folds.csv",
+              "sha256": "a0249049ebb6c1ff9d61b7c29737964e6304eaf3c0cf0fcd3f056303a9330a0e"
+            },
+            "significance.json": {
+              "path": "docs/results/v2/design-c/runs/set-a/full/significance.json",
+              "sha256": "a8b01f9ff4810b3e4b5323eb61dc6f610343ee9671622ba1349ae5803990dda7"
+            }
+          },
+          "path": "docs/results/v2/design-c/runs/set-a/full"
+        },
+        "no-maturity-interactions": {
+          "files": {
+            "REPORT.md": {
+              "path": "docs/results/v2/design-c/runs/set-a/no-maturity-interactions/REPORT.md",
+              "sha256": "171b676b54144e1beb4a79a7dcf93b582255372c4c513c89c45d8cd4eff117ff"
+            },
+            "folds.csv": {
+              "path": "docs/results/v2/design-c/runs/set-a/no-maturity-interactions/folds.csv",
+              "sha256": "8ac070fbbbff3640bd1fab13f5f1312c89a4010223829d38c6f3708b513f056a"
+            },
+            "significance.json": {
+              "path": "docs/results/v2/design-c/runs/set-a/no-maturity-interactions/significance.json",
+              "sha256": "9785cbf32a130268141ef6c356778e7f8454884cf329306da226f7707b80d106"
+            }
+          },
+          "path": "docs/results/v2/design-c/runs/set-a/no-maturity-interactions"
+        },
+        "no-moneyness": {
+          "files": {
+            "REPORT.md": {
+              "path": "docs/results/v2/design-c/runs/set-a/no-moneyness/REPORT.md",
+              "sha256": "80ea593804835f86aff67ac7b715260b858ebb0a15cb0a9eb6acb103948419ee"
+            },
+            "folds.csv": {
+              "path": "docs/results/v2/design-c/runs/set-a/no-moneyness/folds.csv",
+              "sha256": "dae25d53faeab27c3b6d6363c4d6709ed4becf1381be3965b0b7182320db1d11"
+            },
+            "significance.json": {
+              "path": "docs/results/v2/design-c/runs/set-a/no-moneyness/significance.json",
+              "sha256": "ee96dcb809ed9c6bd617838cf83be910affb67afd9a62296e34623034a7fccfc"
+            }
+          },
+          "path": "docs/results/v2/design-c/runs/set-a/no-moneyness"
+        },
+        "no-symbol": {
+          "files": {
+            "REPORT.md": {
+              "path": "docs/results/v2/design-c/runs/set-a/no-symbol/REPORT.md",
+              "sha256": "360f2ef8457d1a727739a594c71e7974990dd7a5982d8f5aa7c16cc930a44d3b"
+            },
+            "folds.csv": {
+              "path": "docs/results/v2/design-c/runs/set-a/no-symbol/folds.csv",
+              "sha256": "738c264cf2ee48f0804573da3a992aaa1f1001daaebf36c6533b941c62117f12"
+            },
+            "significance.json": {
+              "path": "docs/results/v2/design-c/runs/set-a/no-symbol/significance.json",
+              "sha256": "faf89d8b2f5eb752ae16e0fe362ccd0c6de1132cf0005d4c9489068582f3d14b"
+            }
+          },
+          "path": "docs/results/v2/design-c/runs/set-a/no-symbol"
+        }
+      },
+      "sessions": 1056
+    }
+  },
+  "exploratory": true,
+  "note": "Exploratory (Research Plan section 5, Amendment 5): no claim in this section is confirmatory, and the intervals carry no multiplicity adjustment.",
+  "symbol_note": "With two symbols the symbol ablation removes one indicator, a single SPY/AAPL contrast, not a group of features."
+}

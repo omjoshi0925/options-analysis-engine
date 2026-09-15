@@ -1,0 +1,845 @@
+{
+  "bootstrap": {
+    "block_length": 21,
+    "minimum_sessions_for_interval": 30,
+    "paired": "d_t pairs the model and the reference within each session; the block bootstrap resamples the cell's session series",
+    "replicates": 10000,
+    "seed": 20260908
+  },
+  "cut_points": {
+    "moneyness_cuts_from": "M(RV) vs RV baseline on set A",
+    "moneyness_rows": 230927,
+    "moneyness_terciles": [
+      0.05565588351887279,
+      0.13496431965251243
+    ],
+    "vix_cuts_from": "M(RV) vs RV baseline on set A",
+    "vix_sessions": 1056,
+    "vix_terciles": [
+      16.446666666666665,
+      20.156666666666666
+    ]
+  },
+  "entries": {
+    "M(B1) vs B1 on set B": {
+      "breakdowns": {
+        "gap_bucket": {
+          "cells": {
+            "1": {
+              "interval": [
+                1.1797709385562037e-07,
+                1.5821583283228497e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": 7.877226666068145e-07,
+              "median_rho": -0.03172377115542313,
+              "observations": 62737,
+              "sessions": 376,
+              "thin": false,
+              "win_rate": 0.4308510638297872
+            },
+            "2": {
+              "interval": [
+                -4.0971457181742517e-07,
+                2.434317550020435e-08
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.5609702875970196e-07,
+              "median_rho": -0.020119754750732577,
+              "observations": 29448,
+              "sessions": 295,
+              "thin": false,
+              "win_rate": 0.42033898305084744
+            },
+            "3": {
+              "interval": [
+                4.525587758289944e-08,
+                1.5678364485905886e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": 6.667599210182734e-07,
+              "median_rho": 0.014982159701459441,
+              "observations": 40989,
+              "sessions": 248,
+              "thin": false,
+              "win_rate": 0.5403225806451613
+            },
+            "4": {
+              "interval": [
+                -5.672510296110708e-07,
+                2.0938422604008495e-07
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.8633965963987285e-07,
+              "median_rho": -0.02332729639426856,
+              "observations": 6156,
+              "sessions": 45,
+              "thin": false,
+              "win_rate": 0.4666666666666667
+            },
+            "5+": {
+              "interval": [
+                -2.0824987937066384e-08,
+                2.8440332899731066e-07
+              ],
+              "interval_block_length": 21,
+              "mean_d": 1.3138749044135712e-07,
+              "median_rho": 0.04116336462199699,
+              "observations": 3612,
+              "sessions": 41,
+              "thin": false,
+              "win_rate": 0.5853658536585366
+            }
+          },
+          "title": "gap in days to the prior available session"
+        },
+        "maturity_bucket": {
+          "cells": {
+            "31-90d": {
+              "interval": [
+                1.6755005454280848e-08,
+                8.535591678700829e-07
+              ],
+              "interval_block_length": 21,
+              "mean_d": 4.041113079389004e-07,
+              "median_rho": -0.02358328367660345,
+              "observations": 74700,
+              "sessions": 950,
+              "thin": false,
+              "win_rate": 0.4378947368421053
+            },
+            "<=30d": {
+              "interval": [
+                1.7964477904659646e-07,
+                1.2441689031769696e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": 6.289444227267819e-07,
+              "median_rho": -0.002727090634607965,
+              "observations": 68242,
+              "sessions": 784,
+              "thin": false,
+              "win_rate": 0.49107142857142855
+            },
+            ">90d": {
+              "interval": null,
+              "mean_d": null,
+              "median_rho": null,
+              "observations": 0,
+              "sessions": 0,
+              "thin": true,
+              "win_rate": null
+            }
+          },
+          "title": "maturity bucket (calendar days to expiry)"
+        },
+        "moneyness_tercile": {
+          "cells": {
+            "high": {
+              "interval": [
+                1.7903002151776793e-07,
+                1.2386607637652864e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": 6.473460462557333e-07,
+              "median_rho": -0.002612389246176239,
+              "observations": 45767,
+              "sessions": 1005,
+              "thin": false,
+              "win_rate": 0.4955223880597015
+            },
+            "low": {
+              "interval": [
+                -3.1150283351319943e-07,
+                4.151689882570853e-07
+              ],
+              "interval_block_length": 21,
+              "mean_d": 5.506570527459883e-08,
+              "median_rho": -0.052593769996242434,
+              "observations": 49060,
+              "sessions": 1005,
+              "thin": false,
+              "win_rate": 0.3800995024875622
+            },
+            "middle": {
+              "interval": [
+                2.1089278137908778e-07,
+                1.0439991462149744e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": 5.909425437080864e-07,
+              "median_rho": 0.018665552802757168,
+              "observations": 48115,
+              "sessions": 1005,
+              "thin": false,
+              "win_rate": 0.5681592039800994
+            }
+          },
+          "title": "moneyness tercile of |log(K/F)|"
+        },
+        "symbol": {
+          "cells": {
+            "AAPL": {
+              "interval": [
+                8.442333818097354e-08,
+                1.235374574203567e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": 6.143312708574919e-07,
+              "median_rho": -0.0011717887370824576,
+              "observations": 80050,
+              "sessions": 980,
+              "thin": false,
+              "win_rate": 0.49795918367346936
+            },
+            "SPY": {
+              "interval": [
+                -7.522707798516722e-08,
+                4.967702593860594e-07
+              ],
+              "interval_block_length": 21,
+              "mean_d": 1.8363778569085276e-07,
+              "median_rho": -0.0672354767900174,
+              "observations": 62892,
+              "sessions": 942,
+              "thin": false,
+              "win_rate": 0.37261146496815284
+            }
+          },
+          "title": "symbol"
+        },
+        "vix_tercile": {
+          "cells": {
+            "high": {
+              "interval": [
+                -4.149389400987116e-07,
+                1.3480624408554126e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": 3.825849846198133e-07,
+              "median_rho": -0.006578389455368039,
+              "observations": 42314,
+              "sessions": 326,
+              "thin": false,
+              "win_rate": 0.48466257668711654
+            },
+            "low": {
+              "interval": [
+                2.4689342691066213e-08,
+                9.900537227793644e-07
+              ],
+              "interval_block_length": 21,
+              "mean_d": 4.1077401400934703e-07,
+              "median_rho": -0.007655052879493418,
+              "observations": 50092,
+              "sessions": 344,
+              "thin": false,
+              "win_rate": 0.4738372093023256
+            },
+            "middle": {
+              "interval": [
+                1.6492881026159232e-08,
+                9.933366961309998e-07
+              ],
+              "interval_block_length": 21,
+              "mean_d": 4.372065557958472e-07,
+              "median_rho": -0.023745249110166178,
+              "observations": 50536,
+              "sessions": 335,
+              "thin": false,
+              "win_rate": 0.4298507462686567
+            }
+          },
+          "title": "VIX regime (VIXCLS at the prior observation, terciles)"
+        }
+      },
+      "maturity_range": {
+        "T_max": 0.1781963470319634,
+        "T_min": 0.0273972602739726,
+        "bucket_edges_days": [
+          30.0,
+          90.0
+        ],
+        "days_to_expiry_max": 65.04166666666667,
+        "days_to_expiry_min": 10.0,
+        "empty_buckets": [
+          ">90d"
+        ],
+        "note": "An empty bucket means the source lists no expiry in it; the study covers only the realized range (Research Plan Amendment 6)."
+      },
+      "model_predictions": {
+        "path": "docs/results/v2/design-c/runs/set-b/m-b1/full/predictions.csv.gz",
+        "rows": 142942,
+        "sha256": "d0f681018829cf63c6352540f31402c0b5f8194dd7da177fa3e8b75655e3632d"
+      },
+      "observations": 142942,
+      "overall": {
+        "interval": [
+          5.392776397649803e-08,
+          8.396805280827021e-07
+        ],
+        "interval_block_length": 21,
+        "mean_d": 4.1044095721082914e-07,
+        "median_rho": -0.011913211052866579,
+        "observations": 142942,
+        "sessions": 1005,
+        "thin": false,
+        "win_rate": 0.4626865671641791
+      },
+      "reference": {
+        "path": null,
+        "role": "the model run's own baseline"
+      },
+      "session_calendar": "docs/results/v2/observation-set-B.csv.gz",
+      "sessions": 1005
+    },
+    "M(RV) vs B1 on set B": {
+      "breakdowns": {
+        "gap_bucket": {
+          "cells": {
+            "1": {
+              "interval": [
+                -2.6045560809630318e-05,
+                -7.465863198413957e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.517731255193969e-05,
+              "median_rho": -2.0329744426806142,
+              "observations": 62737,
+              "sessions": 376,
+              "thin": false,
+              "win_rate": 0.07446808510638298
+            },
+            "2": {
+              "interval": [
+                -2.9506395279658562e-05,
+                -1.1968875135768307e-05
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.9232682534295102e-05,
+              "median_rho": -1.775782304390436,
+              "observations": 29448,
+              "sessions": 295,
+              "thin": false,
+              "win_rate": 0.030508474576271188
+            },
+            "3": {
+              "interval": [
+                -2.9685097707219798e-05,
+                -8.742359357745072e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.7336231004540405e-05,
+              "median_rho": -1.9126920868371886,
+              "observations": 40989,
+              "sessions": 248,
+              "thin": false,
+              "win_rate": 0.04435483870967742
+            },
+            "4": {
+              "interval": [
+                -2.0201177782307463e-05,
+                -1.2405886281685561e-05
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.623978651396485e-05,
+              "median_rho": -1.4824239855352412,
+              "observations": 6156,
+              "sessions": 45,
+              "thin": false,
+              "win_rate": 0.06666666666666667
+            },
+            "5+": {
+              "interval": [
+                -1.6418301114879278e-05,
+                -1.2260192053979675e-05
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.4372522484322489e-05,
+              "median_rho": -1.7321572283749198,
+              "observations": 3612,
+              "sessions": 41,
+              "thin": false,
+              "win_rate": 0.07317073170731707
+            }
+          },
+          "title": "gap in days to the prior available session"
+        },
+        "maturity_bucket": {
+          "cells": {
+            "31-90d": {
+              "interval": [
+                -3.113510642052403e-05,
+                -1.3938420711441258e-05
+              ],
+              "interval_block_length": 21,
+              "mean_d": -2.1296401165826118e-05,
+              "median_rho": -2.200344887513245,
+              "observations": 74700,
+              "sessions": 950,
+              "thin": false,
+              "win_rate": 0.049473684210526316
+            },
+            "<=30d": {
+              "interval": [
+                -1.6382815288495115e-05,
+                -6.9349481683648185e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.1174251843580544e-05,
+              "median_rho": -1.402170759727428,
+              "observations": 68242,
+              "sessions": 784,
+              "thin": false,
+              "win_rate": 0.08801020408163265
+            },
+            ">90d": {
+              "interval": null,
+              "mean_d": null,
+              "median_rho": null,
+              "observations": 0,
+              "sessions": 0,
+              "thin": true,
+              "win_rate": null
+            }
+          },
+          "title": "maturity bucket (calendar days to expiry)"
+        },
+        "moneyness_tercile": {
+          "cells": {
+            "high": {
+              "interval": [
+                -2.4382576514790095e-05,
+                -7.383623621923877e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.4519404903697557e-05,
+              "median_rho": -1.5329648035540453,
+              "observations": 45767,
+              "sessions": 1005,
+              "thin": false,
+              "win_rate": 0.06965174129353234
+            },
+            "low": {
+              "interval": [
+                -3.718952830111843e-05,
+                -1.889757649612468e-05
+              ],
+              "interval_block_length": 21,
+              "mean_d": -2.651204160958597e-05,
+              "median_rho": -2.5616098554439968,
+              "observations": 49060,
+              "sessions": 1005,
+              "thin": false,
+              "win_rate": 0.05970149253731343
+            },
+            "middle": {
+              "interval": [
+                -1.6613213796926667e-05,
+                -5.745367401216157e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.0260235785680743e-05,
+              "median_rho": -1.1299095040174998,
+              "observations": 48115,
+              "sessions": 1005,
+              "thin": false,
+              "win_rate": 0.09253731343283582
+            }
+          },
+          "title": "moneyness tercile of |log(K/F)|"
+        },
+        "symbol": {
+          "cells": {
+            "AAPL": {
+              "interval": [
+                -2.985726577197376e-05,
+                -1.1245579371376998e-05
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.9439461456108942e-05,
+              "median_rho": -1.4758901034918221,
+              "observations": 80050,
+              "sessions": 980,
+              "thin": false,
+              "win_rate": 0.08673469387755102
+            },
+            "SPY": {
+              "interval": [
+                -1.5027622964598674e-05,
+                -1.0100903765733546e-05
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.2350553298870424e-05,
+              "median_rho": -3.25042065646131,
+              "observations": 62892,
+              "sessions": 942,
+              "thin": false,
+              "win_rate": 0.03503184713375796
+            }
+          },
+          "title": "symbol"
+        },
+        "vix_tercile": {
+          "cells": {
+            "high": {
+              "interval": [
+                -4.703340487107924e-05,
+                -1.563007738255289e-05
+              ],
+              "interval_block_length": 21,
+              "mean_d": -2.940251715804994e-05,
+              "median_rho": -1.4390853577748937,
+              "observations": 42314,
+              "sessions": 326,
+              "thin": false,
+              "win_rate": 0.06748466257668712
+            },
+            "low": {
+              "interval": [
+                -1.1950649435221892e-05,
+                -7.957850245436408e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": -9.893135374943917e-06,
+              "median_rho": -2.2910617798834805,
+              "observations": 50092,
+              "sessions": 344,
+              "thin": false,
+              "win_rate": 0.0436046511627907
+            },
+            "middle": {
+              "interval": [
+                -1.7667955821217265e-05,
+                -7.370552614364985e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": -1.197403226493448e-05,
+              "median_rho": -1.9387670451757941,
+              "observations": 50536,
+              "sessions": 335,
+              "thin": false,
+              "win_rate": 0.050746268656716415
+            }
+          },
+          "title": "VIX regime (VIXCLS at the prior observation, terciles)"
+        }
+      },
+      "maturity_range": {
+        "T_max": 0.1781963470319634,
+        "T_min": 0.0273972602739726,
+        "bucket_edges_days": [
+          30.0,
+          90.0
+        ],
+        "days_to_expiry_max": 65.04166666666667,
+        "days_to_expiry_min": 10.0,
+        "empty_buckets": [
+          ">90d"
+        ],
+        "note": "An empty bucket means the source lists no expiry in it; the study covers only the realized range (Research Plan Amendment 6)."
+      },
+      "model_predictions": {
+        "path": "docs/results/v2/design-c/runs/set-b/m-rv/full/predictions.csv.gz",
+        "rows": 142942,
+        "sha256": "1620a63d92daad718f6f66450554e31eef181315d299acc3480f54a53337394e"
+      },
+      "observations": 142942,
+      "overall": {
+        "interval": [
+          -2.4072793833547216e-05,
+          -1.136738892966923e-05
+        ],
+        "interval_block_length": 21,
+        "mean_d": -1.6915184051003025e-05,
+        "median_rho": -1.889964217301396,
+        "observations": 142942,
+        "sessions": 1005,
+        "thin": false,
+        "win_rate": 0.05373134328358209
+      },
+      "reference": {
+        "path": "docs/results/v2/design-c/runs/set-b/m-b1/full/predictions.csv.gz",
+        "role": "baseline",
+        "sha256": "d0f681018829cf63c6352540f31402c0b5f8194dd7da177fa3e8b75655e3632d"
+      },
+      "session_calendar": "docs/results/v2/observation-set-B.csv.gz",
+      "sessions": 1005
+    },
+    "M(RV) vs RV baseline on set A": {
+      "breakdowns": {
+        "gap_bucket": {
+          "cells": {
+            "1": {
+              "interval": [
+                5.2051227933532885e-06,
+                4.412392674235179e-05
+              ],
+              "interval_block_length": 21,
+              "mean_d": 2.1121248987732098e-05,
+              "median_rho": 0.11245400642316206,
+              "observations": 93221,
+              "sessions": 387,
+              "thin": false,
+              "win_rate": 0.6718346253229974
+            },
+            "2": {
+              "interval": [
+                -2.0818831672047637e-07,
+                0.002610355704525474
+              ],
+              "interval_block_length": 21,
+              "mean_d": 0.0008709230432079344,
+              "median_rho": 0.09620304615475495,
+              "observations": 72094,
+              "sessions": 359,
+              "thin": false,
+              "win_rate": 0.6128133704735376
+            },
+            "3": {
+              "interval": [
+                3.884988637000704e-06,
+                0.0021147904778727757
+              ],
+              "interval_block_length": 21,
+              "mean_d": 0.0007095277141372148,
+              "median_rho": 0.10700409333264793,
+              "observations": 53757,
+              "sessions": 254,
+              "thin": false,
+              "win_rate": 0.6496062992125984
+            },
+            "4": {
+              "interval": null,
+              "mean_d": 2.1411718940865522e-05,
+              "median_rho": 0.12252838716537412,
+              "observations": 3951,
+              "sessions": 16,
+              "thin": true,
+              "win_rate": 0.625
+            },
+            "5+": {
+              "interval": [
+                -9.18788338629185e-07,
+                2.951434145950503e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": 1.0267558654115781e-06,
+              "median_rho": 0.10894262745003552,
+              "observations": 7904,
+              "sessions": 40,
+              "thin": false,
+              "win_rate": 0.675
+            }
+          },
+          "title": "gap in days to the prior available session"
+        },
+        "maturity_bucket": {
+          "cells": {
+            "31-90d": {
+              "interval": [
+                1.2297293279004958e-05,
+                0.0021755420081575774
+              ],
+              "interval_block_length": 21,
+              "mean_d": 0.000737846007946044,
+              "median_rho": 0.18885188560750743,
+              "observations": 103116,
+              "sessions": 1056,
+              "thin": false,
+              "win_rate": 0.7604166666666666
+            },
+            "<=30d": {
+              "interval": [
+                1.5435152662416028e-06,
+                0.0008888891279540799
+              ],
+              "interval_block_length": 21,
+              "mean_d": 0.00029855599138783103,
+              "median_rho": -0.00852146446280333,
+              "observations": 127811,
+              "sessions": 1056,
+              "thin": false,
+              "win_rate": 0.4933712121212121
+            },
+            ">90d": {
+              "interval": null,
+              "mean_d": null,
+              "median_rho": null,
+              "observations": 0,
+              "sessions": 0,
+              "thin": true,
+              "win_rate": null
+            }
+          },
+          "title": "maturity bucket (calendar days to expiry)"
+        },
+        "moneyness_tercile": {
+          "cells": {
+            "high": {
+              "interval": [
+                -8.506260469130086e-06,
+                0.0013055877815839163
+              ],
+              "interval_block_length": 21,
+              "mean_d": 0.0004314061588404611,
+              "median_rho": 0.182127931770377,
+              "observations": 76976,
+              "sessions": 1056,
+              "thin": false,
+              "win_rate": 0.6410984848484849
+            },
+            "low": {
+              "interval": [
+                9.590353563763182e-06,
+                0.001532989433609456
+              ],
+              "interval_block_length": 21,
+              "mean_d": 0.0005242823172364028,
+              "median_rho": -0.020822977597404924,
+              "observations": 76976,
+              "sessions": 1056,
+              "thin": false,
+              "win_rate": 0.48390151515151514
+            },
+            "middle": {
+              "interval": [
+                1.2320515159360787e-05,
+                0.0014186791097856421
+              ],
+              "interval_block_length": 21,
+              "mean_d": 0.000484154769506511,
+              "median_rho": 0.3735170997385843,
+              "observations": 76975,
+              "sessions": 1056,
+              "thin": false,
+              "win_rate": 0.9090909090909091
+            }
+          },
+          "title": "moneyness tercile of |log(K/F)|"
+        },
+        "symbol": {
+          "cells": {
+            "AAPL": {
+              "interval": [
+                6.741170318709166e-06,
+                0.002584751987866967
+              ],
+              "interval_block_length": 21,
+              "mean_d": 0.0008685004875610599,
+              "median_rho": 0.14084937752358073,
+              "observations": 115732,
+              "sessions": 1053,
+              "thin": false,
+              "win_rate": 0.6239316239316239
+            },
+            "SPY": {
+              "interval": [
+                3.181171989559752e-06,
+                1.7296079863814118e-05
+              ],
+              "interval_block_length": 21,
+              "mean_d": 9.229665933435014e-06,
+              "median_rho": 0.07432530319217373,
+              "observations": 115195,
+              "sessions": 1042,
+              "thin": false,
+              "win_rate": 0.5844529750479847
+            }
+          },
+          "title": "symbol"
+        },
+        "vix_tercile": {
+          "cells": {
+            "high": {
+              "interval": [
+                7.0039862301818194e-06,
+                0.004213569921394043
+              ],
+              "interval_block_length": 21,
+              "mean_d": 0.001402842467216579,
+              "median_rho": 0.19062389508404126,
+              "observations": 76925,
+              "sessions": 352,
+              "thin": false,
+              "win_rate": 0.6931818181818182
+            },
+            "low": {
+              "interval": [
+                -1.1502203064595296e-07,
+                4.526572942007506e-06
+              ],
+              "interval_block_length": 21,
+              "mean_d": 2.10891557817417e-06,
+              "median_rho": 0.03750989055243059,
+              "observations": 75571,
+              "sessions": 352,
+              "thin": false,
+              "win_rate": 0.5738636363636364
+            },
+            "middle": {
+              "interval": [
+                2.668416798750637e-06,
+                4.466351957272787e-05
+              ],
+              "interval_block_length": 21,
+              "mean_d": 1.9591210950768354e-05,
+              "median_rho": 0.138109678403472,
+              "observations": 78431,
+              "sessions": 352,
+              "thin": false,
+              "win_rate": 0.6704545454545454
+            }
+          },
+          "title": "VIX regime (VIXCLS at the prior observation, terciles)"
+        }
+      },
+      "maturity_range": {
+        "T_max": 0.1834474885844748,
+        "T_min": 0.0273972602739726,
+        "bucket_edges_days": [
+          30.0,
+          90.0
+        ],
+        "days_to_expiry_max": 66.95833333333333,
+        "days_to_expiry_min": 10.0,
+        "empty_buckets": [
+          ">90d"
+        ],
+        "note": "An empty bucket means the source lists no expiry in it; the study covers only the realized range (Research Plan Amendment 6)."
+      },
+      "model_predictions": {
+        "path": "docs/results/v2/design-c/runs/set-a/full/predictions.csv.gz",
+        "rows": 230927,
+        "sha256": "64f454013622f3877e1389aedf4a96014509e5ff2d409bc7796d6bfeec590725"
+      },
+      "observations": 230927,
+      "overall": {
+        "interval": [
+          6.3201219474999645e-06,
+          0.0014041957647209012
+        ],
+        "interval_block_length": 21,
+        "mean_d": 0.00047484753124850724,
+        "median_rho": 0.10704677975943905,
+        "observations": 230927,
+        "sessions": 1056,
+        "thin": false,
+        "win_rate": 0.6458333333333334
+      },
+      "reference": {
+        "path": null,
+        "role": "the model run's own baseline"
+      },
+      "session_calendar": "docs/results/v2/observation-set-A.csv.gz",
+      "sessions": 1056
+    }
+  },
+  "exploratory": true,
+  "note": "Exploratory (Research Plan section 5, Amendment 5): no claim in this section is confirmatory, and the intervals carry no multiplicity adjustment.",
+  "vix": {
+    "alignment": "most recent observation dated strictly before the session",
+    "path": "data/external/raw/VIXCLS.csv",
+    "sha256": "60f2ec1ea081cf27427b8a24930a2ebee7c1992aad14119e9380673cc85fb9c1"
+  }
+}
