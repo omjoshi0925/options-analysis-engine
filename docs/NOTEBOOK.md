@@ -518,3 +518,50 @@ largest, the set A mean d is 1.08e-04). The same two points went into
 RESULTS.md's limitations and section 6 of the talk outline. Version 3.5.0;
 manifest rebuilt with the design_c block (nine runs, saved predictions with
 uncompressed hashes, the three files, and the headline); `--check` passes.
+
+## 2026-09-15: study v2 locked (Design D, section 7, Amendment 7)
+
+Locked at tag study-v2-locked (commit 331946a); the code commit is f3e85ec,
+`options_engine` 3.6.0. Amendment 7 (a2f2b46) records the pre-registered
+expectations for the fresh evaluation, derived from Designs B and C and fixed
+before any fresh session is scored: B1 beats M(RV) on the primary loss with
+M(RV)'s win rate under 0.15; M(B1) versus B1 is null at every block length,
+and confirming that null is the result; M(RV) versus the RV baseline stays
+positive in median rho, concentrated in high-VIX sessions (strictly-prior
+VIXCLS above the Design C cut point 20.16) and at maturities of 31 days or
+longer.
+
+The locked commands (4b6b9db): `predict-locked --session t` forms the prediction
+set from the store's eligible C3 rows at the prior available session that
+outlive t's close and prices each under the RV baseline, B1, M(RV), and M(B1)
+with S_t, r_t, q_t and prior-session information only; it refuses if the
+chain for t is in the store, if the store holds a later session, if t is not
+after the lock date, if the files exist, or if any locked file's hash differs
+from docs/lock.json. `score-locked --session t` refuses unless the prediction
+file is committed and unchanged and the chain was imported after that commit;
+it matches on (symbol, contractSymbol), ignores contracts absent from the
+prediction set, and appends one line to docs/FRESH_EVAL.md.
+`fresh-eval-report` refuses until the sample rule is met (60 available
+sessions after the lock or all sessions available by 2027-03-31). Four tests
+cover the lock verification, the refusals, the committed-file gate, the
+import-order check, and the sample-rule gate; 232 tests pass.
+
+A smoke run of the real path (session 2026-09-08 against the store's
+2026-09-04, with a synthetic S_t appended to a scratch copy of the bars,
+output discarded, nothing committed) predicted 281 contracts (163 SPY, 118
+AAPL) in 13 seconds: M(RV) trained on 250 sessions (2025-09-03 to
+2026-09-03, alpha 0.01), M(B1) on 249 (alpha 100; 26,721 same-contract and
+23,377 interpolated training rows), every contract inside the support guard.
+Two interpretations of section 7 are recorded in docs/LOCK.md: the training
+universe for fresh sessions is the store's eligible rows that price under C3
+(within 463 rows of set A over the study span), and the scoring universe is
+every predicted contract present at t rather than the 500-per-symbol
+evaluation sample. The plan's step 2 prices under the locked model, B1, and
+the RV baseline; the prediction file adds M(B1) so expectation 2 can be read
+from the same sample, and the log carries four losses rather than three.
+docs/LOCK.md records the locked commit, the hashes of the configuration and
+14 modules, the invocations, the sample rule, and the per-session protocol;
+docs/lock.json is what the commands verify; the manifest covers both.
+Nothing is scored until a session after 2026-09-15 is available in the
+source, and the rate, bar, and distribution files must be refreshed before
+the first prediction (the committed bars end 2026-09-04).
