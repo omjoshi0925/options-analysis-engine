@@ -177,7 +177,7 @@ options_engine/    package: pricing core, diagnostics, collection, learning
 BSM_streamlit.py   dashboard entry point
 tests/             offline test suite: reference values, fixtures, dashboard AppTest
 docs/              methodology, learning, collection, deployment, validation
-examples/          synthetic validation outputs and recorded provider failures
+examples/          recorded provider failures (JSON)
 config/            example collector configurations; local configs are ignored
 scripts/           macOS service and token helpers
 deploy/, docker/   systemd unit and container entrypoint
@@ -194,7 +194,8 @@ deploy/, docker/   systemd unit and container entrypoint
 
 ## Status
 
-The included `examples/validation/` results are synthetic demonstrations.
+Synthetic validation outputs are not tracked; `python -m options_engine demo
+--output <dir>` regenerates them offline.
 **No market-trained model or successful live collection is claimed in this
 release.** The runtime collects and trains after you configure and start it
 with a working provider. License details are in [LICENSE.txt](LICENSE.txt)
