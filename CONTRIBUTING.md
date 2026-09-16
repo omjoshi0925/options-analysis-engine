@@ -9,3 +9,5 @@ Results live only under docs/results/ and every new artifact gets a manifest ent
 docs/RESEARCH_PLAN.md is pre-registered: nothing above section 10 is edited after 2026-09-08. Changes are appended as dated amendments in section 10 and echoed in docs/NOTEBOOK.md.
 
 Tagged studies (study-v1, later study-v2-locked) are never moved. Corrections to a frozen report are separate commits after the tag.
+
+Artifacts above 10 MB go to release assets attached to the relevant tag, with their SHA-256 in the manifest and a fetch step in docs/REPRODUCE.md; never into git. The exports committed before 2026-09-15 stay where they are, because the manifest and the lock cite them in place.
