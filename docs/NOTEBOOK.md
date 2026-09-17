@@ -717,3 +717,39 @@ fresh_evaluation block listing the per-session prediction and score files
 (docs/FRESH_EVAL.md is listed without a hash because it grows). study-v1 and
 study-v2-locked unmoved.
 
+## 2026-09-17: Amendment 9, the pre-lock sessions imported, and the one-command fresh session
+
+Amendment 9, decided after the 2026-09-16 result was seen and recorded as
+such: sessions dated on or before the lock date may be imported at any time
+as prior-session information, because they are ineligible for Design D
+scoring; the predict-before-import rule applies to scorable sessions only.
+The 2026-09-16 session stands as scored with its 12-day-gap B1 noted in
+docs/FRESH_EVAL.md, and the change favors B1, the competitor, not the locked
+model, since later sessions inherit a prior session one day old.
+
+The source sessions 2026-09-08 to 2026-09-15 (2,264 chain rows; the rows
+stamped on Labor Day were excluded) were imported at 19:21 UTC from the
+already-committed bars: six sessions, 1,919 rows stored, 1,728 eligible; no
+prediction and no scoring for them. predict-locked afterwards still refuses
+2026-09-16 (chain already in the store), 2026-09-15 (not after the lock
+date), and 2026-09-17 (no underlying close yet), writing no file. The
+2026-09-16 chain export was removed from the repository root (its hash is
+in the snapshot metadata) and per-session exports are now ignored under
+data/chains/.
+
+scripts/fresh_session.sh runs one fresh session end to end: it pulls the
+option source, looks for an unscored session after the lock date, and exits
+quietly with none; otherwise it refreshes the rate, bars, and distribution
+inputs (the DoltHub dividend table is the cross-check for the issuer files
+that need a browser; a later ex-date there stops the run), appends a row to
+the automated refresh log in PROVENANCE.md section 10, runs predict-locked,
+commits the prediction files, and only then exports that session's chain,
+imports it, scores it, rewrites the status line, rebuilds the manifest, and
+pushes. It refuses a dirty tree or a local main that differs from origin,
+and any refusal from the locked commands stops it. Tested on the real state:
+--dry-run reports that no session after 2026-09-15 is unscored; the real run
+exits 0 with no output, no commit, and a clean tree. It is meant to run each
+weekday morning (docs/REPRODUCE.md). The manifest was rebuilt after the
+history import (the store hash changed); study-v1 and study-v2-locked
+unmoved.
+
