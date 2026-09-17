@@ -23,6 +23,17 @@ helps consistently in sign and usefully in magnitude, and the evidence that
 the average improvement differs from zero is borderline once the strong serial
 dependence between folds is respected.
 
+Forward pointer, added 2026-09-17: the comparison above is against a flat
+realized-volatility baseline only. Study v2 Design B, pre-registered in
+`docs/RESEARCH_PLAN.md` and reported in
+[docs/results/v2/design-b/REPORT.md](results/v2/design-b/REPORT.md), shows
+the same model beaten decisively by the prior session's implied volatility
+of the same contract: the model's session loss exceeds that baseline's in
+94.6% of 1,005 sessions and the block-bootstrap interval for the mean
+differential lies entirely below zero, so the value claim of this report is
+downgraded per Research Plan section 8 to structure beyond a flat baseline,
+not beyond persistence of the previous smile.
+
 Nothing here is a forecast of option returns or a tradable claim. Losses
 measure contemporaneous pricing accuracy against quoted midpoints under
 maintained rate and dividend assumptions.
@@ -269,6 +280,43 @@ A) while the mean loss differential barely changes (4.75e-04 to 4.64e-04):
 the mean is dominated by a few high-error sessions (the ten largest of 1,056
 carry 77.5% of the summed differential), so the median improvement, not the
 mean differential, describes the typical session.
+
+Sixth, added 2026-09-17: every interval reported here and in the study v2
+reports is conditional on the fitted models. The block bootstrap resamples
+evaluation sessions only, while adjacent folds share 249 of their 250
+training sessions, so the uncertainty from fitting the model is not
+propagated; total uncertainty is larger than any reported interval.
+
+Seventh, added 2026-09-17 (Research Plan Amendment 8, exploratory,
+`docs/results/v2/early-exercise-diagnostic.json` and the Design B report):
+every comparison here and in the study v2 reports prices American-style
+contracts with the European closed form, including the implied-volatility
+targets the model learns from and the prior-session baselines. On a
+200-step CRR tree at each quote's own European implied volatility, the
+early-exercise premium of the 230,927 evaluated set A observations averages
+0.40% of the mid (median 0.06%, 90th percentile 1.24%, 99th 2.73%, maximum
+8.8%), and 31.9% of observations carry a premium larger than the quote's
+tick. It is concentrated in puts (mean 0.70% and 52.7% above the tick,
+against 0.03% and 6.0% for calls), in the rate regime from 2022 onward
+(0.45% and 34.8%, against 0.07% and 13.7% in the near-zero years 2020 to
+2021), at 31 to 90 days (0.53%) more than at 30 days or fewer (0.29%), and
+in SPY (0.45%) more than in AAPL (0.35%). What it affects: every absolute
+pricing error, and each method differently, because B1 inverts a t-1 mid
+under the European formula and reprices under it, so the missing premium
+largely cancels, while the RV baseline and M(RV) price from a volatility
+that does not come from an option price. What it does not affect, on the
+diagnostic's evidence: the ranking. On the 78,414 same-contract
+observations where B1 can be inverted on the tree, moving B1 and M(RV) to
+the consistent tree treatment changes the mean of L_B1 - L_M(RV) by
++3.8e-07 (interval [6.2e-08, 6.7e-07]), 2.1% of the European gap of
+-1.82e-05: the European engine favors B1 by a measurable but small margin.
+Restricting the pre-registered Design B comparisons to the 95,808 set B
+observations whose premium is at or below the tick leaves M(RV) versus B1
+at "baseline wins" (mean -1.55e-05, interval [-2.27e-05, -1.02e-05]) and
+moves M(B1) versus B1 from "adds value" to "no evidence either way" (mean
++1.98e-07, interval [-1.20e-07, +5.53e-07]), the fragile incremental label
+the Design B report already caveated. Any change of pricing engine is
+deferred to a future study; the locked model is unchanged.
 
 ## Conclusion and future work
 

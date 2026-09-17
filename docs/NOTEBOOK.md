@@ -604,3 +604,80 @@ fetches the study-v2-locked tree and the clone is about 200 MB. `git gc
 --aggressive --prune=now` was run for local packing only. Both tags point
 where they did: study-v1 at b41237d, study-v2-locked at 331946a.
 
+## 2026-09-17: early-exercise diagnostic (Amendment 8, exploratory) and reviewer extract
+
+An outside review flagged that the engine prices American-style contracts
+with the European closed form. Amendment 8 records the diagnostic before it
+ran; everything in it is exploratory, no reported number is replaced, and no
+locked module is touched (the new module options_engine.early_exercise and
+the `early-exercise-diagnostic` command are outside the lock).
+
+Trace, with file and line at the locked commit: the RV baseline, M(RV), B1,
+B2, M(B1), and M(B2) are all priced by learning.py:110-112
+price_with_volatility, the European BlackScholesEngine.price (core.py:62),
+through evaluate (learning.py:123-128) at walkforward.py:108-109; B1's sigma
+is the t-1 row's iv_brent_volatility from carry_inputs.py:323, a European
+inversion (iv.py:53-54 objective), or its strike interpolation
+(baselines.py:88); B2 fits SVI to those European implied volatilities
+(baselines.py:187-217, 244); the learning target is the same European
+inversion (learning.py:71); the locked predict path prices with
+price_with_volatility at locked.py:229 and identifies with implied_volatility
+at locked.py:395. The binomial tree (american.py:83-91) enters no study loss:
+it is called only by analysis.py:66 at import time and by the cli price
+command.
+
+Diagnostic (docs/results/v2/early-exercise-diagnostic.json), streamed from
+the saved prediction files in 20,000-row chunks: premiums are American minus
+European price on the same 200-step CRR tree, vectorized over rows, at each
+quote's own European implied volatility (the bisection matches iv.py to
+2e-12 on real rows; doubling the steps moves the fraction by at most 0.05
+points on 2,000 rows). Set A, 230,927 rows: mean 0.40% of the mid, median
+0.06%, p90 1.24%, p99 2.73%, maximum 8.8%; 31.9% of observations exceed the
+quote's tick (0.05 for AAPL at or above $3, 0.01 otherwise, inferred from the
+quotes). Puts 0.70% and 52.7% above the tick, calls 0.03% and 6.0%; 2022
+onward 0.45% and 34.8%, the near-zero years 2020-21 0.07% and 13.7%; 31 to 90
+days 0.53%, 30 days or fewer 0.29%; SPY 0.45%, AAPL 0.35%; moneyness terciles
+0.49% (low), 0.41%, 0.29% (high). Set B, 142,942 rows: mean 0.45%, 33.0%
+above the tick, puts 0.79% and 57.2%. At each method's own sigma the means
+are close to the quote-implied figure (set A: M(RV) 0.47%, RV 0.52%).
+
+Cancellation test on the 83,438 same-contract set B rows (78,414 usable in
+1,004 sessions; 107 sit on the tree's intrinsic value and imply no
+volatility; the European re-inversion reproduces the stored B1 sigma to
+1.4e-12): moving B1 to the consistent treatment (invert on the tree at t-1,
+reprice on the tree at t) lowers its session MSE from 6.39e-06 to 6.17e-06,
+and repricing M(RV) on the tree lowers its MSE from 2.46e-05 to 2.40e-05. The
+mean of L_B1 - L_M(RV) moves from -1.82e-05 to -1.78e-05, a change of
++3.8e-07 with interval [6.2e-08, 6.7e-07]: the European engine does favor B1,
+by 2.1% of the gap. M(B1) repriced on the tree at its European-derived sigma
+gets worse (5.87e-06 to 6.40e-06), so the M(B1) versus B1 differential flips
+from +5.1e-07 to -2.3e-07 on these rows; that treatment is inconsistent (the
+model learned against European B1 sigmas) and is reported as such.
+
+Sensitivity, same folds and bootstrap, restricted to the 95,808 set B rows
+whose premium is at or below the tick (every session keeps a row): M(RV)
+versus B1 stays "baseline wins" (mean -1.55e-05, interval [-2.27e-05,
+-1.02e-05], median rho -1.99, win 0.061; pre-registered -1.69e-05 [-2.41e-05,
+-1.14e-05]). M(B1) versus B1 moves from "adds value" (+4.10e-07 [5.4e-08,
+8.4e-07]) to "no evidence either way" (+1.98e-07 [-1.20e-07, +5.53e-07], win
+0.447; every block length includes zero). One label changes, the one the
+Design B report already called fragile; the pre-registered numbers stand.
+The full-row losses recomputed from the prediction files reproduce the
+pre-registered means and intervals exactly, which validates the streaming
+computation. Timing 374 s in total; peak resident memory 741 MB
+(a first run kept per-row label strings for every sigma variant and peaked at
+910 MB; the aggregates were switched to shared integer codes and the numbers
+were verified unchanged).
+
+Reviewer extract (docs/results/v2/extract/): 38,545 evaluated observations
+from set A (22,237 also in set B), a deterministic stratified sample (seed
+20260908) capped at 700 rows per symbol x year x option type x maturity
+stratum (56 strata; the 2020 strata are exhausted), 15.3 MB uncompressed,
+with the RV, M(RV), B1, and M(B1) sigmas and prices, the quote's European
+implied volatility, the tree premium, and the tick; plus verbatim copies of
+all 29 fold tables and a README stating that no reported number comes from
+the sample. RESULTS.md gained the Design B forward pointer after the v1
+headline and two limitations (European pricing with the measured premium
+distribution; intervals conditional on the fitted models), the talk outline
+its section 6 line, and the manifest covers the diagnostic and the extract.
+Version 3.6.1; study-v1 and study-v2-locked unmoved.

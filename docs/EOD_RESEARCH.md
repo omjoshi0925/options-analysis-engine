@@ -151,6 +151,14 @@ scores the committed predictions against the imported chain and appends a
 line to docs/FRESH_EVAL.md; `fresh-eval-report` refuses until the sample rule
 is met. Both locked commands verify the hashes in docs/lock.json first.
 
+Amendment 8 (exploratory): `early-exercise-diagnostic build` streams the
+saved prediction files in chunks and writes
+docs/results/v2/early-exercise-diagnostic.json (premiums on the CRR tree,
+the B1 cancellation test, the below-tick sensitivity); `early-exercise-diagnostic
+extract --cap-per-stratum N` writes the reviewer sample under
+docs/results/v2/extract/; `early-exercise-diagnostic report` inserts the
+section into the Design B report. None of it touches a locked module.
+
 Column semantics: in `export` output, `r`, `q`, `iv_brent_*`, `baseline_*` and
 the bound columns are the values stored at import (constant v1 carry), while
 `effective_r`/`effective_q` are the config's carry for that session and symbol
