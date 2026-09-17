@@ -1,0 +1,239 @@
+{
+  "carry": {
+    "dividend": {
+      "files": {
+        "bars": {
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/full_underlying.csv",
+          "sha256": "a6d11a5e7dafb15a21b65683c70636daf9ff0bfd414a516326c41ec5b9ddbded"
+        },
+        "dividends": {
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/dividends.csv",
+          "sha256": "7cc323daac11272eee3949729e7ee435ae865670ccb76b3424f80068cdbf39d2"
+        },
+        "splits": {
+          "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/splits.csv",
+          "sha256": "96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec"
+        }
+      },
+      "history_end": "2026-09-17",
+      "history_start": "2018-01-01",
+      "max_bar_gap_days": 10,
+      "mode": "series",
+      "stale_days": 100,
+      "window_days": 365
+    },
+    "rate": {
+      "alignment": "strictly_prior",
+      "first_quote": "1981-09-01",
+      "last_quote": "2026-09-15",
+      "mode": "series",
+      "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/external/raw/DGS3MO.csv",
+      "quotes": 11259,
+      "sha256": "bbac0b34001201495cbf24dc797d68375400a0c6e311bc4a6bc35412598e278e",
+      "stale_days": 10,
+      "units": "percent"
+    }
+  },
+  "code_version": "3.6.1",
+  "config": {
+    "path": "config/v2/C3.json",
+    "sha256": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348"
+  },
+  "counts": {
+    "by_symbol": {
+      "AAPL": 118,
+      "SPY": 163
+    },
+    "expired_at_session": 0,
+    "m_b1_supported": 219,
+    "m_rv_supported": 219,
+    "predicted": 281,
+    "prior_contracts": 281
+  },
+  "gap_days": 12,
+  "lock": {
+    "commit": "f3e85ec8dca2de36abbb8c30fdbfc0d32a6f015e",
+    "lock_date": "2026-09-15",
+    "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/docs/lock.json",
+    "version": "3.6.0"
+  },
+  "models": {
+    "m_b1": {
+      "alpha": 100.0,
+      "b1_rows_by_source": {
+        "interpolated": 23377,
+        "same_contract": 26721
+      },
+      "excluded_groups": [],
+      "feature_names": [
+        "log_moneyness",
+        "moneyness_squared",
+        "moneyness_cubed",
+        "sqrt_time",
+        "log_time",
+        "moneyness_sqrt_time",
+        "moneyness_squared_sqrt_time",
+        "log_baseline_volatility",
+        "rate_time",
+        "yield_time",
+        "is_put",
+        "symbol_AAPL",
+        "symbol_SPY"
+      ],
+      "first_training_session": "2025-09-03",
+      "last_training_session": "2026-09-03",
+      "support": {
+        "T": [
+          0.0273972602739726,
+          0.17819634703196346
+        ],
+        "baseline_sigma": [
+          0.06835923936976311,
+          1.4173383870461604
+        ],
+        "log_moneyness": [
+          -0.2967330099006806,
+          0.34991324620953534
+        ]
+      },
+      "symbols": [
+        "AAPL",
+        "SPY"
+      ],
+      "training_rows": 50098,
+      "training_sessions": 249
+    },
+    "m_rv": {
+      "alpha": 0.01,
+      "excluded_groups": [],
+      "feature_names": [
+        "log_moneyness",
+        "moneyness_squared",
+        "moneyness_cubed",
+        "sqrt_time",
+        "log_time",
+        "moneyness_sqrt_time",
+        "moneyness_squared_sqrt_time",
+        "log_baseline_volatility",
+        "rate_time",
+        "yield_time",
+        "is_put",
+        "symbol_AAPL",
+        "symbol_SPY"
+      ],
+      "first_training_session": "2025-09-03",
+      "last_training_session": "2026-09-03",
+      "support": {
+        "T": [
+          0.0273972602739726,
+          0.18093607305936074
+        ],
+        "baseline_sigma": [
+          0.0857700321553051,
+          0.3307104143954349
+        ],
+        "log_moneyness": [
+          -0.2967330099006806,
+          0.3499714445271971
+        ]
+      },
+      "symbols": [
+        "AAPL",
+        "SPY"
+      ],
+      "training_rows": 72083,
+      "training_sessions": 250
+    }
+  },
+  "predicted_at_utc": "2026-09-17T18:41:25.797939+00:00",
+  "predictions": {
+    "columns": [
+      "session",
+      "prior_session",
+      "gap_days",
+      "predicted_at_utc",
+      "symbol",
+      "contractSymbol",
+      "option_type",
+      "expiration",
+      "strike",
+      "spot",
+      "r",
+      "q",
+      "T",
+      "days_to_expiry",
+      "rv_sigma",
+      "b1_sigma",
+      "m_rv_sigma",
+      "m_rv_supported",
+      "m_b1_sigma",
+      "m_b1_supported",
+      "rv_price",
+      "b1_price",
+      "m_rv_price",
+      "m_b1_price",
+      "prior_observation_id"
+    ],
+    "path": "docs/results/v2/fresh/predictions-2026-09-16.csv",
+    "rows": 281,
+    "sha256": "0d23f59d2a9adeae56e8670165ed45b7775e29742cd6bda17acc6ea9ba9930b8"
+  },
+  "prior_session": "2026-09-04",
+  "protocol": "Research Plan section 7: the chain for this session is not read until this prediction file is committed",
+  "rate": 0.04027784649857017,
+  "rv": {
+    "estimator": "close_to_close",
+    "sigma": {
+      "AAPL": 0.32433623215717694,
+      "SPY": 0.11473269422683792
+    },
+    "window": 60
+  },
+  "session": "2026-09-16",
+  "spec": {
+    "alphas": [
+      0.01,
+      1.0,
+      100.0
+    ],
+    "gap": 1,
+    "max_train_sessions": 250,
+    "min_train_sessions": 120,
+    "validation_sessions": 2,
+    "window": "rolling"
+  },
+  "store": {
+    "carry_failures_by_reason": {
+      "iv_not_identified": 115
+    },
+    "last_stored_session": "2026-09-04",
+    "lookback_sessions": 253,
+    "prior_session_rows": 281,
+    "root": "/Users/joshum/Documents/GitHub/options-analysis-engine/data/eod-live-full",
+    "sessions_loaded": 253
+  },
+  "underlying": {
+    "closes": {
+      "AAPL": 332.41,
+      "SPY": 754.05
+    },
+    "history": {
+      "AAPL": {
+        "bars_before_session": 2081,
+        "baseline_source": "dolt_prior_60_session_close_to_close",
+        "last_bar_before_session": "2026-09-15"
+      },
+      "SPY": {
+        "bars_before_session": 2081,
+        "baseline_source": "dolt_prior_60_session_close_to_close",
+        "last_bar_before_session": "2026-09-15"
+      }
+    },
+    "path": "data/external/raw/full_underlying.csv",
+    "sha256": "a6d11a5e7dafb15a21b65683c70636daf9ff0bfd414a516326c41ec5b9ddbded"
+  },
+  "yields": {
+    "AAPL": 0.003199130802197139,
+    "SPY": 0.009935432207977397
+  }
+}
