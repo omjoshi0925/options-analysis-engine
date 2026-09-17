@@ -9,3 +9,4 @@ sessions after the lock, or all sessions available by 2027-03-31, whichever come
 
 | Session | Prior session | Contracts predicted | Contracts scored | L_RV | L_B1 | L_M(RV) | L_M(B1) |
 |---|---|---:|---:|---:|---:|---:|---:|
+| 2026-09-16 | 2026-09-04 | 281 | 47 | 3.028e-05 | 1.646e-05 | 5.821e-06 | 1.111e-05 |

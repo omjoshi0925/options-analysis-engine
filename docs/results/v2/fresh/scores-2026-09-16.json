@@ -1,0 +1,352 @@
+{
+  "chain_imported_at": "2026-09-17T18:41:52.336408+00:00",
+  "code_version": "3.6.1",
+  "config": {
+    "path": "config/v2/C3.json",
+    "sha256": "061e3f05847d84db807d67b905a5fa5d7a7b8756f8a043e73045bfc1cdba2348"
+  },
+  "consistency": {
+    "T_mismatches": 0,
+    "max_relative_spot_difference": 0.0,
+    "note": "predicted contracts are priced with the S_t and T of the prediction file; the store's values are compared, not used",
+    "spot_mismatches": 0
+  },
+  "counts": {
+    "absent_at_session": 232,
+    "contracts_at_session_not_predicted": 268,
+    "eligible_contracts_at_session_not_predicted": 240,
+    "not_identified_under_locked_carry": 0,
+    "predicted": 281,
+    "present_at_session": 49,
+    "quality_excluded_at_session": 2,
+    "quality_reasons": {
+      "midpoint_below_training_floor": 2
+    },
+    "scored": 47,
+    "scored_by_symbol": {
+      "AAPL": 23,
+      "SPY": 24
+    }
+  },
+  "gap_days": 12,
+  "lock": {
+    "commit": "f3e85ec8dca2de36abbb8c30fdbfc0d32a6f015e",
+    "path": "/Users/joshum/Documents/GitHub/options-analysis-engine/docs/lock.json",
+    "version": "3.6.0"
+  },
+  "losses": {
+    "by_maturity": {
+      "<=30d": {
+        "losses": {
+          "b1": 1.8094388777397482e-05,
+          "m_b1": 1.1590138000269428e-05,
+          "m_rv": 4.607024838214496e-06,
+          "rv": 3.0622495480752814e-05
+        },
+        "rows": 38
+      },
+      ">30d": {
+        "losses": {
+          "b1": 9.56927531383397e-06,
+          "m_b1": 9.076731009570827e-06,
+          "m_rv": 1.0948956989800136e-05,
+          "rv": 2.885395412268927e-05
+        },
+        "rows": 9
+      }
+    },
+    "by_symbol": {
+      "AAPL": {
+        "b1": 2.3411788110507824e-05,
+        "m_b1": 1.319698550083486e-05,
+        "m_rv": 1.867379057566994e-06,
+        "rv": 4.045084883945451e-05
+      },
+      "SPY": {
+        "b1": 9.801630200997081e-06,
+        "m_b1": 9.107714857382247e-06,
+        "m_rv": 9.610743268179634e-06,
+        "rv": 2.0540453836056517e-05
+      }
+    },
+    "overall": {
+      "b1": 1.6461920241821486e-05,
+      "m_b1": 1.1108847299922889e-05,
+      "m_rv": 5.821437377879831e-06,
+      "rv": 3.028383862495341e-05
+    }
+  },
+  "pairs": {
+    "M(B1) vs B1": {
+      "d": 5.353072941898597e-06,
+      "model": "m_b1",
+      "model_wins": true,
+      "primary": false,
+      "reference": "b1",
+      "rho": 0.1785251874838305
+    },
+    "M(RV) vs B1": {
+      "d": 1.0640482863941654e-05,
+      "model": "m_rv",
+      "model_wins": true,
+      "primary": true,
+      "reference": "b1",
+      "rho": 0.4053315901058616
+    },
+    "M(RV) vs RV": {
+      "d": 2.446240124707358e-05,
+      "model": "m_rv",
+      "model_wins": true,
+      "primary": false,
+      "reference": "rv",
+      "rho": 0.5615605206120302
+    }
+  },
+  "prediction": {
+    "commit": "4c1b8fa682b5f120e9e96888fcd8727698f3ab84",
+    "committed_at": "2026-09-17T11:41:26-07:00",
+    "path": "docs/results/v2/fresh/predictions-2026-09-16.csv",
+    "predicted_at_utc": "2026-09-17T18:41:25.797939+00:00",
+    "sha256": "0d23f59d2a9adeae56e8670165ed45b7775e29742cd6bda17acc6ea9ba9930b8"
+  },
+  "prior_session": "2026-09-04",
+  "scored_at_utc": "2026-09-17T18:41:53.714407+00:00",
+  "scored_contracts": [
+    {
+      "contractSymbol": "AAPL261016C00265000",
+      "mid": 68.725,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00290000",
+      "mid": 44.345,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00300000",
+      "mid": 34.675,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00305000",
+      "mid": 30.375,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00310000",
+      "mid": 25.825,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00320000",
+      "mid": 17.87,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00325000",
+      "mid": 14.399999999999999,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00330000",
+      "mid": 11.274999999999999,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00335000",
+      "mid": 8.675,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00340000",
+      "mid": 6.449999999999999,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00345000",
+      "mid": 4.675,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00350000",
+      "mid": 3.3,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00360000",
+      "mid": 1.53,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016C00375000",
+      "mid": 0.435,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016P00290000",
+      "mid": 0.685,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016P00300000",
+      "mid": 1.22,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016P00305000",
+      "mid": 1.665,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016P00310000",
+      "mid": 2.295,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016P00320000",
+      "mid": 4.300000000000001,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016P00325000",
+      "mid": 5.800000000000001,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016P00330000",
+      "mid": 7.699999999999999,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016P00335000",
+      "mid": 10.025,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "AAPL261016P00340000",
+      "mid": 12.925,
+      "symbol": "AAPL"
+    },
+    {
+      "contractSymbol": "SPY261016C00695000",
+      "mid": 61.765,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016C00709000",
+      "mid": 48.754999999999995,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016C00724000",
+      "mid": 35.43,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016C00739000",
+      "mid": 23.235,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016C00747000",
+      "mid": 17.365000000000002,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016C00762000",
+      "mid": 8.280000000000001,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016C00815000",
+      "mid": 0.14500000000000002,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016P00739000",
+      "mid": 7.365,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016P00747000",
+      "mid": 9.485,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016P00762000",
+      "mid": 15.59,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016P00815000",
+      "mid": 62.715,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016P00830000",
+      "mid": 77.59,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016P00865000",
+      "mid": 112.58000000000001,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016P00885000",
+      "mid": 132.60500000000002,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261016P00905000",
+      "mid": 152.63,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261030C00709000",
+      "mid": 51.650000000000006,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261030C00724000",
+      "mid": 38.745000000000005,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261030C00739000",
+      "mid": 26.825000000000003,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261030C00747000",
+      "mid": 21.005000000000003,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261030C00762000",
+      "mid": 11.725000000000001,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261030P00739000",
+      "mid": 9.745000000000001,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261030P00762000",
+      "mid": 17.915,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261030P00865000",
+      "mid": 112.675,
+      "symbol": "SPY"
+    },
+    {
+      "contractSymbol": "SPY261030P00885000",
+      "mid": 132.785,
+      "symbol": "SPY"
+    }
+  ],
+  "session": "2026-09-16"
+}
