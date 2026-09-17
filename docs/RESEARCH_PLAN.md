@@ -200,3 +200,11 @@ Reason: an outside review flagged that the engine prices American-style contract
 - Pricing engine. Any change to the pricing engine is deferred to a future study. The locked model (docs/LOCK.md) is not modified, the fresh evaluation continues under the European formula as locked, and the diagnostic touches no locked module.
 - Reviewer extract. A deterministic stratified sample of the evaluated observations is added under docs/results/v2/extract/ for inspection; no reported number comes from it.
 
+### Amendment 9, 2026-09-17
+
+Reason: the first fresh session, 2026-09-16, was predicted with the prior available session 2026-09-04 because the sessions between the last stored session and the lock date had been kept out of the store under a reading of the predict-before-import rule that applied it to every session. Decided after the 2026-09-16 result was seen, and recorded as such. No estimand, threshold, or decision-rule change.
+
+- Sessions dated on or before the lock date (2026-09-15) may be imported at any time. They are ineligible for Design D scoring and serve only as prior-session information for later predictions: the training windows and the contracts, prior quotes, and B1 volatilities of the prior available session. The predict-before-import rule of section 7 applies to scorable sessions only, those dated strictly after the lock date, for which the chain is still not read until that session's prediction file is committed.
+- The 2026-09-16 session stands as scored: 47 contracts against a B1 taken from 2026-09-04, a 12-day gap, noted in docs/FRESH_EVAL.md. It is not rescored and its prediction file is not replaced.
+- The change favors B1, the competitor, not the locked model: with the 2026-09-08 to 2026-09-15 sessions in the store, later fresh sessions inherit a prior session one day old rather than twelve, which is the condition under which B1 beat M(RV) in Design B. The locked model's training windows also move forward by the same sessions, as they would under the ordinary flow of the source.
+
