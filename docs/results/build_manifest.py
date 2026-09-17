@@ -729,6 +729,7 @@ V2_RUNS_B = [f"docs/results/v2/design-b/{name}" for name in ("B1", "B2", "M-RV",
 V2_COMPARISON_B = ["docs/results/v2/design-b/comparison.json", "docs/results/v2/design-b/REPORT.md"]
 V2_DESIGN_C = ["docs/results/v2/design-c/ablations.json", "docs/results/v2/design-c/breakdowns.json", "docs/results/v2/design-c/REPORT.md"]
 V2_EARLY_EXERCISE = "docs/results/v2/early-exercise-diagnostic.json"
+V2_FRESH_DIR = "docs/results/v2/fresh"
 V2_EXTRACT_DIR = "docs/results/v2/extract"
 V2_DESIGN_C_RUNS = ["docs/results/v2/design-c/runs/set-a/full", "docs/results/v2/design-c/runs/set-a/no-moneyness",
                     "docs/results/v2/design-c/runs/set-a/no-maturity-interactions", "docs/results/v2/design-c/runs/set-a/no-symbol",
@@ -764,6 +765,7 @@ def study_v2_block():
     block["design_c"] = design_c_block()
     block["early_exercise_diagnostic"] = early_exercise_block()
     block["extract"] = extract_block()
+    block["fresh_evaluation"] = fresh_block()
     block["lock"] = {name: file_entry(path) for name, path in (("record", "docs/lock.json"), ("document", "docs/LOCK.md")) if exists(path)} or None
     if exists(V2_COMPARISON[0]):
         cmp = json.loads((ROOT/V2_COMPARISON[0]).read_text())
@@ -867,6 +869,18 @@ def extract_block():
     names = ["README.md", "extract.json", "observations-sample.csv"]+[f"folds/{Path(f['copy']).name}" for f in meta["files"]["folds"]]
     return dict(exploratory=True, inspection_only=True, note=meta["note"], sampling=meta["sampling"],
                 files=[file_entry(f"{V2_EXTRACT_DIR}/{name}") for name in names if exists(f"{V2_EXTRACT_DIR}/{name}")])
+
+
+def fresh_block():
+    """Design D (docs/LOCK.md): the per-session prediction, sidecar, and score files that exist at rebuild time. They are written once and
+    never overwritten, so their hashes are stable; docs/FRESH_EVAL.md grows with every session and is listed without a hash."""
+    root = ROOT/V2_FRESH_DIR
+    if not root.exists():
+        return None
+    files = sorted(path.name for path in root.iterdir() if path.is_file() and path.name.startswith(("predictions-", "scores-")))
+    sessions = sorted(name[len("scores-"):-len(".json")] for name in files if name.startswith("scores-"))
+    return dict(protocol="docs/LOCK.md", sessions_scored=sessions, log="docs/FRESH_EVAL.md",
+                files=[file_entry(f"{V2_FRESH_DIR}/{name}") for name in files])
 
 
 def build_manifest(ctx):
@@ -1016,6 +1030,7 @@ def check(manifest):
     if v2.get("early_exercise_diagnostic"):
         v2_entries.append(v2["early_exercise_diagnostic"]["file"])
     v2_entries += list((v2.get("extract") or {}).get("files", []))
+    v2_entries += list((v2.get("fresh_evaluation") or {}).get("files", []))
     design_c = v2.get("design_c") or {}
     v2_entries += list(design_c.get("files", []))
     for files in design_c.get("runs", {}).values():

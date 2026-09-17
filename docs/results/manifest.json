@@ -6,8 +6,8 @@
   "report": "docs/RESULTS.md",
   "code_version": "3.2.1",
   "repository": "https://github.com/omjoshi0925/options-analysis-engine",
-  "code_commit": "fc5dc7fd06dadbd5367362a2d82ec8ab32a2b00d",
-  "code_commit_short": "fc5dc7f",
+  "code_commit": "d4e2986a1a49ea5171e0a9d416806dbc4cbd0a9f",
+  "code_commit_short": "d4e2986",
   "working_tree_version": "3.6.1",
   "report_sha256": "61ee526762cc0c37cf505cb0971ef1b53050f7295579124a0173bb92fc402c3b",
   "description": "1,056-fold rolling-origin walk-forward over DoltHub end-of-day chains (SPY and AAPL; QQQ configured but absent from the export) plus a single-year SPY 2023 run, constant rate and dividend yields.",
@@ -366,39 +366,39 @@
  "observation_stores": {
   "data/eod-live-full": {
    "path": "data/eod-live-full/observations.sqlite3",
-   "sha256": "0c4c181f4d2a21415e3dc768f33d3bf3d2934e8132889af02a4b01f78fd942a2",
-   "bytes": 1238896640,
-   "observations": 292018,
-   "training_rows": 260296,
-   "sessions": 1177,
+   "sha256": "2c01ddeb45218d0f601dc7e2ea3d7fadb1fcc44a349a60e2078d52863976b0c7",
+   "bytes": 1240231936,
+   "observations": 292335,
+   "training_rows": 260583,
+   "sessions": 1178,
    "first_session": "2019-05-10",
-   "last_session": "2026-09-04",
+   "last_session": "2026-09-16",
    "per_symbol": {
     "AAPL": {
-     "rows": 141582,
-     "training_eligible": 129495,
-     "sessions": 1174
+     "rows": 141731,
+     "training_eligible": 129642,
+     "sessions": 1175
     },
     "SPY": {
-     "rows": 150436,
-     "training_eligible": 130801,
-     "sessions": 1161
+     "rows": 150604,
+     "training_eligible": 130941,
+     "sessions": 1162
     }
    },
    "exclusions_by_reason": {
-    "iv_not_identified;iv_outside_training_range": 13050,
-    "midpoint_below_training_floor": 11171,
-    "outside_training_moneyness": 4997,
-    "iv_not_identified;iv_outside_training_range;outside_training_moneyness": 1957,
-    "midpoint_below_training_floor;outside_training_moneyness": 523,
+    "iv_not_identified;iv_outside_training_range": 13062,
+    "midpoint_below_training_floor": 11182,
+    "outside_training_moneyness": 5000,
+    "iv_not_identified;iv_outside_training_range;outside_training_moneyness": 1960,
+    "midpoint_below_training_floor;outside_training_moneyness": 524,
     "iv_outside_training_range;outside_training_moneyness": 24
    },
    "ingest_runs": {
-    "runs": 1177,
+    "runs": 1178,
     "first_started": "2026-09-08T19:26:03.558567+00:00",
-    "last_started": "2026-09-08T19:35:00.987754+00:00"
+    "last_started": "2026-09-17T18:41:52.336408+00:00"
    },
-   "pinned_tier": null,
+   "pinned_tier": "daily_eod",
    "query_for_totals": "SELECT COUNT(*), SUM(training_eligible), COUNT(DISTINCT session_date) FROM observations",
    "query_for_exclusions": "SELECT quality_reasons, COUNT(*) FROM observations WHERE training_eligible=0 GROUP BY quality_reasons"
   },
@@ -436,40 +436,40 @@
   }
  },
  "acquisition_audits": {
-  "audit_files": 1177,
-  "raw_rows": 334370,
-  "accepted": 292018,
-  "rejected": 42352,
+  "audit_files": 1178,
+  "raw_rows": 334774,
+  "accepted": 292335,
+  "rejected": 42439,
   "per_symbol": {
    "AAPL": {
-    "raw_rows": 166818,
-    "accepted": 141582
+    "raw_rows": 167012,
+    "accepted": 141731
    },
    "SPY": {
-    "raw_rows": 167552,
-    "accepted": 150436
+    "raw_rows": 167762,
+    "accepted": 150604
    }
   },
   "rejection_reasons": {
-   "wide_spread": 33795,
-   "invalid_quote;wide_spread": 8457,
+   "wide_spread": 33848,
+   "invalid_quote;wide_spread": 8464,
    "invalid_quote": 94,
-   "crossed_market": 6
+   "crossed_market": 33
   },
   "note": "Acquisition filters (quote validity, relative spread) run at ingest before storage; the per-run audits live under data/<root>/audits/<run_id>/filter_audit.csv and are not committed."
  },
  "snapshots": {
   "data/eod-live-full": {
    "data_root": "data/eod-live-full",
-   "count": 1177,
+   "count": 1178,
    "first_session": "2019-05-10",
-   "last_session": "2026-09-04",
+   "last_session": "2026-09-16",
    "files_per_snapshot": [
     "metadata.json",
     "raw_options.csv"
    ],
    "all_recorded_csv_sha256_match": true,
-   "snapshots_with_source_files_recorded": 0,
+   "snapshots_with_source_files_recorded": 1,
    "note": "Folder names carry no content hash and metadata.json has no source_files entry: this import ran before the 3.2.1 commits that added both. The import CSV hashes are recorded in this manifest instead.",
    "directories": [
     {
@@ -8724,6 +8724,13 @@
      "metadata_json_sha256": "ec99b3fb9586b2290cc58f549fc988d160984816d6206fb41dcb8a6965225940",
      "raw_options_csv_sha256": "a4aeb3e9ac68684c49e6e351eb0ea0a63823a8d88908ade13285cde8599776a9",
      "recorded_csv_sha256_matches": true
+    },
+    {
+     "session": "2026-09-16",
+     "path": "data/eod-live-full/snapshots/2026-09-16/eod_import_20260916_dfb13d6494ee",
+     "metadata_json_sha256": "861de2628ef3e57bfe0cfb3489cc11308475a17fb87a3ac48a74f4beed8b1573",
+     "raw_options_csv_sha256": "dfb13d6494eeadfafac4b9ee0516e636c41e268dba899f1ce41539db8626a889",
+     "recorded_csv_sha256_matches": true
     }
    ]
   },
@@ -11933,6 +11940,30 @@
     }
    ]
   },
+  "fresh_evaluation": {
+   "protocol": "docs/LOCK.md",
+   "sessions_scored": [
+    "2026-09-16"
+   ],
+   "log": "docs/FRESH_EVAL.md",
+   "files": [
+    {
+     "path": "docs/results/v2/fresh/predictions-2026-09-16.csv",
+     "sha256": "0d23f59d2a9adeae56e8670165ed45b7775e29742cd6bda17acc6ea9ba9930b8",
+     "bytes": 114286
+    },
+    {
+     "path": "docs/results/v2/fresh/predictions-2026-09-16.json",
+     "sha256": "5409265763c6b3d51740162d5a31986f305555b69c592ae8b092150fe821db8d",
+     "bytes": 6280
+    },
+    {
+     "path": "docs/results/v2/fresh/scores-2026-09-16.json",
+     "sha256": "75f1343fe4097f32f7b4f5c644dc1324b56929d8339f940a1b4fa35240f422de",
+     "bytes": 8278
+    }
+   ]
+  },
   "lock": {
    "record": {
     "path": "docs/lock.json",
@@ -13211,9 +13242,9 @@
    "section": "Data coverage vs evaluation window",
    "text": "rows passed to the acquisition filters",
    "reported": "334,370",
-   "value": 334370,
-   "rendered": "334,370",
-   "matches_reported": true,
+   "value": 334774,
+   "rendered": "334,774",
+   "matches_reported": false,
    "source": "data/eod-live-full/audits/*/filter_audit.csv (local only)",
    "field": "total rows across all filter audits",
    "status": "traced"
@@ -13223,9 +13254,9 @@
    "section": "Data coverage vs evaluation window",
    "text": "rows rejected by the acquisition filters",
    "reported": "42,352",
-   "value": 42352,
-   "rendered": "42,352",
-   "matches_reported": true,
+   "value": 42439,
+   "rendered": "42,439",
+   "matches_reported": false,
    "source": "data/eod-live-full/audits/*/filter_audit.csv (local only)",
    "field": "rows with accepted false",
    "status": "traced"
@@ -13235,9 +13266,9 @@
    "section": "Data coverage vs evaluation window",
    "text": "SPY rows dropped on 2022-08-01 and 2022-09-19 for a missing underlying close",
    "reported": "284",
-   "value": 284,
-   "rendered": "284",
-   "matches_reported": true,
+   "value": 74,
+   "rendered": "74",
+   "matches_reported": false,
    "source": "full_chain.csv and data/eod-live-full/audits (local only)",
    "field": "SPY chain rows on session dates minus SPY rows reaching the acquisition filters",
    "status": "derived"
@@ -13824,9 +13855,9 @@
    "section": "Data coverage vs evaluation window",
    "text": "snapshot directories, full-history root",
    "reported": "1,177",
-   "value": 1177,
-   "rendered": "1,177",
-   "matches_reported": true,
+   "value": 1178,
+   "rendered": "1,178",
+   "matches_reported": false,
    "source": "data/eod-live-full/snapshots (local only)",
    "field": "directory count",
    "status": "traced"
