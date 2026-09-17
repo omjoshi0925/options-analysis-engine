@@ -1,0 +1,2154 @@
+{
+  "amendment": 8,
+  "bootstrap": {
+    "block_length": 21,
+    "replicates": 10000,
+    "seed": 20260908,
+    "sensitivity_blocks": [
+      10,
+      63,
+      126
+    ]
+  },
+  "cancellation": {
+    "differential": {
+      "M(B1) vs B1": {
+        "change_in_mean_d": -7.417729573292353e-07,
+        "change_interval": [
+          -9.825050131434205e-07,
+          -5.227739560638739e-07
+        ],
+        "european": {
+          "mean_d": 5.135485099077061e-07,
+          "median_rho": -0.009908621300441123,
+          "win_rate": 0.4641434262948207
+        },
+        "european_favors_b1": false,
+        "share_of_european_gap": -1.444406795109863,
+        "tree": {
+          "mean_d": -2.282244474215292e-07,
+          "median_rho": -0.20837618443299122,
+          "win_rate": 0.25199203187250996
+        }
+      },
+      "M(RV) vs B1": {
+        "change_in_mean_d": 3.75307809424274e-07,
+        "change_interval": [
+          6.248541620926185e-08,
+          6.663406721085288e-07
+        ],
+        "european": {
+          "mean_d": -1.8183216604644284e-05,
+          "median_rho": -1.603375316826513,
+          "win_rate": 0.08266932270916334
+        },
+        "european_favors_b1": true,
+        "share_of_european_gap": 0.020640342002438358,
+        "tree": {
+          "mean_d": -1.7807908795220014e-05,
+          "median_rho": -1.6213204370408874,
+          "win_rate": 0.08665338645418327
+        }
+      },
+      "RV vs B1": {
+        "change_in_mean_d": 1.4021520280371603e-06,
+        "change_interval": [
+          1.9758997382831862e-07,
+          2.4292305959522773e-06
+        ],
+        "european": {
+          "mean_d": -0.0004210834218165692,
+          "median_rho": -2.3149085822874502,
+          "win_rate": 0.052788844621513946
+        },
+        "european_favors_b1": true,
+        "share_of_european_gap": 0.003329867563981088,
+        "tree": {
+          "mean_d": -0.000419681269788532,
+          "median_rho": -2.0570407570372797,
+          "win_rate": 0.061752988047808766
+        }
+      }
+    },
+    "engine_shift": {
+      "b1": {
+        "interval": [
+          -3.1455167006523683e-07,
+          -1.2901891527573192e-07
+        ],
+        "mean": -2.1546817905279188e-07,
+        "share_of_sessions_worse_on_tree": 0.3565737051792829
+      },
+      "m_b1": {
+        "interval": [
+          3.6516204895923404e-07,
+          6.958415099736766e-07
+        ],
+        "mean": 5.263047782764435e-07,
+        "share_of_sessions_worse_on_tree": 0.7410358565737052
+      },
+      "m_rv": {
+        "interval": [
+          -9.109732857828306e-07,
+          -2.5546262339102696e-07
+        ],
+        "mean": -5.90775988477066e-07,
+        "share_of_sessions_worse_on_tree": 0.4442231075697211
+      },
+      "rv": {
+        "interval": [
+          -2.674260892391864e-06,
+          -3.7674975941450866e-07
+        ],
+        "mean": -1.6176202070899457e-06,
+        "share_of_sessions_worse_on_tree": 0.20318725099601595
+      }
+    },
+    "losses": {
+      "b1": {
+        "european": {
+          "mean": 6.388146030825348e-06,
+          "mean_rmse": 0.0017436039207013314,
+          "median": 1.4250222632638767e-06
+        },
+        "tree": {
+          "mean": 6.172677851772557e-06,
+          "mean_rmse": 0.00168288534184594,
+          "median": 1.2491528615763147e-06
+        }
+      },
+      "m_b1": {
+        "european": {
+          "mean": 5.874597520917644e-06,
+          "mean_rmse": 0.0017359493335798715,
+          "median": 1.4706606581162724e-06
+        },
+        "tree": {
+          "mean": 6.4009022991940866e-06,
+          "mean_rmse": 0.0019170616876096227,
+          "median": 2.0103842644193617e-06
+        }
+      },
+      "m_rv": {
+        "european": {
+          "mean": 2.457136263546964e-05,
+          "mean_rmse": 0.003945516726926156,
+          "median": 1.0095138032860257e-05
+        },
+        "tree": {
+          "mean": 2.398058664699257e-05,
+          "mean_rmse": 0.003841684683526034,
+          "median": 9.644130675260842e-06
+        }
+      },
+      "rv": {
+        "european": {
+          "mean": 0.00042747156784739455,
+          "mean_rmse": 0.0063806624532709326,
+          "median": 1.5875861503656173e-05
+        },
+        "tree": {
+          "mean": 0.00042585394764030446,
+          "mean_rmse": 0.006056555353756758,
+          "median": 1.2454635491206073e-05
+        }
+      }
+    },
+    "prior_quote_missing": 0,
+    "reinversion_check": {
+      "max_abs_sigma_difference": 1.4405143744511406e-12,
+      "rows_beyond_1e_6": 0
+    },
+    "rows": 78414,
+    "rule": "same-contract B1 rows of set B: B1 inverted from the t-1 mid and repriced at t under the European formula (as in the study) against the same contract inverted on the tree at t-1 conditions and repriced on the tree at t; M(RV), the RV baseline, and M(B1) keep their sigma and are repriced on the tree",
+    "same_contract_rows": 83438,
+    "sessions": 1004,
+    "steps": 200,
+    "tree_inversion_unidentified": 107
+  },
+  "chunksize": 20000,
+  "code_version": "3.6.1",
+  "exploratory": true,
+  "inputs": {
+    "baselines": {
+      "path": "docs/results/v2/baselines-B.csv.gz",
+      "sha256": "d4f886aaefbd202f86d03b065dbdc76e7915a3f9aa72bb3d545b3c4f64bcd99e"
+    },
+    "breakdowns": {
+      "path": "docs/results/v2/design-c/breakdowns.json",
+      "sha256": "653daff234824a97b9847f43594d44ee557dbe6a65357d45a7b3e4fd59bb6def"
+    },
+    "comparison": {
+      "path": "docs/results/v2/design-b/comparison.json",
+      "sha256": "537b3c357887e6d1696480d606639e9d6dd854add4bd7625838b4e2614ee2994"
+    },
+    "set_a": {
+      "path": "docs/results/v2/design-c/runs/set-a/full/predictions.csv.gz",
+      "sha256": "64f454013622f3877e1389aedf4a96014509e5ff2d409bc7796d6bfeec590725"
+    },
+    "set_b_m_b1": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-b1/full/predictions.csv.gz",
+      "sha256": "d0f681018829cf63c6352540f31402c0b5f8194dd7da177fa3e8b75655e3632d"
+    },
+    "set_b_m_rv": {
+      "path": "docs/results/v2/design-c/runs/set-b/m-rv/full/predictions.csv.gz",
+      "sha256": "1620a63d92daad718f6f66450554e31eef181315d299acc3480f54a53337394e"
+    }
+  },
+  "maturity_split_days": 30.0,
+  "moneyness_terciles": [
+    0.05565588351887279,
+    0.13496431965251243
+  ],
+  "note": "Exploratory (Research Plan Amendment 8): specified after an outside review, after every pre-registered result was known; no reported number is replaced and no claim here is confirmatory.",
+  "peak_rss_mb": 741.1,
+  "pricing_paths": {
+    "B1": "baselines.py:52-92 b1_baseline: sigma is the t-1 row's iv_brent_volatility (carry_inputs.py:323, a European inversion) or its strike interpolation (baselines.py:88); priced by walkforward.py:108 evaluate(None, ...) with baseline_sigma replaced (cli.py --baseline-file); European",
+    "B2": "baselines.py:187-217 slice_points/fit_slice fit SVI to European implied volatilities; baselines.py:244 converts back to sigma; priced as B1; European",
+    "M(B1)": "walkforward.py:107-109 fit_fold/evaluate on rows whose baseline_sigma is b1_sigma; price_with_volatility; European",
+    "M(B2)": "as M(B1) with b2_sigma; European",
+    "M(RV)": "learning.py:123-128 evaluate(model, frame): predict_volatility (learning.py:88-107) then price_with_volatility (learning.py:110-112); European",
+    "RV baseline": "learning.py:123-128 evaluate(None, frame) -> price_with_volatility (learning.py:110-112, BlackScholesEngine.price, core.py:62); European",
+    "binomial tree": "american.py:83-91 binomial_analysis is called only by analysis.py:66 at import time (diagnostic columns) and by the cli price command (cli.py:234); it enters no study loss",
+    "learning targets": "carry_inputs.py:304-338 apply_carry re-solves iv_brent_volatility with iv.py:21-90 implied_volatility, whose objective is BlackScholesEngine.price (iv.py:53-54); learning.py:71 target = log(iv / baseline_sigma); European inversion",
+    "locked predict path": "locked.py:205-231 prediction_set: predict_volatility then price_with_volatility (locked.py:229); B1 sigma is the t-1 iv_brent_volatility (locked.py:207-208); scoring identification locked.py:395 implied_volatility; European"
+  },
+  "regimes": [
+    "2020-21 near-zero",
+    "2022 onward"
+  ],
+  "sensitivity": {
+    "pairs": {
+      "M(B1) vs B1": {
+        "below_tick": {
+          "interval": [
+            -1.196119157745988e-07,
+            5.529245171928077e-07
+          ],
+          "label": "no evidence either way",
+          "mean_differential": 1.9784873697293098e-07,
+          "median_relative_improvement": -0.021929698777069184,
+          "sensitivity": {
+            "10": [
+              -1.032056427057875e-07,
+              4.975280165125408e-07
+            ],
+            "126": [
+              -2.112521673523373e-07,
+              7.949803123082491e-07
+            ],
+            "21": [
+              -1.196119157745988e-07,
+              5.529245171928077e-07
+            ],
+            "63": [
+              -1.72412708899602e-07,
+              6.849056204001492e-07
+            ]
+          },
+          "sessions": 1005,
+          "win_rate": 0.44676616915422884
+        },
+        "label_changes": true,
+        "pre_registered": {
+          "interval": [
+            5.392776397656485e-08,
+            8.396805280822089e-07
+          ],
+          "label": "adds value",
+          "mean_differential": 4.1044095721071574e-07,
+          "median_relative_improvement": -0.011913211052866357,
+          "win_rate": 0.4626865671641791
+        },
+        "recomputed_from_predictions": {
+          "interval": [
+            5.392776397649803e-08,
+            8.396805280827021e-07
+          ],
+          "label": "adds value",
+          "matches_pre_registered": true,
+          "mean_differential": 4.1044095721082914e-07
+        }
+      },
+      "M(RV) vs B1": {
+        "below_tick": {
+          "interval": [
+            -2.273488005554479e-05,
+            -1.0162843928173784e-05
+          ],
+          "label": "baseline wins",
+          "mean_differential": -1.5491686527570813e-05,
+          "median_relative_improvement": -1.9888660295427063,
+          "sensitivity": {
+            "10": [
+              -2.2260285253217166e-05,
+              -1.0611116869465757e-05
+            ],
+            "126": [
+              -2.2981687459741713e-05,
+              -8.974354792401788e-06
+            ],
+            "21": [
+              -2.273488005554479e-05,
+              -1.0162843928173784e-05
+            ],
+            "63": [
+              -2.340305781538037e-05,
+              -9.130835238204767e-06
+            ]
+          },
+          "sessions": 1005,
+          "win_rate": 0.06069651741293532
+        },
+        "label_changes": false,
+        "pre_registered": {
+          "interval": [
+            -2.407279383354626e-05,
+            -1.1367388929669549e-05
+          ],
+          "label": "baseline wins",
+          "mean_differential": -1.6915184051002517e-05,
+          "median_relative_improvement": -1.8899642173013946,
+          "win_rate": 0.05373134328358209
+        },
+        "recomputed_from_predictions": {
+          "interval": [
+            -2.4072793833547216e-05,
+            -1.136738892966923e-05
+          ],
+          "label": "baseline wins",
+          "matches_pre_registered": true,
+          "mean_differential": -1.6915184051003025e-05
+        }
+      }
+    },
+    "rows_kept": 95808,
+    "rows_total": 142942,
+    "rule": "observations whose early-exercise premium at the quote's European implied volatility is at or below the quote's tick",
+    "sessions_kept": 1005,
+    "sessions_skipped": 0,
+    "sessions_total": 1005,
+    "tick_rule": "0.05 for AAPL quotes with mid >= 3, 0.01 otherwise; in set A 98% of AAPL bids and asks at or above $3 are multiples of 0.05 and SPY quotes are multiples of 0.05 only 20% of the time at every level (the penny-interval program)"
+  },
+  "sets": {
+    "A": {
+      "premium": {
+        "iv": {
+          "by_maturity_bucket": {
+            "31-90d": {
+              "max": 0.08782839775085449,
+              "mean": 0.00532456007376729,
+              "mean_dollars": 0.17262697942898197,
+              "median": 0.0008350206189788878,
+              "n": 103116,
+              "p90": 0.01614065933972597,
+              "p99": 0.031950336694717404,
+              "share_exceeding_half_tick": 0.40381706039799836,
+              "share_exceeding_tick": 0.3536987470421661
+            },
+            "<=30d": {
+              "max": 0.0654054805636406,
+              "mean": 0.002896949643782331,
+              "mean_dollars": 0.07461367317209643,
+              "median": 0.00045682143536396325,
+              "n": 127811,
+              "p90": 0.008845553733408451,
+              "p99": 0.019921096600592044,
+              "share_exceeding_half_tick": 0.33212321318196397,
+              "share_exceeding_tick": 0.29131295428406007
+            }
+          },
+          "by_moneyness_tercile": {
+            "high": {
+              "max": 0.038620464503765106,
+              "mean": 0.002940224507244252,
+              "mean_dollars": 0.16022887121946275,
+              "median": 0.0008077925886027515,
+              "n": 76976,
+              "p90": 0.009189341217279434,
+              "p99": 0.01757878763601184,
+              "share_exceeding_half_tick": 0.3170338806900852,
+              "share_exceeding_tick": 0.28336104759925174
+            },
+            "low": {
+              "max": 0.08782839775085449,
+              "mean": 0.004943453264871507,
+              "mean_dollars": 0.06987871974654673,
+              "median": 0.00014081032713875175,
+              "n": 76976,
+              "p90": 0.015219517052173615,
+              "p99": 0.033532352186739445,
+              "share_exceeding_half_tick": 0.4113749740178757,
+              "share_exceeding_tick": 0.353681667013095
+            },
+            "middle": {
+              "max": 0.06738554686307907,
+              "mean": 0.00405918008836205,
+              "mean_dollars": 0.1250313721389824,
+              "median": 0.0006538716261275113,
+              "n": 76975,
+              "p90": 0.012972087413072588,
+              "p99": 0.026016010418534276,
+              "share_exceeding_half_tick": 0.3640012991230919,
+              "share_exceeding_tick": 0.32046768431308864
+            }
+          },
+          "by_option_type": {
+            "call": {
+              "max": 0.007103697396814823,
+              "mean": 0.00027055943019469077,
+              "mean_dollars": 0.005853223357322521,
+              "median": 0.0,
+              "n": 102719,
+              "p90": 0.0007469760137610137,
+              "p99": 0.0045377301424741725,
+              "share_exceeding_half_tick": 0.06834178681646044,
+              "share_exceeding_tick": 0.05957028397862129
+            },
+            "put": {
+              "max": 0.08782839775085449,
+              "mean": 0.006953682869851203,
+              "mean_dollars": 0.20853468225506136,
+              "median": 0.005061769159510732,
+              "n": 128208,
+              "p90": 0.01626394912600517,
+              "p99": 0.031129600517451755,
+              "share_exceeding_half_tick": 0.6011247348059403,
+              "share_exceeding_tick": 0.5271589916385873
+            }
+          },
+          "by_regime": {
+            "2020-21 near-zero": {
+              "max": 0.007103697396814823,
+              "mean": 0.0007425019275220708,
+              "mean_dollars": 0.014963620241574709,
+              "median": 0.0,
+              "n": 31666,
+              "p90": 0.002983184880577028,
+              "p99": 0.0053668681764975175,
+              "share_exceeding_half_tick": 0.15691909303353754,
+              "share_exceeding_tick": 0.13724499463146592
+            },
+            "2022 onward": {
+              "max": 0.08782839775085449,
+              "mean": 0.004495597740908343,
+              "mean_dollars": 0.13481420746672962,
+              "median": 0.0014752555871382356,
+              "n": 199261,
+              "p90": 0.013440865091979504,
+              "p99": 0.028326201066374717,
+              "share_exceeding_half_tick": 0.3970671631679054,
+              "share_exceeding_tick": 0.3480811598857779
+            }
+          },
+          "by_symbol": {
+            "AAPL": {
+              "max": 0.0687107965350151,
+              "mean": 0.0034548590149355023,
+              "mean_dollars": 0.07350495929401682,
+              "median": 0.000295662073767744,
+              "n": 115732,
+              "p90": 0.011072787549346687,
+              "p99": 0.022384718321263805,
+              "share_exceeding_half_tick": 0.3181315452943006,
+              "share_exceeding_tick": 0.26037742370303807
+            },
+            "SPY": {
+              "max": 0.08782839775085449,
+              "mean": 0.0045094980161598675,
+              "mean_dollars": 0.16346348230029567,
+              "median": 0.0013429609825834632,
+              "n": 115195,
+              "p90": 0.014052602834999563,
+              "p99": 0.030863163582980625,
+              "share_exceeding_half_tick": 0.41035635227223405,
+              "share_exceeding_tick": 0.3782369026433439
+            }
+          },
+          "by_year": {
+            "2020": {
+              "max": 0.006015612743794918,
+              "mean": 0.0007401291351669595,
+              "mean_dollars": 0.016174638872246398,
+              "median": 0.0,
+              "n": 5737,
+              "p90": 0.002849945332854989,
+              "p99": 0.004924332536756995,
+              "share_exceeding_half_tick": 0.16960083667421996,
+              "share_exceeding_tick": 0.1492069025623148
+            },
+            "2021": {
+              "max": 0.007103697396814823,
+              "mean": 0.0007430269269335897,
+              "mean_dollars": 0.014695672619832123,
+              "median": 0.0,
+              "n": 25929,
+              "p90": 0.003015810810029507,
+              "p99": 0.0054302312061190626,
+              "share_exceeding_half_tick": 0.15411315515446025,
+              "share_exceeding_tick": 0.13459832619846504
+            },
+            "2022": {
+              "max": 0.021715197712183,
+              "mean": 0.0014859649982393761,
+              "mean_dollars": 0.04252000277989693,
+              "median": 0.00013474394654622301,
+              "n": 30034,
+              "p90": 0.004849561210721733,
+              "p99": 0.012031838642433266,
+              "share_exceeding_half_tick": 0.27998268628887263,
+              "share_exceeding_tick": 0.2329027102617034
+            },
+            "2023": {
+              "max": 0.05949399247765541,
+              "mean": 0.005935335564292673,
+              "mean_dollars": 0.1518414196634073,
+              "median": 0.0032127026934176683,
+              "n": 29972,
+              "p90": 0.016668370179831988,
+              "p99": 0.03353260800242424,
+              "share_exceeding_half_tick": 0.41645535833444547,
+              "share_exceeding_tick": 0.37631789670359
+            },
+            "2024": {
+              "max": 0.062285806983709335,
+              "mean": 0.006272850862396386,
+              "mean_dollars": 0.15811953776500298,
+              "median": 0.003039733273908496,
+              "n": 33500,
+              "p90": 0.018132910691201695,
+              "p99": 0.03533179678022866,
+              "share_exceeding_half_tick": 0.41002985074626863,
+              "share_exceeding_tick": 0.3674029850746269
+            },
+            "2025": {
+              "max": 0.08410169929265976,
+              "mean": 0.004460849266860447,
+              "mean_dollars": 0.13672825460731453,
+              "median": 0.001881398435216397,
+              "n": 56114,
+              "p90": 0.013306659739464523,
+              "p99": 0.02535958293825389,
+              "share_exceeding_half_tick": 0.4038920768435684,
+              "share_exceeding_tick": 0.35016216986848203
+            },
+            "2026": {
+              "max": 0.08782839775085449,
+              "mean": 0.004287128613649,
+              "mean_dollars": 0.16248268983748307,
+              "median": 0.002177363960072398,
+              "n": 49641,
+              "p90": 0.012066829018294811,
+              "p99": 0.02354413382709026,
+              "share_exceeding_half_tick": 0.4397373139139018,
+              "share_exceeding_tick": 0.38532664531334987
+            }
+          },
+          "overall": {
+            "max": 0.08782839775085449,
+            "mean": 0.003980952281405169,
+            "mean_dollars": 0.1183796255639129,
+            "median": 0.0005606499616988003,
+            "n": 230927,
+            "p90": 0.01243879124522209,
+            "p99": 0.027299975864589186,
+            "share_exceeding_half_tick": 0.36413671853009827,
+            "share_exceeding_tick": 0.3191701273562641
+          }
+        },
+        "m_rv": {
+          "by_maturity_bucket": {
+            "31-90d": {
+              "max": 0.05246112495660782,
+              "mean": 0.006192329024267652,
+              "mean_dollars": 0.22357708757373396,
+              "median": 0.0008488588791806251,
+              "n": 103116,
+              "p90": 0.018934189341962337,
+              "p99": 0.034973308071494125,
+              "share_exceeding_half_tick": 0.4162981496566973,
+              "share_exceeding_tick": 0.36063268551922106
+            },
+            "<=30d": {
+              "max": 0.03333352506160736,
+              "mean": 0.003411762520638398,
+              "mean_dollars": 0.09949175466275098,
+              "median": 0.0004256096144672483,
+              "n": 127811,
+              "p90": 0.01068476028740406,
+              "p99": 0.020589190162718294,
+              "share_exceeding_half_tick": 0.33847634397665305,
+              "share_exceeding_tick": 0.29560053516520485
+            }
+          },
+          "by_moneyness_tercile": {
+            "high": {
+              "max": 0.04731228947639465,
+              "mean": 0.004243121662372047,
+              "mean_dollars": 0.23600667337604112,
+              "median": 0.0007458181935362518,
+              "n": 76976,
+              "p90": 0.0132099948823452,
+              "p99": 0.029838075395673513,
+              "share_exceeding_half_tick": 0.32929744335896904,
+              "share_exceeding_tick": 0.28702452712533777
+            },
+            "low": {
+              "max": 0.04256927967071533,
+              "mean": 0.0046114167811330195,
+              "mean_dollars": 0.05975831051809675,
+              "median": 0.00013838372979080305,
+              "n": 76976,
+              "p90": 0.01404738100245595,
+              "p99": 0.02763049816712737,
+              "share_exceeding_half_tick": 0.4197152359176886,
+              "share_exceeding_tick": 0.3592158594886718
+            },
+            "middle": {
+              "max": 0.05246112495660782,
+              "mean": 0.005105580096972415,
+              "mean_dollars": 0.168934202237335,
+              "median": 0.0005907515878789127,
+              "n": 76975,
+              "p90": 0.01642380729317666,
+              "p99": 0.03312550395727145,
+              "share_exceeding_half_tick": 0.3706658005846054,
+              "share_exceeding_tick": 0.32767781747320557
+            }
+          },
+          "by_option_type": {
+            "call": {
+              "max": 0.04226292297244072,
+              "mean": 0.0004169763264827657,
+              "mean_dollars": 0.006823499444505407,
+              "median": 0.0,
+              "n": 102719,
+              "p90": 0.0007842972758226096,
+              "p99": 0.008164537437260115,
+              "share_exceeding_half_tick": 0.07260584701953875,
+              "share_exceeding_tick": 0.0629386968331078
+            },
+            "put": {
+              "max": 0.05246112495660782,
+              "mean": 0.00804752892106354,
+              "mean_dollars": 0.2735368508830484,
+              "median": 0.006323023699223995,
+              "n": 128208,
+              "p90": 0.018544712476432326,
+              "p99": 0.03379816360771656,
+              "share_exceeding_half_tick": 0.6140802446025209,
+              "share_exceeding_tick": 0.5343114314239361
+            }
+          },
+          "by_regime": {
+            "2020-21 near-zero": {
+              "max": 0.04226292297244072,
+              "mean": 0.0011419419068342677,
+              "mean_dollars": 0.017915717963342775,
+              "median": 0.0,
+              "n": 31666,
+              "p90": 0.0035557522205635905,
+              "p99": 0.015310974465683096,
+              "share_exceeding_half_tick": 0.1681614349775785,
+              "share_exceeding_tick": 0.14608728604812732
+            },
+            "2022 onward": {
+              "max": 0.05246112495660782,
+              "mean": 0.0052113973470467555,
+              "mean_dollars": 0.17666877358051403,
+              "median": 0.0014003516407683492,
+              "n": 199261,
+              "p90": 0.015545312315225601,
+              "p99": 0.031057583913207003,
+              "share_exceeding_half_tick": 0.4058144845203025,
+              "share_exceeding_tick": 0.35301438816426695
+            }
+          },
+          "by_symbol": {
+            "AAPL": {
+              "max": 0.044973187148571014,
+              "mean": 0.003953017471494172,
+              "mean_dollars": 0.08025594904344054,
+              "median": 0.00028808703063987195,
+              "n": 115732,
+              "p90": 0.012399761751294149,
+              "p99": 0.025848562922328726,
+              "share_exceeding_half_tick": 0.3268672450143435,
+              "share_exceeding_tick": 0.26413610755884287
+            },
+            "SPY": {
+              "max": 0.05246112495660782,
+              "mean": 0.005356989115679794,
+              "mean_dollars": 0.22989135051658974,
+              "median": 0.0012718869838863611,
+              "n": 115195,
+              "p90": 0.016869268938899045,
+              "p99": 0.03336512640118597,
+              "share_exceeding_half_tick": 0.4198012066495942,
+              "share_exceeding_tick": 0.3854247146143496
+            }
+          },
+          "by_year": {
+            "2020": {
+              "max": 0.01863240823149681,
+              "mean": 0.0010531932363782024,
+              "mean_dollars": 0.019218792915514045,
+              "median": 0.0,
+              "n": 5737,
+              "p90": 0.003653182694688445,
+              "p99": 0.011065931878983977,
+              "share_exceeding_half_tick": 0.1753529719365522,
+              "share_exceeding_tick": 0.15408750217883913
+            },
+            "2021": {
+              "max": 0.04226292297244072,
+              "mean": 0.0011615782646732296,
+              "mean_dollars": 0.01762740213933851,
+              "median": 0.0,
+              "n": 25929,
+              "p90": 0.0035481644328683617,
+              "p99": 0.016620805189013526,
+              "share_exceeding_half_tick": 0.16657024952755603,
+              "share_exceeding_tick": 0.14431717382081838
+            },
+            "2022": {
+              "max": 0.03509824350476265,
+              "mean": 0.0018495865136097392,
+              "mean_dollars": 0.051561702507635546,
+              "median": 0.00015178559260675684,
+              "n": 30034,
+              "p90": 0.006259454134851695,
+              "p99": 0.014898164290934796,
+              "share_exceeding_half_tick": 0.2857428247985616,
+              "share_exceeding_tick": 0.23633215688885928
+            },
+            "2023": {
+              "max": 0.049760602414608,
+              "mean": 0.007604532484474024,
+              "mean_dollars": 0.23386034056163368,
+              "median": 0.0040203065145760775,
+              "n": 29972,
+              "p90": 0.02191345896571875,
+              "p99": 0.03713955692946911,
+              "share_exceeding_half_tick": 0.43016815694648336,
+              "share_exceeding_tick": 0.3853596690244228
+            },
+            "2024": {
+              "max": 0.05246112495660782,
+              "mean": 0.007380776869968656,
+              "mean_dollars": 0.21315349199522488,
+              "median": 0.0031329732155427337,
+              "n": 33500,
+              "p90": 0.021358786150813106,
+              "p99": 0.03776459801942113,
+              "share_exceeding_half_tick": 0.42167164179104477,
+              "share_exceeding_tick": 0.37376119402985075
+            },
+            "2025": {
+              "max": 0.034566447138786316,
+              "mean": 0.004853587053201021,
+              "mean_dollars": 0.1599451577565928,
+              "median": 0.0019976129988208413,
+              "n": 56114,
+              "p90": 0.013966961018741132,
+              "p99": 0.024863268025219463,
+              "share_exceeding_half_tick": 0.41604590654738566,
+              "share_exceeding_tick": 0.3567915315251096
+            },
+            "2026": {
+              "max": 0.03050384856760502,
+              "mean": 0.004740930052742716,
+              "mean_dollars": 0.21211348739561475,
+              "median": 0.0022762690205127,
+              "n": 49641,
+              "p90": 0.013891872949898243,
+              "p99": 0.022529831901192662,
+              "share_exceeding_half_tick": 0.44148989746379,
+              "share_exceeding_tick": 0.38581011663745696
+            }
+          },
+          "overall": {
+            "max": 0.05246112495660782,
+            "mean": 0.0046533708885998495,
+            "mean_dollars": 0.1548996679359885,
+            "median": 0.0005239903694018722,
+            "n": 230927,
+            "p90": 0.014604642800986766,
+            "p99": 0.030168191604316223,
+            "share_exceeding_half_tick": 0.3732261710410649,
+            "share_exceeding_tick": 0.32463938820493055
+          }
+        },
+        "rv": {
+          "by_maturity_bucket": {
+            "31-90d": {
+              "max": 0.09905321896076202,
+              "mean": 0.006805997955270718,
+              "mean_dollars": 0.3091921775693398,
+              "median": 1.7916519823302224e-06,
+              "n": 103116,
+              "p90": 0.024316576309502125,
+              "p99": 0.0510253435000778,
+              "share_exceeding_half_tick": 0.3647833507894022,
+              "share_exceeding_tick": 0.3302494278288529
+            },
+            "<=30d": {
+              "max": 0.060789283365011215,
+              "mean": 0.00382983824241,
+              "mean_dollars": 0.13749151489757905,
+              "median": 1.7850018139142776e-06,
+              "n": 127811,
+              "p90": 0.013344801962375641,
+              "p99": 0.02984412871301173,
+              "share_exceeding_half_tick": 0.3251598062764551,
+              "share_exceeding_tick": 0.2858048211812755
+            }
+          },
+          "by_moneyness_tercile": {
+            "high": {
+              "max": 0.058133047074079514,
+              "mean": 0.004663476062501096,
+              "mean_dollars": 0.3339081083620413,
+              "median": 3.577926577236212e-08,
+              "n": 76976,
+              "p90": 0.018149154260754585,
+              "p99": 0.038432059809565544,
+              "share_exceeding_half_tick": 0.30095094574932446,
+              "share_exceeding_tick": 0.28525774267304094
+            },
+            "low": {
+              "max": 0.09905321896076202,
+              "mean": 0.005112767197298472,
+              "mean_dollars": 0.07874139204618356,
+              "median": 0.0001258214979316108,
+              "n": 76976,
+              "p90": 0.015593468677252531,
+              "p99": 0.040073905140161514,
+              "share_exceeding_half_tick": 0.4031516316774059,
+              "share_exceeding_tick": 0.343990334649761
+            },
+            "middle": {
+              "max": 0.09325955808162689,
+              "mean": 0.005700118734524566,
+              "mean_dollars": 0.2298341104175512,
+              "median": 7.223381544463336e-05,
+              "n": 76975,
+              "p90": 0.0202325500547886,
+              "p99": 0.049981493726372596,
+              "share_exceeding_half_tick": 0.32445599220526145,
+              "share_exceeding_tick": 0.28770379993504386
+            }
+          },
+          "by_option_type": {
+            "call": {
+              "max": 0.026512278243899345,
+              "mean": 0.0004926573490613209,
+              "mean_dollars": 0.014425869748067444,
+              "median": 0.0,
+              "n": 102719,
+              "p90": 0.0010328737087547776,
+              "p99": 0.00940626708790652,
+              "share_exceeding_half_tick": 0.07861252543346411,
+              "share_exceeding_tick": 0.06456449147674724
+            },
+            "put": {
+              "max": 0.09905321896076202,
+              "mean": 0.008897240971843646,
+              "mean_dollars": 0.37418708409898593,
+              "median": 0.004771681968122721,
+              "n": 128208,
+              "p90": 0.024650016985833658,
+              "p99": 0.04871956959366793,
+              "share_exceeding_half_tick": 0.5545597778609759,
+              "share_exceeding_tick": 0.49880662673156123
+            }
+          },
+          "by_regime": {
+            "2020-21 near-zero": {
+              "max": 0.026512278243899345,
+              "mean": 0.0013507624940665866,
+              "mean_dollars": 0.037934417117975135,
+              "median": 0.0,
+              "n": 31666,
+              "p90": 0.0051127944607287645,
+              "p99": 0.013292805012315504,
+              "share_exceeding_half_tick": 0.1847407313838186,
+              "share_exceeding_tick": 0.15164529779574307
+            },
+            "2022 onward": {
+              "max": 0.09905321896076202,
+              "mean": 0.005763945255816479,
+              "mean_dollars": 0.24216659226018503,
+              "median": 7.079344868543558e-06,
+              "n": 199261,
+              "p90": 0.01943165250122547,
+              "p99": 0.0445746824145317,
+              "share_exceeding_half_tick": 0.36797968493583794,
+              "share_exceeding_tick": 0.33012481117730014
+            }
+          },
+          "by_symbol": {
+            "AAPL": {
+              "max": 0.0628388524055481,
+              "mean": 0.004387346086049715,
+              "mean_dollars": 0.12114881375925331,
+              "median": 2.5534177439112682e-05,
+              "n": 115732,
+              "p90": 0.01513230884447694,
+              "p99": 0.03527456928044558,
+              "share_exceeding_half_tick": 0.3136211246673349,
+              "share_exceeding_tick": 0.25943559257595133
+            },
+            "SPY": {
+              "max": 0.09905321896076202,
+              "mean": 0.0059338200748787215,
+              "mean_dollars": 0.3076070496013596,
+              "median": 7.052654638073363e-08,
+              "n": 115195,
+              "p90": 0.02074858434498311,
+              "p99": 0.04871173396706581,
+              "share_exceeding_half_tick": 0.3722210165371761,
+              "share_exceeding_tick": 0.3520812535266288
+            }
+          },
+          "by_year": {
+            "2020": {
+              "max": 0.026512278243899345,
+              "mean": 0.0014714104717915226,
+              "mean_dollars": 0.03592796039440418,
+              "median": 5.729218628403032e-06,
+              "n": 5737,
+              "p90": 0.005377840716391807,
+              "p99": 0.0124485118687153,
+              "share_exceeding_half_tick": 0.18860031375283248,
+              "share_exceeding_tick": 0.15408750217883913
+            },
+            "2021": {
+              "max": 0.02189413085579872,
+              "mean": 0.0013240681576784515,
+              "mean_dollars": 0.038378361821709436,
+              "median": 0.0,
+              "n": 25929,
+              "p90": 0.005049480590969327,
+              "p99": 0.013572505041956902,
+              "share_exceeding_half_tick": 0.18388676771182846,
+              "share_exceeding_tick": 0.15110494041420802
+            },
+            "2022": {
+              "max": 0.02294645644724369,
+              "mean": 0.001703392135853828,
+              "mean_dollars": 0.06282557958220393,
+              "median": 3.865305188810453e-05,
+              "n": 30034,
+              "p90": 0.005964798433706165,
+              "p99": 0.014023946896195408,
+              "share_exceeding_half_tick": 0.2834454285143504,
+              "share_exceeding_tick": 0.2330691882533129
+            },
+            "2023": {
+              "max": 0.08347715437412262,
+              "mean": 0.008148627526384015,
+              "mean_dollars": 0.2985092351776175,
+              "median": 1.443704013581737e-05,
+              "n": 29972,
+              "p90": 0.027652331255376347,
+              "p99": 0.053597929254174254,
+              "share_exceeding_half_tick": 0.3872614440144134,
+              "share_exceeding_tick": 0.3566662218070199
+            },
+            "2024": {
+              "max": 0.09905321896076202,
+              "mean": 0.008404123672593673,
+              "mean_dollars": 0.30649450716971854,
+              "median": 9.57733874429323e-07,
+              "n": 33500,
+              "p90": 0.028372191451489927,
+              "p99": 0.05687293935567144,
+              "share_exceeding_half_tick": 0.37570149253731344,
+              "share_exceeding_tick": 0.3448955223880597
+            },
+            "2025": {
+              "max": 0.06864150613546371,
+              "mean": 0.005410684923415161,
+              "mean_dollars": 0.2230158452072756,
+              "median": 2.2660061631540884e-06,
+              "n": 56114,
+              "p90": 0.017490127682685857,
+              "p99": 0.03947393421083691,
+              "share_exceeding_half_tick": 0.37596678190825816,
+              "share_exceeding_tick": 0.332376946929465
+            },
+            "2026": {
+              "max": 0.04754159227013588,
+              "mean": 0.005398477773731903,
+              "mean_dollars": 0.29489047276031155,
+              "median": 3.8323864828271326e-06,
+              "n": 49641,
+              "p90": 0.017847811803221703,
+              "p99": 0.03308030292391777,
+              "share_exceeding_half_tick": 0.39324348824560346,
+              "share_exceeding_tick": 0.360307004290808
+            }
+          },
+          "overall": {
+            "max": 0.09905321896076202,
+            "mean": 0.005158784987274593,
+            "mean_dollars": 0.21416113573906267,
+            "median": 1.7887756484924466e-06,
+            "n": 230927,
+            "p90": 0.017710776254534717,
+            "p99": 0.04304804414510726,
+            "share_exceeding_half_tick": 0.34285293620927826,
+            "share_exceeding_tick": 0.30565070346906165
+          }
+        }
+      },
+      "rows": 230927,
+      "sessions": 1056,
+      "unidentified_european_iv": 0
+    },
+    "B": {
+      "premium": {
+        "b1": {
+          "by_maturity_bucket": {
+            "31-90d": {
+              "max": 0.061584848910570145,
+              "mean": 0.005542334965606316,
+              "mean_dollars": 0.17834967298423576,
+              "median": 0.0009410201746504754,
+              "n": 74700,
+              "p90": 0.0166792955249548,
+              "p99": 0.032129275053739435,
+              "share_exceeding_half_tick": 0.41171352074966533,
+              "share_exceeding_tick": 0.3610441767068273
+            },
+            "<=30d": {
+              "max": 0.04886890575289726,
+              "mean": 0.003338864526670413,
+              "mean_dollars": 0.08669732901068292,
+              "median": 0.000742501491913572,
+              "n": 68242,
+              "p90": 0.009857940115034582,
+              "p99": 0.020388954672962388,
+              "share_exceeding_half_tick": 0.3438351748190264,
+              "share_exceeding_tick": 0.2950968611705401
+            }
+          },
+          "by_moneyness_tercile": {
+            "high": {
+              "max": 0.0324983224272728,
+              "mean": 0.0034394139168151252,
+              "mean_dollars": 0.18566471211123697,
+              "median": 0.0014470353489741683,
+              "n": 45767,
+              "p90": 0.010580672696232798,
+              "p99": 0.01856271736323832,
+              "share_exceeding_half_tick": 0.3293421023881836,
+              "share_exceeding_tick": 0.28811152140188345
+            },
+            "low": {
+              "max": 0.061584848910570145,
+              "mean": 0.005357453900550026,
+              "mean_dollars": 0.07814976988839814,
+              "median": 9.699044312583283e-05,
+              "n": 49060,
+              "p90": 0.016227030009031293,
+              "p99": 0.033746498487889666,
+              "share_exceeding_half_tick": 0.4195474928658785,
+              "share_exceeding_tick": 0.3627598858540563
+            },
+            "middle": {
+              "max": 0.0560099296271801,
+              "mean": 0.004605941387674778,
+              "mean_dollars": 0.14356801638469577,
+              "median": 0.0008278634049929678,
+              "n": 48115,
+              "p90": 0.0143891716375947,
+              "p99": 0.027408279031515125,
+              "share_exceeding_half_tick": 0.3858048425646888,
+              "share_exceeding_tick": 0.3351345734178531
+            }
+          },
+          "by_option_type": {
+            "call": {
+              "max": 0.007542629260569811,
+              "mean": 0.0001836951450363101,
+              "mean_dollars": 0.0033299646373360354,
+              "median": 0.0,
+              "n": 63374,
+              "p90": 0.00036992879176978044,
+              "p99": 0.004745467635802921,
+              "share_exceeding_half_tick": 0.03203206362230568,
+              "share_exceeding_tick": 0.026193707198535678
+            },
+            "put": {
+              "max": 0.061584848910570145,
+              "mean": 0.00792054241451718,
+              "mean_dollars": 0.23914245072570503,
+              "median": 0.0061662038788199425,
+              "n": 79568,
+              "p90": 0.017485812678933142,
+              "p99": 0.03205985061824323,
+              "share_exceeding_half_tick": 0.6559043836718279,
+              "share_exceeding_tick": 0.5711843957369797
+            }
+          },
+          "by_regime": {
+            "2020-21 near-zero": {
+              "max": 0.007542629260569811,
+              "mean": 0.000697324340245598,
+              "mean_dollars": 0.011651769747459932,
+              "median": 0.0,
+              "n": 14279,
+              "p90": 0.0030065077356994153,
+              "p99": 0.005721868621185416,
+              "share_exceeding_half_tick": 0.10049723369983893,
+              "share_exceeding_tick": 0.07955739197422788
+            },
+            "2022 onward": {
+              "max": 0.061584848910570145,
+              "mean": 0.004911327426730817,
+              "mean_dollars": 0.14823798666318563,
+              "median": 0.0018650998827069998,
+              "n": 128663,
+              "p90": 0.014401989616453647,
+              "p99": 0.029037682004272952,
+              "share_exceeding_half_tick": 0.4102500330320294,
+              "share_exceeding_tick": 0.3573055190691963
+            }
+          },
+          "by_symbol": {
+            "AAPL": {
+              "max": 0.05255282297730446,
+              "mean": 0.003664581934032614,
+              "mean_dollars": 0.07719112438999162,
+              "median": 0.0003557935415301472,
+              "n": 80050,
+              "p90": 0.011582506634295003,
+              "p99": 0.0228728101029992,
+              "share_exceeding_half_tick": 0.33074328544659587,
+              "share_exceeding_tick": 0.26940662086196127
+            },
+            "SPY": {
+              "max": 0.061584848910570145,
+              "mean": 0.005541458868226854,
+              "mean_dollars": 0.20765709773660565,
+              "median": 0.002280144952237606,
+              "n": 62892,
+              "p90": 0.016506514512002468,
+              "p99": 0.03269844569265837,
+              "share_exceeding_half_tick": 0.4411212872861413,
+              "share_exceeding_tick": 0.40612478534630797
+            }
+          },
+          "by_year": {
+            "2020": {
+              "max": 0.005568309221416712,
+              "mean": 0.0007247112381553223,
+              "mean_dollars": 0.012082256550882006,
+              "median": 0.0,
+              "n": 1693,
+              "p90": 0.0034481544513255335,
+              "p99": 0.00516655398532748,
+              "share_exceeding_half_tick": 0.112817483756645,
+              "share_exceeding_tick": 0.08092144122858831
+            },
+            "2021": {
+              "max": 0.007542629260569811,
+              "mean": 0.0006936404042722019,
+              "mean_dollars": 0.011593863013136592,
+              "median": 0.0,
+              "n": 12586,
+              "p90": 0.0029012899613007903,
+              "p99": 0.005793739901855587,
+              "share_exceeding_half_tick": 0.0988399809311934,
+              "share_exceeding_tick": 0.07937390751628794
+            },
+            "2022": {
+              "max": 0.025170357897877693,
+              "mean": 0.001817106087465147,
+              "mean_dollars": 0.05082310789895938,
+              "median": 0.0001684671879047528,
+              "n": 14295,
+              "p90": 0.006006114743649961,
+              "p99": 0.013828335739672178,
+              "share_exceeding_half_tick": 0.2739419377404687,
+              "share_exceeding_tick": 0.22336481287163343
+            },
+            "2023": {
+              "max": 0.05592862144112587,
+              "mean": 0.006331251195946345,
+              "mean_dollars": 0.16705774543614216,
+              "median": 0.003381891641765833,
+              "n": 18178,
+              "p90": 0.017781892232596876,
+              "p99": 0.034507679902017106,
+              "share_exceeding_half_tick": 0.4256243811200352,
+              "share_exceeding_tick": 0.38398063593354603
+            },
+            "2024": {
+              "max": 0.05939675495028496,
+              "mean": 0.00659838553493928,
+              "mean_dollars": 0.1698278659581205,
+              "median": 0.0030816372018307447,
+              "n": 21918,
+              "p90": 0.01908834334462881,
+              "p99": 0.035966268479823996,
+              "share_exceeding_half_tick": 0.41988320102199106,
+              "share_exceeding_tick": 0.3733917328223378
+            },
+            "2025": {
+              "max": 0.03999151661992073,
+              "mean": 0.0047042047237766775,
+              "mean_dollars": 0.14401585229397051,
+              "median": 0.0019933130824938416,
+              "n": 40798,
+              "p90": 0.013913635071367026,
+              "p99": 0.02591973241418599,
+              "share_exceeding_half_tick": 0.4134026177753811,
+              "share_exceeding_tick": 0.3558997990097554
+            },
+            "2026": {
+              "max": 0.061584848910570145,
+              "mean": 0.004609414664211038,
+              "mean_dollars": 0.17062813365991938,
+              "median": 0.0024812471820041537,
+              "n": 33474,
+              "p90": 0.012737950403243305,
+              "p99": 0.02382518431171774,
+              "share_exceeding_half_tick": 0.44996116388839097,
+              "share_exceeding_tick": 0.3911991396307582
+            }
+          },
+          "overall": {
+            "max": 0.061584848910570145,
+            "mean": 0.004490375221837067,
+            "mean_dollars": 0.1345938891177501,
+            "median": 0.0008277943707071245,
+            "n": 142942,
+            "p90": 0.013730553910136223,
+            "p99": 0.02844225164502855,
+            "share_exceeding_half_tick": 0.37930769123140856,
+            "share_exceeding_tick": 0.3295602412167173
+          }
+        },
+        "iv": {
+          "by_maturity_bucket": {
+            "31-90d": {
+              "max": 0.08782839775085449,
+              "mean": 0.005557814936685568,
+              "mean_dollars": 0.17705769859989756,
+              "median": 0.0009422639268450439,
+              "n": 74700,
+              "p90": 0.0166532626375556,
+              "p99": 0.03242139257490633,
+              "share_exceeding_half_tick": 0.4128380187416332,
+              "share_exceeding_tick": 0.3615261044176707
+            },
+            "<=30d": {
+              "max": 0.0654054805636406,
+              "mean": 0.0033262854126584465,
+              "mean_dollars": 0.08413711297879366,
+              "median": 0.0008326890820171684,
+              "n": 68242,
+              "p90": 0.009691726416349413,
+              "p99": 0.020485509987920505,
+              "share_exceeding_half_tick": 0.34379121362210957,
+              "share_exceeding_tick": 0.29495032384748393
+            }
+          },
+          "by_moneyness_tercile": {
+            "high": {
+              "max": 0.038620464503765106,
+              "mean": 0.0033915854974146363,
+              "mean_dollars": 0.18050326701527028,
+              "median": 0.0016011693514883518,
+              "n": 45767,
+              "p90": 0.01026828605681658,
+              "p99": 0.017953487709164603,
+              "share_exceeding_half_tick": 0.3303253435881749,
+              "share_exceeding_tick": 0.2876526755085542
+            },
+            "low": {
+              "max": 0.08782839775085449,
+              "mean": 0.005433791629927625,
+              "mean_dollars": 0.07951046375752115,
+              "median": 9.839784615905955e-05,
+              "n": 49060,
+              "p90": 0.01646548844873905,
+              "p99": 0.03477014601230605,
+              "share_exceeding_half_tick": 0.4197513249082756,
+              "share_exceeding_tick": 0.36341214838972685
+            },
+            "middle": {
+              "max": 0.06738554686307907,
+              "mean": 0.004579790794484563,
+              "mean_dollars": 0.1414531554791504,
+              "median": 0.0008956880192272365,
+              "n": 48115,
+              "p90": 0.014388085342943661,
+              "p99": 0.026740453094244016,
+              "share_exceeding_half_tick": 0.38634521459004467,
+              "share_exceeding_tick": 0.33544632650940454
+            }
+          },
+          "by_option_type": {
+            "call": {
+              "max": 0.00672024255618453,
+              "mean": 0.00018088707382117998,
+              "mean_dollars": 0.0032969005899063605,
+              "median": 0.0,
+              "n": 63374,
+              "p90": 0.00036704879894386986,
+              "p99": 0.00461478458251804,
+              "share_exceeding_half_tick": 0.03201628428061981,
+              "share_exceeding_tick": 0.026067472465048758
+            },
+            "put": {
+              "max": 0.08782839775085449,
+              "mean": 0.007926523319484041,
+              "mean_dollars": 0.23576006901425772,
+              "median": 0.0060901481192559,
+              "n": 79568,
+              "p90": 0.017428358271718028,
+              "p99": 0.032442342862486845,
+              "share_exceeding_half_tick": 0.6569349487231048,
+              "share_exceeding_tick": 0.5716117031972653
+            }
+          },
+          "by_regime": {
+            "2020-21 near-zero": {
+              "max": 0.00672024255618453,
+              "mean": 0.0006863298770590962,
+              "mean_dollars": 0.011521285754062669,
+              "median": 0.0,
+              "n": 14279,
+              "p90": 0.003080364689230922,
+              "p99": 0.005505895111709833,
+              "share_exceeding_half_tick": 0.10021710203795783,
+              "share_exceeding_tick": 0.07913719448140626
+            },
+            "2022 onward": {
+              "max": 0.08782839775085449,
+              "mean": 0.004914863174234417,
+              "mean_dollars": 0.14614444331337623,
+              "median": 0.0020187797490507364,
+              "n": 128663,
+              "p90": 0.014392677508294583,
+              "p99": 0.029414879679679887,
+              "share_exceeding_half_tick": 0.4109106736202327,
+              "share_exceeding_tick": 0.3575542308200493
+            }
+          },
+          "by_symbol": {
+            "AAPL": {
+              "max": 0.058268237859010696,
+              "mean": 0.0036411408206908622,
+              "mean_dollars": 0.07533909112742508,
+              "median": 0.00035713042598217726,
+              "n": 80050,
+              "p90": 0.011490302067250033,
+              "p99": 0.02273355407640337,
+              "share_exceeding_half_tick": 0.3306183635227983,
+              "share_exceeding_tick": 0.2692067457838851
+            },
+            "SPY": {
+              "max": 0.08782839775085449,
+              "mean": 0.005576032280810693,
+              "mean_dollars": 0.20570184927432433,
+              "median": 0.0024241646751761436,
+              "n": 62892,
+              "p90": 0.016564829088747506,
+              "p99": 0.033107188455760446,
+              "share_exceeding_half_tick": 0.4425682121732494,
+              "share_exceeding_tick": 0.4067925968326655
+            }
+          },
+          "by_year": {
+            "2020": {
+              "max": 0.005590745247900486,
+              "mean": 0.0007179917758954037,
+              "mean_dollars": 0.012004582076260746,
+              "median": 0.0,
+              "n": 1693,
+              "p90": 0.003421103581786153,
+              "p99": 0.005046317186206577,
+              "share_exceeding_half_tick": 0.11045481393975191,
+              "share_exceeding_tick": 0.08092144122858831
+            },
+            "2021": {
+              "max": 0.00672024255618453,
+              "mean": 0.0006820708913027106,
+              "mean_dollars": 0.011456275371615398,
+              "median": 0.0,
+              "n": 12586,
+              "p90": 0.0030374558409675956,
+              "p99": 0.005585050676018,
+              "share_exceeding_half_tick": 0.0988399809311934,
+              "share_exceeding_tick": 0.07889718735102495
+            },
+            "2022": {
+              "max": 0.021715197712183,
+              "mean": 0.0017614810078043156,
+              "mean_dollars": 0.048361841421011235,
+              "median": 0.00016984080139081925,
+              "n": 14295,
+              "p90": 0.005887222662568096,
+              "p99": 0.012861211877316203,
+              "share_exceeding_half_tick": 0.27240293809024135,
+              "share_exceeding_tick": 0.22098635886673662
+            },
+            "2023": {
+              "max": 0.055362094193696976,
+              "mean": 0.006324516334637606,
+              "mean_dollars": 0.16302735084743739,
+              "median": 0.0035286309430375695,
+              "n": 18178,
+              "p90": 0.017577975243330008,
+              "p99": 0.034473560005426396,
+              "share_exceeding_half_tick": 0.42771482011222356,
+              "share_exceeding_tick": 0.3849708438772142
+            },
+            "2024": {
+              "max": 0.062285806983709335,
+              "mean": 0.006608241454306377,
+              "mean_dollars": 0.16715629770326468,
+              "median": 0.00336053385399282,
+              "n": 21918,
+              "p90": 0.01904041115194559,
+              "p99": 0.03639888614416108,
+              "share_exceeding_half_tick": 0.4213431882471028,
+              "share_exceeding_tick": 0.37448672324117166
+            },
+            "2025": {
+              "max": 0.08410169929265976,
+              "mean": 0.004699882207834198,
+              "mean_dollars": 0.14243230749760483,
+              "median": 0.0021164402132853866,
+              "n": 40798,
+              "p90": 0.013920757453888665,
+              "p99": 0.026097171287983653,
+              "share_exceeding_half_tick": 0.41345163978626404,
+              "share_exceeding_tick": 0.35587528800431395
+            },
+            "2026": {
+              "max": 0.08782839775085449,
+              "mean": 0.0046492316764716185,
+              "mean_dollars": 0.16950032230577203,
+              "median": 0.0025737970136106014,
+              "n": 33474,
+              "p90": 0.012756853457540275,
+              "p99": 0.024374176971614356,
+              "share_exceeding_half_tick": 0.45100675150863356,
+              "share_exceeding_tick": 0.3919459879309315
+            }
+          },
+          "overall": {
+            "max": 0.08782839775085449,
+            "mean": 0.004492459493368286,
+            "mean_dollars": 0.1326964429580612,
+            "median": 0.0008894851198419929,
+            "n": 142942,
+            "p90": 0.013689497672021395,
+            "p99": 0.02865368856117125,
+            "share_exceeding_half_tick": 0.3798743546333478,
+            "share_exceeding_tick": 0.3297421331728953
+          }
+        },
+        "m_b1": {
+          "by_maturity_bucket": {
+            "31-90d": {
+              "max": 0.05673978477716446,
+              "mean": 0.005599856556940442,
+              "mean_dollars": 0.1807087085172965,
+              "median": 0.0009542842453811318,
+              "n": 74700,
+              "p90": 0.016891061328351505,
+              "p99": 0.0313867665454745,
+              "share_exceeding_half_tick": 0.41369477911646585,
+              "share_exceeding_tick": 0.36176706827309235
+            },
+            "<=30d": {
+              "max": 0.036943595856428146,
+              "mean": 0.003342333523067887,
+              "mean_dollars": 0.08585665140150997,
+              "median": 0.0007960423827171326,
+              "n": 68242,
+              "p90": 0.00989185329526663,
+              "p99": 0.01958973905071612,
+              "share_exceeding_half_tick": 0.34459716889891856,
+              "share_exceeding_tick": 0.2955218194074031
+            }
+          },
+          "by_moneyness_tercile": {
+            "high": {
+              "max": 0.031260233372449875,
+              "mean": 0.003512492946556053,
+              "mean_dollars": 0.18664074117957152,
+              "median": 0.0016788924112915993,
+              "n": 45767,
+              "p90": 0.010644187964498997,
+              "p99": 0.018731365501880624,
+              "share_exceeding_half_tick": 0.3314615334192759,
+              "share_exceeding_tick": 0.2880022723796622
+            },
+            "low": {
+              "max": 0.05673978477716446,
+              "mean": 0.005299111944557971,
+              "mean_dollars": 0.07657632056194959,
+              "median": 9.808937102206983e-05,
+              "n": 49060,
+              "p90": 0.016025063581764698,
+              "p99": 0.032703825235366794,
+              "share_exceeding_half_tick": 0.42032205462698735,
+              "share_exceeding_tick": 0.363819812474521
+            },
+            "middle": {
+              "max": 0.050110042095184326,
+              "mean": 0.004690140546598874,
+              "mean_dollars": 0.14671410252206576,
+              "median": 0.0008617452695034444,
+              "n": 48115,
+              "p90": 0.014753226563334464,
+              "p99": 0.027353493124246602,
+              "share_exceeding_half_tick": 0.38715577262807854,
+              "share_exceeding_tick": 0.33588278083757667
+            }
+          },
+          "by_option_type": {
+            "call": {
+              "max": 0.008401498198509216,
+              "mean": 0.000189077734593295,
+              "mean_dollars": 0.0032667136294276156,
+              "median": 0.0,
+              "n": 63374,
+              "p90": 0.000380884305923246,
+              "p99": 0.004857417885214085,
+              "share_exceeding_half_tick": 0.032095180989049135,
+              "share_exceeding_tick": 0.02643039732382365
+            },
+            "put": {
+              "max": 0.05673978477716446,
+              "mean": 0.007973232916907982,
+              "mean_dollars": 0.2406865250054362,
+              "median": 0.006222310941666365,
+              "n": 79568,
+              "p90": 0.017529564723372464,
+              "p99": 0.031179529484361434,
+              "share_exceeding_half_tick": 0.6583676855017092,
+              "share_exceeding_tick": 0.5720390106575508
+            }
+          },
+          "by_regime": {
+            "2020-21 near-zero": {
+              "max": 0.008401498198509216,
+              "mean": 0.0007161244585917152,
+              "mean_dollars": 0.011478459819660131,
+              "median": 0.0,
+              "n": 14279,
+              "p90": 0.0032158501446247134,
+              "p99": 0.005969392014667391,
+              "share_exceeding_half_tick": 0.10035716786889838,
+              "share_exceeding_tick": 0.08032775404440087
+            },
+            "2022 onward": {
+              "max": 0.05673978477716446,
+              "mean": 0.0049444771841199,
+              "mean_dollars": 0.14918095492425143,
+              "median": 0.002081366255879402,
+              "n": 128663,
+              "p90": 0.014512350969016551,
+              "p99": 0.028516692444682187,
+              "share_exceeding_half_tick": 0.411820025959289,
+              "share_exceeding_tick": 0.3578651205086155
+            }
+          },
+          "by_symbol": {
+            "AAPL": {
+              "max": 0.047822609543800354,
+              "mean": 0.0036767640357885643,
+              "mean_dollars": 0.07585639388986297,
+              "median": 0.0003660364745883271,
+              "n": 80050,
+              "p90": 0.011589405778795482,
+              "p99": 0.022818833962082848,
+              "share_exceeding_half_tick": 0.33149281698938166,
+              "share_exceeding_tick": 0.2695565271705184
+            },
+            "SPY": {
+              "max": 0.05673978477716446,
+              "mean": 0.005598038669779546,
+              "mean_dollars": 0.21124571965115374,
+              "median": 0.002446314669214189,
+              "n": 62892,
+              "p90": 0.01662668939679861,
+              "p99": 0.031707264557480734,
+              "share_exceeding_half_tick": 0.44334732557399986,
+              "share_exceeding_tick": 0.4072537047637219
+            }
+          },
+          "by_year": {
+            "2020": {
+              "max": 0.006303685251623392,
+              "mean": 0.0007422262353458697,
+              "mean_dollars": 0.01179103751984648,
+              "median": 0.0,
+              "n": 1693,
+              "p90": 0.0038410686422139404,
+              "p99": 0.005125764720141888,
+              "share_exceeding_half_tick": 0.11222681630242173,
+              "share_exceeding_tick": 0.08328411104548139
+            },
+            "2021": {
+              "max": 0.008401498198509216,
+              "mean": 0.0007126133900993599,
+              "mean_dollars": 0.011436413574116235,
+              "median": 0.0,
+              "n": 12586,
+              "p90": 0.003095698542892933,
+              "p99": 0.006036810041405259,
+              "share_exceeding_half_tick": 0.09876052757031623,
+              "share_exceeding_tick": 0.07993008104242809
+            },
+            "2022": {
+              "max": 0.024186912924051285,
+              "mean": 0.0018187842262273593,
+              "mean_dollars": 0.04963090866050946,
+              "median": 0.00017490246682427824,
+              "n": 14295,
+              "p90": 0.005968887731432917,
+              "p99": 0.013572530690580582,
+              "share_exceeding_half_tick": 0.27506121021336133,
+              "share_exceeding_tick": 0.22280517663518712
+            },
+            "2023": {
+              "max": 0.051697541028261185,
+              "mean": 0.006399070000315941,
+              "mean_dollars": 0.16649230437913987,
+              "median": 0.0037152620498090982,
+              "n": 18178,
+              "p90": 0.017887482978403587,
+              "p99": 0.03322047997266054,
+              "share_exceeding_half_tick": 0.430410386181098,
+              "share_exceeding_tick": 0.38574100561117836
+            },
+            "2024": {
+              "max": 0.05673978477716446,
+              "mean": 0.006662199402430171,
+              "mean_dollars": 0.1701091027861412,
+              "median": 0.0034002194879576564,
+              "n": 21918,
+              "p90": 0.019284660741686818,
+              "p99": 0.03521187551319585,
+              "share_exceeding_half_tick": 0.4224381786659367,
+              "share_exceeding_tick": 0.37521671685372754
+            },
+            "2025": {
+              "max": 0.0386623814702034,
+              "mean": 0.004706070845962651,
+              "mean_dollars": 0.14370365021046705,
+              "median": 0.0021887433249503374,
+              "n": 40798,
+              "p90": 0.014010858070105315,
+              "p99": 0.025375205818563697,
+              "share_exceeding_half_tick": 0.4141624589440659,
+              "share_exceeding_tick": 0.35612039805872836
+            },
+            "2026": {
+              "max": 0.048768993467092514,
+              "mean": 0.004655227582144549,
+              "mean_dollars": 0.17526514366253512,
+              "median": 0.0025389414513483644,
+              "n": 33474,
+              "p90": 0.013005236256867649,
+              "p99": 0.022806056775152652,
+              "share_exceeding_half_tick": 0.4503196510724742,
+              "share_exceeding_tick": 0.39116926569875127
+            }
+          },
+          "overall": {
+            "max": 0.05673978477716446,
+            "mean": 0.004522091541217065,
+            "mean_dollars": 0.13542534826141997,
+            "median": 0.0008754400187171996,
+            "n": 142942,
+            "p90": 0.013864362519234421,
+            "p99": 0.027864921931177372,
+            "share_exceeding_half_tick": 0.3807068601250857,
+            "share_exceeding_tick": 0.3301408963075933
+          }
+        },
+        "m_rv": {
+          "by_maturity_bucket": {
+            "31-90d": {
+              "max": 0.04887007921934128,
+              "mean": 0.0063798324404721754,
+              "mean_dollars": 0.22805114096398393,
+              "median": 0.0009662981901783496,
+              "n": 74700,
+              "p90": 0.019557588174939154,
+              "p99": 0.03443409763276575,
+              "share_exceeding_half_tick": 0.4247523427041499,
+              "share_exceeding_tick": 0.3675100401606426
+            },
+            "<=30d": {
+              "max": 0.030874915421009064,
+              "mean": 0.003770737617888413,
+              "mean_dollars": 0.10876881885573475,
+              "median": 0.0007025583472568542,
+              "n": 68242,
+              "p90": 0.011375700403004885,
+              "p99": 0.020027305074036116,
+              "share_exceeding_half_tick": 0.3479235661322939,
+              "share_exceeding_tick": 0.29837929720699863
+            }
+          },
+          "by_moneyness_tercile": {
+            "high": {
+              "max": 0.04422616958618164,
+              "mean": 0.004816242970504325,
+              "mean_dollars": 0.26598176412055585,
+              "median": 0.0016015402507036924,
+              "n": 45767,
+              "p90": 0.014620056562125682,
+              "p99": 0.0305995385721325,
+              "share_exceeding_half_tick": 0.34614460200581204,
+              "share_exceeding_tick": 0.292262984246291
+            },
+            "low": {
+              "max": 0.04098780080676079,
+              "mean": 0.005011215586653064,
+              "mean_dollars": 0.06822018837765427,
+              "median": 0.00010010755431721918,
+              "n": 49060,
+              "p90": 0.014879764243960376,
+              "p99": 0.028473567217588414,
+              "share_exceeding_half_tick": 0.4221565430085609,
+              "share_exceeding_tick": 0.3657562168772931
+            },
+            "middle": {
+              "max": 0.04887007921934128,
+              "mean": 0.005562110175848317,
+              "mean_dollars": 0.18576228049567597,
+              "median": 0.0007989878649823368,
+              "n": 48115,
+              "p90": 0.017419293522834774,
+              "p99": 0.03403107143938542,
+              "share_exceeding_half_tick": 0.3932037826041775,
+              "share_exceeding_tick": 0.3428244830094565
+            }
+          },
+          "by_option_type": {
+            "call": {
+              "max": 0.036521971225738525,
+              "mean": 0.0002590836112384393,
+              "mean_dollars": 0.00374639606396012,
+              "median": 0.0,
+              "n": 63374,
+              "p90": 0.00038397233583964445,
+              "p99": 0.005696436660364255,
+              "share_exceeding_half_tick": 0.03392558462460946,
+              "share_exceeding_tick": 0.02811878688421119
+            },
+            "put": {
+              "max": 0.04887007921934128,
+              "mean": 0.009017155075464857,
+              "mean_dollars": 0.304401239973422,
+              "median": 0.007289094617590308,
+              "n": 79568,
+              "p90": 0.01979635562747717,
+              "p99": 0.03414746515452862,
+              "share_exceeding_half_tick": 0.6701437763925197,
+              "share_exceeding_tick": 0.5785365976271868
+            }
+          },
+          "by_regime": {
+            "2020-21 near-zero": {
+              "max": 0.036521971225738525,
+              "mean": 0.0009704935409873166,
+              "mean_dollars": 0.013407917329559739,
+              "median": 0.0,
+              "n": 14279,
+              "p90": 0.004279412142932417,
+              "p99": 0.01288586040958758,
+              "share_exceeding_half_tick": 0.10581973527557952,
+              "share_exceeding_tick": 0.0862805518593739
+            },
+            "2022 onward": {
+              "max": 0.04887007921934128,
+              "mean": 0.005596313489903505,
+              "mean_dollars": 0.18860566219358996,
+              "median": 0.0020644289907068014,
+              "n": 128663,
+              "p90": 0.016398734599351882,
+              "p99": 0.03154700174927712,
+              "share_exceeding_half_tick": 0.41939796211809144,
+              "share_exceeding_tick": 0.3620543590620458
+            }
+          },
+          "by_symbol": {
+            "AAPL": {
+              "max": 0.03945983201265335,
+              "mean": 0.004102627892228993,
+              "mean_dollars": 0.08181750191540041,
+              "median": 0.0003703028487507254,
+              "n": 80050,
+              "p90": 0.012646367959678178,
+              "p99": 0.02568444218486544,
+              "share_exceeding_half_tick": 0.3404996876951905,
+              "share_exceeding_tick": 0.27309181761399126
+            },
+            "SPY": {
+              "max": 0.04887007921934128,
+              "mean": 0.0064472555658952125,
+              "mean_dollars": 0.28475053962403557,
+              "median": 0.002401844714768231,
+              "n": 62892,
+              "p90": 0.01919227968901396,
+              "p99": 0.0348022671416401,
+              "share_exceeding_half_tick": 0.4486262163709216,
+              "share_exceeding_tick": 0.412675698022006
+            }
+          },
+          "by_year": {
+            "2020": {
+              "max": 0.013958723284304142,
+              "mean": 0.0009652767698589602,
+              "mean_dollars": 0.012663654377907906,
+              "median": 0.0,
+              "n": 1693,
+              "p90": 0.00455424953252077,
+              "p99": 0.009785225391387938,
+              "share_exceeding_half_tick": 0.112817483756645,
+              "share_exceeding_tick": 0.0874187832250443
+            },
+            "2021": {
+              "max": 0.036521971225738525,
+              "mean": 0.0009711952725557503,
+              "mean_dollars": 0.013508031518114208,
+              "median": 0.0,
+              "n": 12586,
+              "p90": 0.004161493154242635,
+              "p99": 0.013338506687432519,
+              "share_exceeding_half_tick": 0.10487843635785794,
+              "share_exceeding_tick": 0.08612744319084698
+            },
+            "2022": {
+              "max": 0.02540634572505951,
+              "mean": 0.0020986291224515817,
+              "mean_dollars": 0.058329919987468,
+              "median": 0.00018948530487250537,
+              "n": 14295,
+              "p90": 0.007029028329998255,
+              "p99": 0.015831463150680045,
+              "share_exceeding_half_tick": 0.2807275271073802,
+              "share_exceeding_tick": 0.2254634487583071
+            },
+            "2023": {
+              "max": 0.04795503988862038,
+              "mean": 0.008056141638128051,
+              "mean_dollars": 0.251133566284909,
+              "median": 0.0044445157982409,
+              "n": 18178,
+              "p90": 0.023387967236340047,
+              "p99": 0.036865235492587085,
+              "share_exceeding_half_tick": 0.4401474309605017,
+              "share_exceeding_tick": 0.39289250742655957
+            },
+            "2024": {
+              "max": 0.04887007921934128,
+              "mean": 0.007648879502065784,
+              "mean_dollars": 0.21966502605885602,
+              "median": 0.003711109748110175,
+              "n": 21918,
+              "p90": 0.02242712154984474,
+              "p99": 0.03767601452767846,
+              "share_exceeding_half_tick": 0.43183684642759373,
+              "share_exceeding_tick": 0.38041792134318825
+            },
+            "2025": {
+              "max": 0.03435569629073143,
+              "mean": 0.005054761806821858,
+              "mean_dollars": 0.16562139996272188,
+              "median": 0.002299927524290979,
+              "n": 40798,
+              "p90": 0.014602332469075921,
+              "p99": 0.02543292596936225,
+              "share_exceeding_half_tick": 0.4250698563655081,
+              "share_exceeding_tick": 0.3620520613755576
+            },
+            "2026": {
+              "max": 0.02979745715856552,
+              "mean": 0.005070255225760936,
+              "mean_dollars": 0.2179601548613491,
+              "median": 0.002622889936901629,
+              "n": 33474,
+              "p90": 0.014526549074798823,
+              "p99": 0.022955848574638345,
+              "share_exceeding_half_tick": 0.4522913305849316,
+              "share_exceeding_tick": 0.3916173746788552
+            }
+          },
+          "overall": {
+            "max": 0.04887007921934128,
+            "mean": 0.005134223390068787,
+            "mean_dollars": 0.17110451768103602,
+            "median": 0.000817700318293646,
+            "n": 142942,
+            "p90": 0.015687753818929197,
+            "p99": 0.030949512440711258,
+            "share_exceeding_half_tick": 0.3880734843502959,
+            "share_exceeding_tick": 0.334506303255866
+          }
+        },
+        "rv": {
+          "by_maturity_bucket": {
+            "31-90d": {
+              "max": 0.09079016000032425,
+              "mean": 0.007028308211159274,
+              "mean_dollars": 0.313714114936207,
+              "median": 3.1516694889432983e-06,
+              "n": 74700,
+              "p90": 0.025411742366850447,
+              "p99": 0.05170041069388387,
+              "share_exceeding_half_tick": 0.369946452476573,
+              "share_exceeding_tick": 0.33467202141900937
+            },
+            "<=30d": {
+              "max": 0.054161641746759415,
+              "mean": 0.004286968362946715,
+              "mean_dollars": 0.15137392630581487,
+              "median": 1.8998529412783682e-05,
+              "n": 68242,
+              "p90": 0.014914111699908972,
+              "p99": 0.03056777095422146,
+              "share_exceeding_half_tick": 0.3320975352422262,
+              "share_exceeding_tick": 0.28697869347322763
+            }
+          },
+          "by_moneyness_tercile": {
+            "high": {
+              "max": 0.05573831498622894,
+              "mean": 0.005254099573488179,
+              "mean_dollars": 0.37313387061415026,
+              "median": 4.684303860358341e-07,
+              "n": 45767,
+              "p90": 0.020064356550574303,
+              "p99": 0.039413487315177916,
+              "share_exceeding_half_tick": 0.30246684292175585,
+              "share_exceeding_tick": 0.28710643039744793
+            },
+            "low": {
+              "max": 0.09079016000032425,
+              "mean": 0.0055760808277896465,
+              "mean_dollars": 0.08841802730124174,
+              "median": 9.011096335598268e-05,
+              "n": 49060,
+              "p90": 0.016632875986397257,
+              "p99": 0.042024643681943356,
+              "share_exceeding_half_tick": 0.4132898491642886,
+              "share_exceeding_tick": 0.35391357521402367
+            },
+            "middle": {
+              "max": 0.08455723524093628,
+              "mean": 0.0063086151471810036,
+              "mean_dollars": 0.2566662701631372,
+              "median": 0.0001574304624227807,
+              "n": 48115,
+              "p90": 0.02295484803617,
+              "p99": 0.05228184126317502,
+              "share_exceeding_half_tick": 0.3362568845474384,
+              "share_exceeding_tick": 0.2926530188091032
+            }
+          },
+          "by_option_type": {
+            "call": {
+              "max": 0.026512278243899345,
+              "mean": 0.000299341433369902,
+              "mean_dollars": 0.007625765515424431,
+              "median": 0.0,
+              "n": 63374,
+              "p90": 0.00030690470885019863,
+              "p99": 0.008175919428467727,
+              "share_exceeding_half_tick": 0.04020576261558368,
+              "share_exceeding_tick": 0.029728279736169406
+            },
+            "put": {
+              "max": 0.09079016000032425,
+              "mean": 0.010036641041617526,
+              "mean_dollars": 0.41827403731300994,
+              "median": 0.0061801727861166,
+              "n": 79568,
+              "p90": 0.02691392246633769,
+              "p99": 0.051080910824239274,
+              "share_exceeding_half_tick": 0.6001156243716067,
+              "share_exceeding_tick": 0.5366478986527247
+            }
+          },
+          "by_regime": {
+            "2020-21 near-zero": {
+              "max": 0.026512278243899345,
+              "mean": 0.0011289917858880536,
+              "mean_dollars": 0.02769073946654069,
+              "median": 0.0,
+              "n": 14279,
+              "p90": 0.00350462850183249,
+              "p99": 0.014342042580246918,
+              "share_exceeding_half_tick": 0.13033125569017437,
+              "share_exceeding_tick": 0.09398417256110372
+            },
+            "2022 onward": {
+              "max": 0.09079016000032425,
+              "mean": 0.006229025008643604,
+              "mean_dollars": 0.25935278825966557,
+              "median": 2.0159302948741242e-05,
+              "n": 128663,
+              "p90": 0.020827644690871238,
+              "p99": 0.04616421572864062,
+              "share_exceeding_half_tick": 0.3764640961270917,
+              "share_exceeding_tick": 0.3360872978245494
+            }
+          },
+          "by_symbol": {
+            "AAPL": {
+              "max": 0.06039576977491379,
+              "mean": 0.004544993399410181,
+              "mean_dollars": 0.12166914957739032,
+              "median": 4.1257588236476295e-05,
+              "n": 80050,
+              "p90": 0.015484809223562487,
+              "p99": 0.035698757804930176,
+              "share_exceeding_half_tick": 0.3216739537788882,
+              "share_exceeding_tick": 0.26560899437851343
+            },
+            "SPY": {
+              "max": 0.09079016000032425,
+              "mean": 0.007214577319452752,
+              "mean_dollars": 0.38200229665181556,
+              "median": 9.184404063944385e-07,
+              "n": 62892,
+              "p90": 0.025229509919881824,
+              "p99": 0.05291477043181647,
+              "share_exceeding_half_tick": 0.3903199135025122,
+              "share_exceeding_tick": 0.3708261782102652
+            }
+          },
+          "by_year": {
+            "2020": {
+              "max": 0.026512278243899345,
+              "mean": 0.001331834300158551,
+              "mean_dollars": 0.021249675429510364,
+              "median": 8.733184586162679e-06,
+              "n": 1693,
+              "p90": 0.005288404878228902,
+              "p99": 0.013253987245261657,
+              "share_exceeding_half_tick": 0.13585351447135263,
+              "share_exceeding_tick": 0.09037212049616067
+            },
+            "2021": {
+              "max": 0.021090414375066757,
+              "mean": 0.0011017065183956053,
+              "mean_dollars": 0.028557156232367188,
+              "median": 0.0,
+              "n": 12586,
+              "p90": 0.0030421267729252577,
+              "p99": 0.014449378894641984,
+              "share_exceeding_half_tick": 0.12958843159065628,
+              "share_exceeding_tick": 0.0944700460829493
+            },
+            "2022": {
+              "max": 0.021959872916340828,
+              "mean": 0.0019416100076359597,
+              "mean_dollars": 0.06777063553100794,
+              "median": 8.865363633958623e-05,
+              "n": 14295,
+              "p90": 0.006751117203384638,
+              "p99": 0.015659972615540016,
+              "share_exceeding_half_tick": 0.27548093739069607,
+              "share_exceeding_tick": 0.22007694998251137
+            },
+            "2023": {
+              "max": 0.08347715437412262,
+              "mean": 0.0087191530362538,
+              "mean_dollars": 0.32222942162388696,
+              "median": 3.758582715818193e-05,
+              "n": 18178,
+              "p90": 0.029940559901297105,
+              "p99": 0.054976553432643405,
+              "share_exceeding_half_tick": 0.3948179117614699,
+              "share_exceeding_tick": 0.3621960611728463
+            },
+            "2024": {
+              "max": 0.09079016000032425,
+              "mean": 0.008776254796813075,
+              "mean_dollars": 0.32143908589127734,
+              "median": 3.5737484722631052e-06,
+              "n": 21918,
+              "p90": 0.03014876656234264,
+              "p99": 0.05914491072297093,
+              "share_exceeding_half_tick": 0.38160416096359157,
+              "share_exceeding_tick": 0.34943881741034766
+            },
+            "2025": {
+              "max": 0.06864150613546371,
+              "mean": 0.005669233301643644,
+              "mean_dollars": 0.23075710396995183,
+              "median": 9.838890491664642e-06,
+              "n": 40798,
+              "p90": 0.01833504252135754,
+              "p99": 0.04115979056805364,
+              "share_exceeding_half_tick": 0.38332761409873034,
+              "share_exceeding_tick": 0.3361684396293936
+            },
+            "2026": {
+              "max": 0.0467950701713562,
+              "mean": 0.005722101716494235,
+              "mean_dollars": 0.3012221402380194,
+              "median": 1.307818047280307e-05,
+              "n": 33474,
+              "p90": 0.018945403210818768,
+              "p99": 0.033981381095945805,
+              "share_exceeding_half_tick": 0.39789090040031067,
+              "share_exceeding_tick": 0.36260978670012545
+            }
+          },
+          "overall": {
+            "max": 0.09079016000032425,
+            "mean": 0.005719564007764041,
+            "mean_dollars": 0.23621121758962435,
+            "median": 8.526508736395044e-06,
+            "n": 142942,
+            "p90": 0.019574807770550255,
+            "p99": 0.04507491350173949,
+            "share_exceeding_half_tick": 0.3518769850708679,
+            "share_exceeding_tick": 0.3119027297785116
+          }
+        }
+      },
+      "rows": 142942,
+      "sessions": 1005,
+      "unidentified_european_iv": 0
+    }
+  },
+  "tick_rule": "0.05 for AAPL quotes with mid >= 3, 0.01 otherwise; in set A 98% of AAPL bids and asks at or above $3 are multiples of 0.05 and SPY quotes are multiples of 0.05 only 20% of the time at every level (the penny-interval program)",
+  "timing": {
+    "sensitivity_seconds": 2.2,
+    "set_a_seconds": 67.2,
+    "set_b_seconds": 303.5,
+    "total_seconds": 374.0
+  },
+  "tree": {
+    "engine": "options_engine.american CRR, vectorized over rows in early_exercise.tree_prices",
+    "premium_definition": "American tree price minus European tree price on the same tree, as a fraction of the market mid",
+    "stability": {
+      "doubled_steps": 400,
+      "max_abs_difference_in_fraction": 0.000475050237010239,
+      "mean_fraction_at_doubled": 0.0007025975204802106,
+      "mean_fraction_at_steps": 0.0007176896279133517,
+      "median_abs_difference": 0.0,
+      "rows": 2000,
+      "steps": 200
+    },
+    "steps": 200
+  }
+}

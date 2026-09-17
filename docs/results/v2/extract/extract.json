@@ -1,0 +1,397 @@
+{
+  "exploratory": true,
+  "files": {
+    "folds": [
+      {
+        "copy": "folds/full-history-v1.csv",
+        "sha256": "de36706b217eda1d3c7bb61c86a845b792e39c9e208c5f1958771b86ff4f5fcb",
+        "source": "docs/results/full-history-v1/folds.csv"
+      },
+      {
+        "copy": "folds/full-history-v2.csv",
+        "sha256": "a62dd90b0f316b628188dc19f989293229acbe340a5cdfc3a336ed17bb0981ca",
+        "source": "docs/results/full-history-v2/folds.csv"
+      },
+      {
+        "copy": "folds/spy-2023-v2.csv",
+        "sha256": "be631ca98af89be503c602d2ef4a52f865698f3a06af555a0c774d23309315b6",
+        "source": "docs/results/spy-2023-v2/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-a__C0.csv",
+        "sha256": "e3bdf0320721e2eef69933ca8801e98917f523e2be026f8bbbd418aa17e4a5d0",
+        "source": "docs/results/v2/design-a/C0/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-a__C1.csv",
+        "sha256": "f915ec2f3f3cc854e97c4305af4909f152884b1d339319e63dd543e1ca401b34",
+        "source": "docs/results/v2/design-a/C1/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-a__C2.csv",
+        "sha256": "771db83f3a91a4fb88385330756447430954014bb9000819eac8bdae968bdb95",
+        "source": "docs/results/v2/design-a/C2/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-a__C3.csv",
+        "sha256": "a0249049ebb6c1ff9d61b7c29737964e6304eaf3c0cf0fcd3f056303a9330a0e",
+        "source": "docs/results/v2/design-a/C3/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__B1.csv",
+        "sha256": "436d8f9eff9135c1ed667edd06cc03928a03c966a2b3bfde8b83ec1ee2acd850",
+        "source": "docs/results/v2/design-b/B1/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__B2.csv",
+        "sha256": "daa78381f749930c9ae9c54f880d988e6de400c2aaaee7be2d597a2cbec32ff4",
+        "source": "docs/results/v2/design-b/B2/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__M-B1.csv",
+        "sha256": "6b59b51136973d44b27d60a3b412b68fe9cac213d0caa3a8a2adaef7672f0853",
+        "source": "docs/results/v2/design-b/M-B1/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__M-B2.csv",
+        "sha256": "8218d828cc7a16adf135ceeabf149124d69af7e8d1e765983cbc677da4aa2da7",
+        "source": "docs/results/v2/design-b/M-B2/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__M-RV.csv",
+        "sha256": "dec15e5b2697f80cb70c6f8be500caf0ed9797cd712dae9fb64a79aa4ff62a21",
+        "source": "docs/results/v2/design-b/M-RV/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__sensitivity__changed-mid__B1.csv",
+        "sha256": "91d1e0c59878b45f15fefc4f7dfd33769c08af3b2b981c396984cf97a27a7cef",
+        "source": "docs/results/v2/design-b/sensitivity/changed-mid/B1/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__sensitivity__changed-mid__M-B1.csv",
+        "sha256": "eed3ae49c712bc22f2de6b238b8bad51018e32aa0f3db38df3ae60b54e8958c9",
+        "source": "docs/results/v2/design-b/sensitivity/changed-mid/M-B1/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__sensitivity__changed-mid__M-RV.csv",
+        "sha256": "7554cee4c3112f7d380838629491845225c59ec4c1fb5fa1028ed48b8ff8664f",
+        "source": "docs/results/v2/design-b/sensitivity/changed-mid/M-RV/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__sensitivity__not-unchanged-mid__B1.csv",
+        "sha256": "94f4df453955227b137779ca53c58aacde43c39fe8009ab62b07645bb974920f",
+        "source": "docs/results/v2/design-b/sensitivity/not-unchanged-mid/B1/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__sensitivity__not-unchanged-mid__M-B1.csv",
+        "sha256": "a8b169f7146278d15824addb447028f70720edc60dfeb466c9befb7ba39d06ea",
+        "source": "docs/results/v2/design-b/sensitivity/not-unchanged-mid/M-B1/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__sensitivity__not-unchanged-mid__M-RV.csv",
+        "sha256": "e159ce0ad54540b85567df126adfdce538618391a3039971075a390c28caa5a6",
+        "source": "docs/results/v2/design-b/sensitivity/not-unchanged-mid/M-RV/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__sensitivity__unchanged-mid__B1.csv",
+        "sha256": "1aeb69329301e5aff234541bc92e8624c68efcc423436634d6e22fa81310d1f9",
+        "source": "docs/results/v2/design-b/sensitivity/unchanged-mid/B1/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-b__sensitivity__unchanged-mid__M-RV.csv",
+        "sha256": "3db97cf8b8756abf36dd8dc6a5c3c384a1a9fc5d5bf22c8a3a77247a2f966fd6",
+        "source": "docs/results/v2/design-b/sensitivity/unchanged-mid/M-RV/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-c__runs__set-a__full.csv",
+        "sha256": "a0249049ebb6c1ff9d61b7c29737964e6304eaf3c0cf0fcd3f056303a9330a0e",
+        "source": "docs/results/v2/design-c/runs/set-a/full/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-c__runs__set-a__no-maturity-interactions.csv",
+        "sha256": "8ac070fbbbff3640bd1fab13f5f1312c89a4010223829d38c6f3708b513f056a",
+        "source": "docs/results/v2/design-c/runs/set-a/no-maturity-interactions/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-c__runs__set-a__no-moneyness.csv",
+        "sha256": "dae25d53faeab27c3b6d6363c4d6709ed4becf1381be3965b0b7182320db1d11",
+        "source": "docs/results/v2/design-c/runs/set-a/no-moneyness/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-c__runs__set-a__no-symbol.csv",
+        "sha256": "738c264cf2ee48f0804573da3a992aaa1f1001daaebf36c6533b941c62117f12",
+        "source": "docs/results/v2/design-c/runs/set-a/no-symbol/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-c__runs__set-b__m-b1__full.csv",
+        "sha256": "6b59b51136973d44b27d60a3b412b68fe9cac213d0caa3a8a2adaef7672f0853",
+        "source": "docs/results/v2/design-c/runs/set-b/m-b1/full/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-c__runs__set-b__m-b1__no-maturity-interactions.csv",
+        "sha256": "16e28577ca1cc8f5ee5b26c22be3dd80028e7ad9c3f5e239d4339e26de4ba198",
+        "source": "docs/results/v2/design-c/runs/set-b/m-b1/no-maturity-interactions/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-c__runs__set-b__m-b1__no-moneyness.csv",
+        "sha256": "8cc5665f66a95d461fa4d4e1b7ff2aa72f62963d2602220c34f4952924aad065",
+        "source": "docs/results/v2/design-c/runs/set-b/m-b1/no-moneyness/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-c__runs__set-b__m-b1__no-symbol.csv",
+        "sha256": "0a9229825b812638a807d6f9447f06666ef79503b82c4f8f8296c7ab86d6f237",
+        "source": "docs/results/v2/design-c/runs/set-b/m-b1/no-symbol/folds.csv"
+      },
+      {
+        "copy": "folds/v2__design-c__runs__set-b__m-rv__full.csv",
+        "sha256": "dec15e5b2697f80cb70c6f8be500caf0ed9797cd712dae9fb64a79aa4ff62a21",
+        "source": "docs/results/v2/design-c/runs/set-b/m-rv/full/folds.csv"
+      }
+    ],
+    "sample": {
+      "bytes": 15281948,
+      "path": "observations-sample.csv",
+      "rows": 38545,
+      "sha256": "e099c3f0fe9e6a34abae996ed0761a2208f949d806e093d8ed73f22307b17abc"
+    }
+  },
+  "note": "For inspection only: no reported number is computed from this sample.",
+  "sampling": {
+    "cap_per_stratum": 700,
+    "premium_steps": 200,
+    "rng": "numpy default_rng, rows drawn without replacement by their order within the stratum in the source file",
+    "rows": 38545,
+    "rows_in_set_b": 22237,
+    "seed": 20260908,
+    "source": "set A evaluated observations (docs/results/v2/design-c/runs/set-a/full/predictions.csv.gz), which contain every set B evaluated observation",
+    "strata": "symbol x year x option type x maturity bucket (30 days or fewer, more than 30 days)",
+    "strata_count": 56,
+    "uncompressed_bytes": 15281948
+  },
+  "strata": {
+    "AAPL|2020|call|<=30d": {
+      "rows": 926,
+      "sampled": 700
+    },
+    "AAPL|2020|call|>30d": {
+      "rows": 519,
+      "sampled": 519
+    },
+    "AAPL|2020|put|<=30d": {
+      "rows": 984,
+      "sampled": 700
+    },
+    "AAPL|2020|put|>30d": {
+      "rows": 515,
+      "sampled": 515
+    },
+    "AAPL|2021|call|<=30d": {
+      "rows": 4127,
+      "sampled": 700
+    },
+    "AAPL|2021|call|>30d": {
+      "rows": 2354,
+      "sampled": 700
+    },
+    "AAPL|2021|put|<=30d": {
+      "rows": 4828,
+      "sampled": 700
+    },
+    "AAPL|2021|put|>30d": {
+      "rows": 2673,
+      "sampled": 700
+    },
+    "AAPL|2022|call|<=30d": {
+      "rows": 4296,
+      "sampled": 700
+    },
+    "AAPL|2022|call|>30d": {
+      "rows": 2462,
+      "sampled": 700
+    },
+    "AAPL|2022|put|<=30d": {
+      "rows": 5323,
+      "sampled": 700
+    },
+    "AAPL|2022|put|>30d": {
+      "rows": 2708,
+      "sampled": 700
+    },
+    "AAPL|2023|call|<=30d": {
+      "rows": 4408,
+      "sampled": 700
+    },
+    "AAPL|2023|call|>30d": {
+      "rows": 2499,
+      "sampled": 700
+    },
+    "AAPL|2023|put|<=30d": {
+      "rows": 5445,
+      "sampled": 700
+    },
+    "AAPL|2023|put|>30d": {
+      "rows": 3002,
+      "sampled": 700
+    },
+    "AAPL|2024|call|<=30d": {
+      "rows": 4931,
+      "sampled": 700
+    },
+    "AAPL|2024|call|>30d": {
+      "rows": 3399,
+      "sampled": 700
+    },
+    "AAPL|2024|put|<=30d": {
+      "rows": 5808,
+      "sampled": 700
+    },
+    "AAPL|2024|put|>30d": {
+      "rows": 3577,
+      "sampled": 700
+    },
+    "AAPL|2025|call|<=30d": {
+      "rows": 7571,
+      "sampled": 700
+    },
+    "AAPL|2025|call|>30d": {
+      "rows": 6068,
+      "sampled": 700
+    },
+    "AAPL|2025|put|<=30d": {
+      "rows": 8671,
+      "sampled": 700
+    },
+    "AAPL|2025|put|>30d": {
+      "rows": 6331,
+      "sampled": 700
+    },
+    "AAPL|2026|call|<=30d": {
+      "rows": 4473,
+      "sampled": 700
+    },
+    "AAPL|2026|call|>30d": {
+      "rows": 6022,
+      "sampled": 700
+    },
+    "AAPL|2026|put|<=30d": {
+      "rows": 5271,
+      "sampled": 700
+    },
+    "AAPL|2026|put|>30d": {
+      "rows": 6541,
+      "sampled": 700
+    },
+    "SPY|2020|call|<=30d": {
+      "rows": 711,
+      "sampled": 700
+    },
+    "SPY|2020|call|>30d": {
+      "rows": 471,
+      "sampled": 471
+    },
+    "SPY|2020|put|<=30d": {
+      "rows": 971,
+      "sampled": 700
+    },
+    "SPY|2020|put|>30d": {
+      "rows": 640,
+      "sampled": 640
+    },
+    "SPY|2021|call|<=30d": {
+      "rows": 2696,
+      "sampled": 700
+    },
+    "SPY|2021|call|>30d": {
+      "rows": 1886,
+      "sampled": 700
+    },
+    "SPY|2021|put|<=30d": {
+      "rows": 4288,
+      "sampled": 700
+    },
+    "SPY|2021|put|>30d": {
+      "rows": 3077,
+      "sampled": 700
+    },
+    "SPY|2022|call|<=30d": {
+      "rows": 3901,
+      "sampled": 700
+    },
+    "SPY|2022|call|>30d": {
+      "rows": 2613,
+      "sampled": 700
+    },
+    "SPY|2022|put|<=30d": {
+      "rows": 5304,
+      "sampled": 700
+    },
+    "SPY|2022|put|>30d": {
+      "rows": 3427,
+      "sampled": 700
+    },
+    "SPY|2023|call|<=30d": {
+      "rows": 3580,
+      "sampled": 700
+    },
+    "SPY|2023|call|>30d": {
+      "rows": 2484,
+      "sampled": 700
+    },
+    "SPY|2023|put|<=30d": {
+      "rows": 4857,
+      "sampled": 700
+    },
+    "SPY|2023|put|>30d": {
+      "rows": 3697,
+      "sampled": 700
+    },
+    "SPY|2024|call|<=30d": {
+      "rows": 3625,
+      "sampled": 700
+    },
+    "SPY|2024|call|>30d": {
+      "rows": 3105,
+      "sampled": 700
+    },
+    "SPY|2024|put|<=30d": {
+      "rows": 5118,
+      "sampled": 700
+    },
+    "SPY|2024|put|>30d": {
+      "rows": 3937,
+      "sampled": 700
+    },
+    "SPY|2025|call|<=30d": {
+      "rows": 6036,
+      "sampled": 700
+    },
+    "SPY|2025|call|>30d": {
+      "rows": 5948,
+      "sampled": 700
+    },
+    "SPY|2025|put|<=30d": {
+      "rows": 8288,
+      "sampled": 700
+    },
+    "SPY|2025|put|>30d": {
+      "rows": 7201,
+      "sampled": 700
+    },
+    "SPY|2026|call|<=30d": {
+      "rows": 4587,
+      "sampled": 700
+    },
+    "SPY|2026|call|>30d": {
+      "rows": 7021,
+      "sampled": 700
+    },
+    "SPY|2026|put|<=30d": {
+      "rows": 6787,
+      "sampled": 700
+    },
+    "SPY|2026|put|>30d": {
+      "rows": 8939,
+      "sampled": 700
+    }
+  }
+}
