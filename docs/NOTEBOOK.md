@@ -681,3 +681,39 @@ headline and two limitations (European pricing with the measured premium
 distribution; intervals conditional on the fitted models), the talk outline
 its section 6 line, and the manifest covers the diagnostic and the extract.
 Version 3.6.1; study-v1 and study-v2-locked unmoved.
+
+## 2026-09-17: fresh evaluation, first session (2026-09-16)
+
+Inputs refreshed in one pass at 18:36 UTC (data/external/PROVENANCE.md
+section 9): DGS3MO through 2026-09-15, bars through 2026-09-16 (six new
+rows, every earlier row byte-identical), everything else re-retrieved and
+byte-identical; `--dividend-history-end 2026-09-17`. The options source,
+pulled to its 2026-09-16 update, holds one session after the lock date,
+2026-09-16 (AAPL 194 rows, SPY 210). No chain for it was in the store. The
+pre-lock sessions 2026-09-08 to 2026-09-15 were left out of the store,
+because no chain is imported before its session's prediction file is
+committed, so the prior available session for 2026-09-16 is 2026-09-04, a
+12-day gap.
+
+Protocol as run, all UTC: predict-locked 18:41:13 to 18:41:25 (281 contracts,
+163 SPY and 118 AAPL, 219 inside the models' support; M(RV) trained on the
+250 sessions 2025-09-03 to 2026-09-03 with alpha 0.01, M(B1) on 249 with
+alpha 100; r 4.03%, q 0.32% for AAPL and 0.99% for SPY, RV 32.4% and
+11.5%); prediction commit 4c1b8fa at 18:41:26; chain export 18:41:50 (404
+rows); import 18:41:51 (317 rows stored, 287 eligible); score-locked
+18:41:53; scores commit d4e2986. Of the 281 predicted contracts, 49 were
+quoted at 2026-09-16, 2 of those below the training floor, and 47 were
+scored (23 AAPL, 24 SPY); 232 were absent, the 2026-09-04 expiries having
+rolled off the source's short list within 12 days; 268 contracts quoted at
+2026-09-16 were not in the prediction set and were ignored. Spot and time to
+expiry agree exactly between the prediction file and the store.
+
+Session losses, the mean squared spot-normalized error over the 47 scored
+contracts: RV 3.03e-05, B1 1.65e-05, M(RV) 5.82e-06, M(B1) 1.11e-05. M(RV)
+beat B1 on this session (rho 0.41) and M(B1) beat B1 (rho 0.18). One session
+whose B1 is twelve days old says nothing; no inference before the sample
+rule is met (1 of 60). No refusal fired. The manifest gained a
+fresh_evaluation block listing the per-session prediction and score files
+(docs/FRESH_EVAL.md is listed without a hash because it grows). study-v1 and
+study-v2-locked unmoved.
+
