@@ -275,3 +275,15 @@ changed; every other file was re-retrieved and found byte-identical.
   to 2026-09-17, passed as `--dividend-history-end 2026-09-17`; bars through
   2026-09-16; rate through 2026-09-15.
 
+## 10. Automated refresh log (scripts/fresh_session.sh)
+
+One row per run that preceded a prediction, appended by the script: the
+retrieval timestamp, the SHA-256 and coverage end of each refreshed file, and
+the history end declared to predict-locked. Apple's dividend page is not
+retrievable without a browser, so the script keeps the section 3 file and
+checks the refreshed DoltHub dividend table for an ex-date later than the
+issuer histories; if one appears the run stops until the file is refreshed
+by hand. This table is last in the file so that rows can be appended.
+
+| Retrieved (UTC) | DGS3MO sha256 / last quote | Bars sha256 / last bar | SPDR workbook sha256 | dividends.csv sha256 / last AAPL, SPY ex-dates | history_end |
+|---|---|---|---|---|---|

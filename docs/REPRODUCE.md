@@ -22,3 +22,8 @@ The repository is about 200 MB because the committed observation exports under d
 downloads about 110 MB (105 MiB packed, measured 2026-09-15) and still supports `python docs/results/build_manifest.py --check` on the v1 artifacts; the claims whose source is a local-only file are reported as skipped, not as failures. Without `--no-tags` git also fetches the tree behind the study-v2-locked tag and the download is about 200 MB. The full history is needed only to inspect earlier runs and the study v2 artifacts.
 
 History is never rewritten. Tag and commit hashes are cited in docs/LOCK.md, in the amendments of docs/RESEARCH_PLAN.md, and in CITATION.cff; a rewrite would move the tags and falsify every one of those citations.
+
+## Fresh evaluation (Design D)
+
+`scripts/fresh_session.sh` runs each weekday morning, after the DoltHub source has published the previous session. It pulls the option source and looks for a session dated after the lock that is not yet scored; with none it exits quietly. Otherwise it refreshes the inputs that need no chain, runs `predict-locked`, commits the prediction files, and only then exports that session's chain, imports it, runs `score-locked`, appends the docs/FRESH_EVAL.md line, rebuilds the manifest, and pushes. `--dry-run` reports what would run. Any refusal from the locked commands stops the run and is printed. The per-run retrieval record is the last table of data/external/PROVENANCE.md; each prediction sidecar carries the hashes of the inputs it used.
+
