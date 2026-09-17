@@ -31,3 +31,7 @@ stocks/
 # External research inputs (rates, dividends, splits) and their provenance are tracked
 !/data/external/
 !/data/external/**
+
+# Per-session chain exports for the fresh evaluation are read once at import and hashed in the snapshot metadata
+fresh_chain_*.csv
+/data/chains/
