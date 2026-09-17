@@ -231,3 +231,47 @@ below.
   declared dates and hashes of every repeat are recorded in that session's
   prediction sidecar.
 
+## 9. Refresh before the fresh session 2026-09-16 (2026-09-17)
+
+Retrieved on 2026-09-17 (UTC) under docs/LOCK.md step 1, before the first
+prediction of the fresh evaluation, in one pass; the locked configuration is
+untouched and the coverage is declared at run time with
+`--dividend-history-end 2026-09-17`. Only the rate series and the bar file
+changed; every other file was re-retrieved and found byte-identical.
+
+- FRED DGS3MO, raw/DGS3MO.csv: retrieved 2026-09-17T18:36:43Z with curl 8.7.1
+  (default User-Agent, HTTP 200). SHA-256
+  bbac0b34001201495cbf24dc797d68375400a0c6e311bc4a6bc35412598e278e; 186,451
+  bytes; 11,751 rows from 1981-09-01 to 2026-09-15, 11,259 quoted and 492
+  blank. Coverage end: 2026-09-15 (4.11 percent).
+- Underlying bars, raw/full_underlying.csv: post-no-preference/stocks pulled
+  at 2026-09-17T18:36:44Z to head k2llbsogjpra84f3t8ngjueg82kl489a ("ohlcv
+  2026-09-16 update") and exported at 2026-09-17T18:36:50Z with the section 8
+  query. SHA-256
+  a6d11a5e7dafb15a21b65683c70636daf9ff0bfd414a516326c41ec5b9ddbded; 320,715
+  bytes; 6,247 rows (AAPL 2,082, QQQ 2,083, SPY 2,082). The six new rows are
+  2026-09-15 and 2026-09-16 for the three symbols; every previous row is
+  present byte for byte. Coverage end: 2026-09-16 for every symbol.
+- SPY distributions, raw/spdr-etf-historical-distributions.xlsx: retrieved
+  2026-09-17T18:36:44Z (HTTP 200), byte-identical to the section 8 file
+  (SHA-256 18ae096941de56b8cb7e9f9d8041d23665c5aa99813163e578546e406c5fa137).
+  AAPL dividends, raw/apple-dividend-history-table.html: the page was loaded
+  in the in-app browser at 2026-09-17T18:37:37Z (curl still receives HTTP
+  403) and the table's outerHTML hashed in place:
+  c49fdd6e815165034a51deb3d0f3fe9444699d7165bbae54a9fcc2404024b8f1, identical
+  to the committed file. DoltHub dividend and split exports, re-exported at
+  2026-09-17T18:36:50Z from the pulled clone: byte-identical. Parser run
+  2026-09-17T18:37:47Z: dividends.csv and splits.csv byte-identical (SHA-256
+  7cc323daac11272eee3949729e7ee435ae865670ccb76b3424f80068cdbf39d2 and
+  96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec), AAPL
+  last ex-date 2026-08-10, SPY 2026-06-18; the cross-check reports the same
+  24 differences as section 8.
+- The options clone was pulled at 2026-09-17T18:36:46Z to head
+  vib1kogrtfgug6emknn4ine9nms5bmqa ("volatility_history 2026-09-16 update")
+  to list availability only: it holds one session after the lock date,
+  2026-09-16 (AAPL 194 rows, SPY 210), and no chain for it was read or
+  imported before that session's prediction file was committed.
+- Coverage declared for the fresh evaluation: distribution history 2018-01-01
+  to 2026-09-17, passed as `--dividend-history-end 2026-09-17`; bars through
+  2026-09-16; rate through 2026-09-15.
+
