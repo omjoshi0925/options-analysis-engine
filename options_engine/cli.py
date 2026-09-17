@@ -184,6 +184,34 @@ def parser():
     fresh_report.add_argument("--as-of", help="Date the sample rule is judged at (default: today)")
     fresh_report.add_argument("--vix", help="FRED VIXCLS file for the regime expectation")
     fresh_report.add_argument("--replicates", type=int, default=10000)
+    early = commands.add_parser("early-exercise-diagnostic", help="Amendment 8 (exploratory): early-exercise premium, the B1 cancellation test, the tick-restricted sensitivity, and the reviewer extract")
+    early_commands = early.add_subparsers(dest="early_command", required=True)
+    early_build = early_commands.add_parser("build", help="Stream the prediction files and write early-exercise-diagnostic.json")
+    early_build.add_argument("--config", default="config/v2/C3.json")
+    early_build.add_argument("--set-a", default="docs/results/v2/design-c/runs/set-a/full/predictions.csv.gz")
+    early_build.add_argument("--set-b-rv", default="docs/results/v2/design-c/runs/set-b/m-rv/full/predictions.csv.gz")
+    early_build.add_argument("--set-b-b1", default="docs/results/v2/design-c/runs/set-b/m-b1/full/predictions.csv.gz")
+    early_build.add_argument("--baselines", default="docs/results/v2/baselines-B.csv.gz")
+    early_build.add_argument("--comparison", default="docs/results/v2/design-b/comparison.json")
+    early_build.add_argument("--breakdowns", default="docs/results/v2/design-c/breakdowns.json")
+    early_build.add_argument("--out", default="docs/results/v2/early-exercise-diagnostic.json")
+    early_build.add_argument("--steps", type=int, default=200)
+    early_build.add_argument("--chunksize", type=int, default=20000)
+    early_build.add_argument("--replicates", type=int, default=10000)
+    early_extract = early_commands.add_parser("extract", help="Deterministic stratified sample of the evaluated observations plus copies of every fold table")
+    early_extract.add_argument("--set-a", default="docs/results/v2/design-c/runs/set-a/full/predictions.csv.gz")
+    early_extract.add_argument("--set-b-rv", default="docs/results/v2/design-c/runs/set-b/m-rv/full/predictions.csv.gz")
+    early_extract.add_argument("--set-b-b1", default="docs/results/v2/design-c/runs/set-b/m-b1/full/predictions.csv.gz")
+    early_extract.add_argument("--breakdowns", default="docs/results/v2/design-c/breakdowns.json")
+    early_extract.add_argument("--out-dir", default="docs/results/v2/extract")
+    early_extract.add_argument("--cap-per-stratum", type=int, required=True)
+    early_extract.add_argument("--seed", type=int, default=20260908)
+    early_extract.add_argument("--steps", type=int, default=200)
+    early_extract.add_argument("--chunksize", type=int, default=20000)
+    early_extract.add_argument("--repo-root", help="Directory holding docs/results/ (default: this repository)")
+    early_report = early_commands.add_parser("report", help="Insert or replace the diagnostic section in a REPORT.md")
+    early_report.add_argument("--diagnostic", default="docs/results/v2/early-exercise-diagnostic.json")
+    early_report.add_argument("--report", default="docs/results/v2/design-b/REPORT.md")
     lock_record = commands.add_parser("lock-record", help="Write docs/lock.json: hashes of the locked modules and configuration")
     lock_record.add_argument("--out", default="docs/lock.json")
     lock_record.add_argument("--commit", help="The locked code commit")
@@ -256,6 +284,24 @@ def run(args):
             figure = strategy_figure(position, args.S, T, args.r, args.sigma, args.q)
             figure.savefig(target, dpi=160, bbox_inches="tight")
             summary["plot"] = str(target)
+        print(json.dumps(clean_json(summary), indent=2))
+        return 0
+    if args.command == "early-exercise-diagnostic":
+        from . import early_exercise
+        from .live_utils import clean_json
+        if args.early_command == "build":
+            result = early_exercise.run_diagnostic(args.config, args.set_a, args.set_b_rv, args.set_b_b1, args.baselines, args.comparison, args.breakdowns, args.out,
+                                                   steps=args.steps, chunksize=args.chunksize, replicates=args.replicates)
+            summary = dict(path=result["path"], timing=result["timing"], peak_rss_mb=result["peak_rss_mb"], tree=result["tree"],
+                           premium_overall={name: result["sets"][name]["premium"]["iv"]["overall"] for name in ("A", "B")},
+                           cancellation=result["cancellation"]["differential"], sensitivity={label: dict(label_changes=pair["label_changes"], below_tick=pair["below_tick"]["label"])
+                                                                                            for label, pair in result["sensitivity"]["pairs"].items()})
+        elif args.early_command == "extract":
+            summary = early_exercise.build_extract(args.set_a, args.set_b_rv, args.set_b_b1, args.out_dir, args.breakdowns, args.cap_per_stratum, seed=args.seed,
+                                                   steps=args.steps, chunksize=args.chunksize, repo_root=args.repo_root)
+            summary = dict(sampling=summary["sampling"], files=dict(sample=summary["files"]["sample"], folds=len(summary["files"]["folds"])))
+        else:
+            summary = early_exercise.write_report_section(args.diagnostic, args.report)
         print(json.dumps(clean_json(summary), indent=2))
         return 0
     if args.command in ("predict-locked", "score-locked", "fresh-eval-report", "lock-record"):
