@@ -1,5 +1,25 @@
 # Changelog
 
+## 3.6.1 - 2026-09-17
+
+Amendment 8 diagnostic (exploratory; no locked module changes):
+
+- Add `options_engine.early_exercise` and the `early-exercise-diagnostic`
+  command. `build` streams the saved prediction files in chunks and writes
+  docs/results/v2/early-exercise-diagnostic.json: the study's pricing paths
+  (all European), the early-exercise premium of every evaluated observation
+  on a vectorized 200-step CRR tree at the quote's implied volatility and at
+  each method's sigma, broken out by type, moneyness, maturity, symbol, and
+  rate regime with the share above the quote's tick; the B1 cancellation
+  test (invert and reprice on the tree against under the European formula,
+  compared with M(RV)); and the Design B primary and incremental comparisons
+  restricted to below-tick observations on the same folds and bootstrap,
+  beside the pre-registered numbers. `extract` writes the reviewer extract
+  under docs/results/v2/extract/ (deterministic stratified sample, seed
+  20260908, plus copies of every fold table). `report` inserts the section
+  into the Design B report.
+- The manifest covers the diagnostic and the extract.
+
 ## 3.6.0 - 2026-09-15
 
 Study v2 locked (Research Plan section 7 and Amendment 7; tag study-v2-locked):

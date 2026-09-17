@@ -6,10 +6,10 @@
   "report": "docs/RESULTS.md",
   "code_version": "3.2.1",
   "repository": "https://github.com/omjoshi0925/options-analysis-engine",
-  "code_commit": "e55cad89af31b8eaba745c2969ab2f3b0773b07f",
-  "code_commit_short": "e55cad8",
-  "working_tree_version": "3.6.0",
-  "report_sha256": "58176ad35103769ce771183898b8a940a2c0ca38ad8f53e26c31a5d3dd4022b8",
+  "code_commit": "8e6f2eecfc3dd9e7e0025dfd45b7d5d7dc3150f2",
+  "code_commit_short": "8e6f2ee",
+  "working_tree_version": "3.6.1",
+  "report_sha256": "61ee526762cc0c37cf505cb0971ef1b53050f7295579124a0173bb92fc402c3b",
   "description": "1,056-fold rolling-origin walk-forward over DoltHub end-of-day chains (SPY and AAPL; QQQ configured but absent from the export) plus a single-year SPY 2023 run, constant rate and dividend yields.",
   "built_with": {
    "python": "3.13.1",
@@ -10234,8 +10234,8 @@
  "study_v2": {
   "plan": {
    "path": "docs/RESEARCH_PLAN.md",
-   "sha256": "a37dba771d8dee27a300f4191b81bfd194d6cfbcd778b95031ced3d6610964dc",
-   "bytes": 26296
+   "sha256": "6bdc5f331564d145daa9249b0703d8fe28a2a06b6cc6e5afb8d806e3720bf897",
+   "bytes": 28402
   },
   "external_inputs": [
    {
@@ -10731,8 +10731,8 @@
     },
     {
      "path": "docs/results/v2/design-b/REPORT.md",
-     "sha256": "45ff718103cdb55cbff5f3d0dc9d1ec01a8a3edb8a5d4e45fde98ed3b4e6db78",
-     "bytes": 5634
+     "sha256": "2e89a72a50e3716fa44c9dc3746b415a3ca77b4ff39ba9eab7659a5ac617ad5d",
+     "bytes": 11197
     }
    ],
    "headline": {
@@ -11672,6 +11672,266 @@
      }
     }
    }
+  },
+  "early_exercise_diagnostic": {
+   "exploratory": true,
+   "amendment": 8,
+   "file": {
+    "path": "docs/results/v2/early-exercise-diagnostic.json",
+    "sha256": "8d56b43582a0feb7dcfc49026dbe5a7c9cfcb9482875981444ce2b46670fa388",
+    "bytes": 83716
+   },
+   "headline": {
+    "premium_at_implied_volatility": {
+     "A": {
+      "max": 0.08782839775085449,
+      "mean": 0.003980952281405169,
+      "mean_dollars": 0.1183796255639129,
+      "median": 0.0005606499616988003,
+      "n": 230927,
+      "p90": 0.01243879124522209,
+      "p99": 0.027299975864589186,
+      "share_exceeding_half_tick": 0.36413671853009827,
+      "share_exceeding_tick": 0.3191701273562641
+     },
+     "B": {
+      "max": 0.08782839775085449,
+      "mean": 0.004492459493368286,
+      "mean_dollars": 0.1326964429580612,
+      "median": 0.0008894851198419929,
+      "n": 142942,
+      "p90": 0.013689497672021395,
+      "p99": 0.02865368856117125,
+      "share_exceeding_half_tick": 0.3798743546333478,
+      "share_exceeding_tick": 0.3297421331728953
+     }
+    },
+    "cancellation": {
+     "M(B1) vs B1": {
+      "change_in_mean_d": -7.417729573292353e-07,
+      "change_interval": [
+       -9.825050131434205e-07,
+       -5.227739560638739e-07
+      ],
+      "european_favors_b1": false
+     },
+     "M(RV) vs B1": {
+      "change_in_mean_d": 3.75307809424274e-07,
+      "change_interval": [
+       6.248541620926185e-08,
+       6.663406721085288e-07
+      ],
+      "european_favors_b1": true
+     },
+     "RV vs B1": {
+      "change_in_mean_d": 1.4021520280371603e-06,
+      "change_interval": [
+       1.9758997382831862e-07,
+       2.4292305959522773e-06
+      ],
+      "european_favors_b1": true
+     }
+    },
+    "sensitivity": {
+     "M(B1) vs B1": {
+      "pre_registered": "adds value",
+      "below_tick": "no evidence either way",
+      "label_changes": true
+     },
+     "M(RV) vs B1": {
+      "pre_registered": "baseline wins",
+      "below_tick": "baseline wins",
+      "label_changes": false
+     }
+    },
+    "steps": 200,
+    "peak_rss_mb": 741.1,
+    "timing": {
+     "sensitivity_seconds": 2.2,
+     "set_a_seconds": 67.2,
+     "set_b_seconds": 303.5,
+     "total_seconds": 374.0
+    }
+   }
+  },
+  "extract": {
+   "exploratory": true,
+   "inspection_only": true,
+   "note": "For inspection only: no reported number is computed from this sample.",
+   "sampling": {
+    "cap_per_stratum": 700,
+    "premium_steps": 200,
+    "rng": "numpy default_rng, rows drawn without replacement by their order within the stratum in the source file",
+    "rows": 38545,
+    "rows_in_set_b": 22237,
+    "seed": 20260908,
+    "source": "set A evaluated observations (docs/results/v2/design-c/runs/set-a/full/predictions.csv.gz), which contain every set B evaluated observation",
+    "strata": "symbol x year x option type x maturity bucket (30 days or fewer, more than 30 days)",
+    "strata_count": 56,
+    "uncompressed_bytes": 15281948
+   },
+   "files": [
+    {
+     "path": "docs/results/v2/extract/README.md",
+     "sha256": "4d855f9557aad50493a4775613f456a0852b64bbfc2ebf01ec23bb4d04408cbe",
+     "bytes": 1238
+    },
+    {
+     "path": "docs/results/v2/extract/extract.json",
+     "sha256": "00a67f688a60e4b35a3324e7d9a13e12599c325c4af97528594103ec2b6d923c",
+     "bytes": 12122
+    },
+    {
+     "path": "docs/results/v2/extract/observations-sample.csv",
+     "sha256": "e099c3f0fe9e6a34abae996ed0761a2208f949d806e093d8ed73f22307b17abc",
+     "bytes": 15281948
+    },
+    {
+     "path": "docs/results/v2/extract/folds/full-history-v1.csv",
+     "sha256": "de36706b217eda1d3c7bb61c86a845b792e39c9e208c5f1958771b86ff4f5fcb",
+     "bytes": 192156
+    },
+    {
+     "path": "docs/results/v2/extract/folds/full-history-v2.csv",
+     "sha256": "a62dd90b0f316b628188dc19f989293229acbe340a5cdfc3a336ed17bb0981ca",
+     "bytes": 285838
+    },
+    {
+     "path": "docs/results/v2/extract/folds/spy-2023-v2.csv",
+     "sha256": "be631ca98af89be503c602d2ef4a52f865698f3a06af555a0c774d23309315b6",
+     "bytes": 18771
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-a__C0.csv",
+     "sha256": "e3bdf0320721e2eef69933ca8801e98917f523e2be026f8bbbd418aa17e4a5d0",
+     "bytes": 431349
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-a__C1.csv",
+     "sha256": "f915ec2f3f3cc854e97c4305af4909f152884b1d339319e63dd543e1ca401b34",
+     "bytes": 436156
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-a__C2.csv",
+     "sha256": "771db83f3a91a4fb88385330756447430954014bb9000819eac8bdae968bdb95",
+     "bytes": 439121
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-a__C3.csv",
+     "sha256": "a0249049ebb6c1ff9d61b7c29737964e6304eaf3c0cf0fcd3f056303a9330a0e",
+     "bytes": 444429
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__B1.csv",
+     "sha256": "436d8f9eff9135c1ed667edd06cc03928a03c966a2b3bfde8b83ec1ee2acd850",
+     "bytes": 377288
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__B2.csv",
+     "sha256": "daa78381f749930c9ae9c54f880d988e6de400c2aaaee7be2d597a2cbec32ff4",
+     "bytes": 377602
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__M-B1.csv",
+     "sha256": "6b59b51136973d44b27d60a3b412b68fe9cac213d0caa3a8a2adaef7672f0853",
+     "bytes": 417533
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__M-B2.csv",
+     "sha256": "8218d828cc7a16adf135ceeabf149124d69af7e8d1e765983cbc677da4aa2da7",
+     "bytes": 417839
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__M-RV.csv",
+     "sha256": "dec15e5b2697f80cb70c6f8be500caf0ed9797cd712dae9fb64a79aa4ff62a21",
+     "bytes": 416491
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__sensitivity__changed-mid__B1.csv",
+     "sha256": "91d1e0c59878b45f15fefc4f7dfd33769c08af3b2b981c396984cf97a27a7cef",
+     "bytes": 371816
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__sensitivity__changed-mid__M-B1.csv",
+     "sha256": "eed3ae49c712bc22f2de6b238b8bad51018e32aa0f3db38df3ae60b54e8958c9",
+     "bytes": 411865
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__sensitivity__changed-mid__M-RV.csv",
+     "sha256": "7554cee4c3112f7d380838629491845225c59ec4c1fb5fa1028ed48b8ff8664f",
+     "bytes": 410579
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__sensitivity__not-unchanged-mid__B1.csv",
+     "sha256": "94f4df453955227b137779ca53c58aacde43c39fe8009ab62b07645bb974920f",
+     "bytes": 377179
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__sensitivity__not-unchanged-mid__M-B1.csv",
+     "sha256": "a8b169f7146278d15824addb447028f70720edc60dfeb466c9befb7ba39d06ea",
+     "bytes": 417409
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__sensitivity__not-unchanged-mid__M-RV.csv",
+     "sha256": "e159ce0ad54540b85567df126adfdce538618391a3039971075a390c28caa5a6",
+     "bytes": 416179
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__sensitivity__unchanged-mid__B1.csv",
+     "sha256": "1aeb69329301e5aff234541bc92e8624c68efcc423436634d6e22fa81310d1f9",
+     "bytes": 114389
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-b__sensitivity__unchanged-mid__M-RV.csv",
+     "sha256": "3db97cf8b8756abf36dd8dc6a5c3c384a1a9fc5d5bf22c8a3a77247a2f966fd6",
+     "bytes": 128342
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-c__runs__set-a__full.csv",
+     "sha256": "a0249049ebb6c1ff9d61b7c29737964e6304eaf3c0cf0fcd3f056303a9330a0e",
+     "bytes": 444429
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-c__runs__set-a__no-maturity-interactions.csv",
+     "sha256": "8ac070fbbbff3640bd1fab13f5f1312c89a4010223829d38c6f3708b513f056a",
+     "bytes": 444743
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-c__runs__set-a__no-moneyness.csv",
+     "sha256": "dae25d53faeab27c3b6d6363c4d6709ed4becf1381be3965b0b7182320db1d11",
+     "bytes": 445227
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-c__runs__set-a__no-symbol.csv",
+     "sha256": "738c264cf2ee48f0804573da3a992aaa1f1001daaebf36c6533b941c62117f12",
+     "bytes": 444419
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-c__runs__set-b__m-b1__full.csv",
+     "sha256": "6b59b51136973d44b27d60a3b412b68fe9cac213d0caa3a8a2adaef7672f0853",
+     "bytes": 417533
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-c__runs__set-b__m-b1__no-maturity-interactions.csv",
+     "sha256": "16e28577ca1cc8f5ee5b26c22be3dd80028e7ad9c3f5e239d4339e26de4ba198",
+     "bytes": 417624
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-c__runs__set-b__m-b1__no-moneyness.csv",
+     "sha256": "8cc5665f66a95d461fa4d4e1b7ff2aa72f62963d2602220c34f4952924aad065",
+     "bytes": 417686
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-c__runs__set-b__m-b1__no-symbol.csv",
+     "sha256": "0a9229825b812638a807d6f9447f06666ef79503b82c4f8f8296c7ab86d6f237",
+     "bytes": 417598
+    },
+    {
+     "path": "docs/results/v2/extract/folds/v2__design-c__runs__set-b__m-rv__full.csv",
+     "sha256": "dec15e5b2697f80cb70c6f8be500caf0ed9797cd712dae9fb64a79aa4ff62a21",
+     "bytes": 416491
+    }
+   ]
   },
   "lock": {
    "record": {
