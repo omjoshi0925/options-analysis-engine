@@ -766,6 +766,7 @@ def study_v2_block():
     block["early_exercise_diagnostic"] = early_exercise_block()
     block["extract"] = extract_block()
     block["fresh_evaluation"] = fresh_block()
+    block["paper"] = file_entry("docs/PAPER.md") if exists("docs/PAPER.md") else None
     block["lock"] = {name: file_entry(path) for name, path in (("record", "docs/lock.json"), ("document", "docs/LOCK.md")) if exists(path)} or None
     if exists(V2_COMPARISON[0]):
         cmp = json.loads((ROOT/V2_COMPARISON[0]).read_text())
@@ -1031,6 +1032,8 @@ def check(manifest):
         v2_entries.append(v2["early_exercise_diagnostic"]["file"])
     v2_entries += list((v2.get("extract") or {}).get("files", []))
     v2_entries += list((v2.get("fresh_evaluation") or {}).get("files", []))
+    if v2.get("paper"):
+        v2_entries.append(v2["paper"])
     design_c = v2.get("design_c") or {}
     v2_entries += list(design_c.get("files", []))
     for files in design_c.get("runs", {}).values():

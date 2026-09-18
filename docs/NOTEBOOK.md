@@ -753,3 +753,38 @@ weekday morning (docs/REPRODUCE.md). The manifest was rebuilt after the
 history import (the store hash changed); study-v1 and study-v2-locked
 unmoved.
 
+## 2026-09-17: PAPER.md draft added and verified against the artifacts
+
+docs/PAPER.md is the author's draft (dated 2026-09-17), copied in and checked
+claim by claim against docs/results/manifest.json and the committed JSON and
+CSV outputs. Filled: the first and last evaluated session, 2020-10-23 and
+2026-09-04, from design-a/C0/folds.csv (identical to the v1 fold dates). Not
+filled: the v1-guard sensitivity sentence, because no such run exists (the
+2026-09-13 entry above records that C1 and C3 with the v1 guard kept were
+never run, and design-a/comparison.json has no guard block); the slot carries
+a bracketed note, and section 3's parenthetical that the v1 guard "is
+reported as a sensitivity" is left for the author, since correcting it
+changes what the paper claims.
+
+Plain factual corrections made: the learning target is log(IV / sigma_RV)
+(learning.py:71), not log implied volatility; the support guard reverts an
+observation, not a session, on maturity, baseline volatility, or
+log-moneyness; set B spans 1,126 sessions with 1,005 evaluated; M(B1) versus
+B1 clears zero at blocks 10 and 21, not at 21 only; the ten sessions that
+carry 77.5% of the summed differential are among 1,056 set A sessions, not
+1,005; the short-maturity cell is 30 days or fewer; the tree-inversion
+comparison is on the 78,414 same-contract rows; the manifest holds 157
+claims for the v1 report plus hashed v2 blocks, not a grown claim count; the
+shallow clone is about 110 MB with --no-tags, not 130 MB. Reported without
+rewriting: the section 1 sentence that every amendment's commit precedes the
+runs it governs (Amendments 5, 6, 8, and 9 were specified after the results
+they concern); the loss equation writes one spot per session where the code
+divides by each row's own underlying; "the put by parity" holds only when
+the call is the out-of-the-money side (core.py prices that side directly);
+the SVI fit also carries Lee's wing bound and parameter bounds; the
+Newey-West lag rule has a floor of one lag. Every other number, interval,
+count, date, and percentage matches the artifacts, including the S_3
+sensitivity blocks (lower bounds 0.754 to 0.800) and the carry-only check,
+which closes 8.5% of the C0 median gap. The manifest now hashes the paper;
+study-v1 and study-v2-locked unmoved.
+

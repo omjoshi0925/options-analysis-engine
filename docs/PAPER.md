@@ -1,0 +1,94 @@
+# Does a Learned Volatility Adjustment Add Value? A Pre-Registered Walk-Forward Study on SPY and AAPL End-of-Day Options
+
+Om Joshi. Draft dated 2026-09-17. Code, data artifacts, and analysis at https://github.com/omjoshi0925/options-analysis-engine, tags `study-v1` and `study-v2-locked`.
+
+## Abstract
+
+I built an options pricing engine that learns a ridge-regression adjustment to a realized-volatility baseline and evaluated it with a 1,056-session walk-forward on SPY and AAPL end-of-day chains from 2020-10-23 to 2026-09-04. The adjustment beats the flat baseline in 66.4% of sessions with a median per-session RMSE improvement of 10.4%. I then pre-registered and ran a second study asking whether that improvement reflects volatility structure or compensates for the constant interest-rate and dividend assumptions both methods shared. It is structure: under historically appropriate carry, 98.6% of the improvement survives (95% CI [0.762, 1.281] as a fraction of the original). But against a stronger benchmark the result reverses. Prior-session implied volatility, the most naive option-market method available, beats the learned model in 94.6% of sessions with roughly one third of its median error, and refitting the learner on top of that benchmark adds no robust value (win rate 0.463, median relative improvement -0.012, mean differential fragile across block lengths). The central finding is negative: a learned adjustment on underlying-only information captures real structure relative to a flat baseline and is still dominated by trivial persistence of option-market information. A locked out-of-sample evaluation with timestamped pre-target predictions is accruing and will report by 2027-03-31.
+
+## 1. Question
+
+The v1 study compared two methods that both priced under a constant risk-free rate of 4% and constant dividend yields (SPY 1.4%, AAPL 0.5%) across 2020 to 2026, a period in which the 3-month Treasury rate moved from near zero to above five percent. That confound motivated the pre-registered question of study v2: does the learned adjustment capture strike and maturity structure in implied volatility, or does it compensate for incorrect carry assumptions? Two hypotheses were fixed in advance. H-carry predicted that under historical rates and dividends the improvement over the correspondingly corrected baseline shrinks by more than half. H-structure predicted the improvement survives carry correction but shrinks or disappears against a baseline that already carries the previous session's smile. The pre-registered plan, its decision rules, and nine dated amendments are in `docs/RESEARCH_PLAN.md`; each amendment's commit precedes the runs it governs.
+
+## 2. Data
+
+Quotes come from the free DoltHub databases `post-no-preference/options` and `post-no-preference/stocks`, daily end-of-day tier, mids stamped at the XNYS close. The raw span is 2019-02-09 to 2026-09-07 at the v1 freeze. The import refuses 103 dates carrying 22,282 rows: 47 weekend-stamped 2019 dates, 55 weekday holidays, and one Saturday (2020-01-04). The source lacks 664 of 1,841 calendar sessions in the span, so "prior session" throughout means the previous session present in the store, with the gap in days recorded per observation. QQQ was requested but the source contains zero QQQ rows; the study covers SPY and AAPL only. The v1 evaluation set is 236,516 observations (SPY 119,219, AAPL 117,297) over 1,056 sessions. The source lists only two to four rolling expirations per symbol and session and nothing beyond 67 calendar days to expiry, so the study covers short-dated options only.
+
+External inputs for study v2, each committed with SHA-256 provenance: the FRED DGS3MO 3-month constant-maturity Treasury series, converted as $r = \ln(1 + y/100)$ and aligned strictly prior to each session; per-symbol trailing-12-month cash distribution yields $q_t = D_t / S_{t-1}$ built from issuer distribution histories (AAPL ex-dates from the source's dividend table matched to Apple's record dates; SPY from State Street's ETF distributions workbook, cross-checked against the source on every date and amount), with AAPL's 2020-08-31 4:1 split handled on the as-traded basis; and FRED VIXCLS for exploratory regime splits.
+
+## 3. Methods
+
+**Pricing.** All comparisons price under Black-Scholes-Merton with continuous dividend yield:
+
+$$C = S e^{-qT} N(d_1) - K e^{-rT} N(d_2), \quad d_1 = \frac{\ln(S/K) + (r - q + \sigma^2/2)T}{\sigma\sqrt{T}}, \quad d_2 = d_1 - \sigma\sqrt{T},$$
+
+with the put by parity. The contracts are American; section 8 measures what this misspecification costs and shows it does not drive any comparison.
+
+**Baseline.** $\sigma_{RV}$ is the annualized standard deviation of the last 60 close-to-close log returns of the underlying bar series, which is nearly complete (about 2,075 bars per symbol) and unaffected by option-session gaps.
+
+**Model.** For each evaluated session, a ridge regression is fit on the training window to predict the log ratio of implied volatility to the baseline volatility from: log-moneyness and its square and cube, $\sqrt{T}$ and $\ln T$, moneyness-by-$\sqrt{T}$ interactions, the carry terms $rT$ and $qT$, log baseline volatility, a put indicator, and a symbol indicator. Training targets are implied volatilities inverted from market mids under the configuration's carry. The fitted $\sigma$ prices each contract under BSM. The ridge penalty is reselected each fold over $\alpha \in \{0.01, 1, 100\}$ on the last two training sessions. A support guard reverts an observation to the baseline when its maturity, baseline volatility, or log-moneyness falls outside the training range plus a 10% margin; per Amendment 3, $r$ and $q$ are excluded from the guard so that a rate-regime change is not treated as out of support (the v1 guard is reported as a sensitivity).
+
+**Walk-forward.** Rolling windows with a 120-session minimum, 250-session maximum, and a one-session gap between training and evaluation. Adjacent folds share 249 of 250 training sessions.
+
+**Loss and estimands.** The session loss is the mean squared spot-normalized pricing error, $L_t = n_t^{-1} \sum_i ((\hat P_i - P_i)/S_t)^2$. The differential is $d_t = L_{base,t} - L_{model,t}$ in those squared units; the relative improvement is $\rho_t = 1 - \sqrt{L_{model,t}}/\sqrt{L_{base,t}}$ in RMSE terms. $\Delta$ is the median of $\rho_t$ over sessions, and $S_k = \Delta_k / \Delta_0$ measures the fraction of the original improvement surviving carry correction $k$.
+
+**Inference.** All losses aggregate to the session before any inference; the lag-1 autocorrelation of the v1 squared-loss differential is 0.87. Primary intervals come from a circular block bootstrap over available sessions, block length 21, 10,000 replicates, seed 20260908, percentile 95% intervals, with sensitivity at blocks 10, 63, and 126. Paired comparisons resample the same blocks for both series, so every ratio and difference is computed within each replicate. Diebold-Mariano with the Harvey-Leybourne-Newbold correction and Newey-West with $\lfloor 1.5 n^{1/3} \rfloor$ lags are reported for continuity but decide nothing. The confirmatory comparisons are two: $S_3$ and M(RV) versus B1. Everything else is labeled exploratory.
+
+## 4. The v1 result
+
+The model beats the flat baseline in 701 of 1,056 sessions (66.4%) with a median per-session RMSE improvement of 10.4%, positive in every calendar year under the report's per-year ratio-of-means definition. Significance is mixed by construction of the dependence: naive DM rejects decisively (3.67) while Newey-West does not (1.23, p ≈ 0.22), and the block bootstrap excludes zero at every block length tested (block-63 lower bound 5.04e-06). This mixed pattern, later explained by the concentration result in section 7, is the honest summary: the improvement is real at the median session and weakly evidenced in the mean.
+
+## 5. Design A: carry robustness (confirmatory)
+
+A 2x2 factorial crossed constant versus historical rate with constant versus historical dividend (C0 to C3) on a fixed observation set: the 253,554 of 260,296 eligible rows (97.4%) that price without failure under all four configurations. Every dropped row fails implied-volatility identification, concentrated in 2020-21 in-the-money puts whose mids fall below the European no-arbitrage lower bound under near-zero rates (5,243 puts, 1,499 calls, 74% within 30 days of expiry). C0 reproduced v1 with identical fold dates and win rate before the other runs were read (median $\rho$ 0.1086 versus 0.1045, attributable to the intersection).
+
+| Correction | $S_k$ | 95% CI (block 21) |
+|---|---|---|
+| Historical rate (C1) | 0.955 | [0.665, 1.230] |
+| Historical dividend (C2) | 0.977 | [0.891, 1.121] |
+| Both (C3) | 0.986 | [0.762, 1.281] |
+
+Every sensitivity block agrees. The pre-registered rule labels this structure dominant: $S_3 \geq 0.75$ with lower bound above 0.5. The mean differential under C3 is 4.75e-04 with interval [6.3e-06, 1.40e-03], surviving but barely excluding zero, and correcting carry in the baseline alone closes almost none of the gap (2.14e-06, [2.6e-07, 3.9e-06]). Since every $S_k$ interval contains 1.0, the accurate statement is that carry correction has no detectable effect on the improvement. Historical rates do lower the win rate (0.664 to 0.637 in C1, 0.646 in C3) while the median improvement barely moves, so the correction costs marginal sessions without touching the typical one. [FILL pending: no v1-guard sensitivity run exists in the repository. docs/NOTEBOOK.md (2026-09-13) records that a run of C1 and C3 with the v1 guard kept has not been made, and design-a/comparison.json has no guard block; Amendment 3 records only that the v1 guard would have forced rho and d to zero on 21 of the 1,056 sessions in C1 and C3.]
+
+## 6. Design B: stronger baselines (confirmatory, and the central result)
+
+Two option-market benchmarks were given the same information cutoff as the model: everything through the prior available session's close, plus the contemporaneous inputs needed to price at $t$. B1 carries the previous session's implied volatility forward per contract, inverted under prior-session conditions ($S_{t-1}$, $r_{t-1}$, $q_{t-1}$, expiry measured from $t-1$; Amendment 4) and applied at $t$; missing contracts interpolate in strike within the same expiry and type, and missing expiries leave the set. B2 fits raw SVI total variance, $w(k) = a + b\,(\varrho(k-m) + \sqrt{(k-m)^2 + s^2})$, to each prior-session slice by vega-weighted least squares with a butterfly check, falling back to B1 on failure (3.9% of slices, 2.6% of rows). Set B is 154,110 observations over 1,126 sessions, 1,005 of them evaluated, 61% of set A, because only monthly expirations persist session to session in this source. The learner was also refit with each benchmark as its base volatility, M(B1) and M(B2). All runs use C3 carry with identical folds.
+
+| Comparison | Mean $d$ | 95% CI (block 21) | Median rel. impr. | Win rate |
+|---|---|---|---|---|
+| M(RV) vs B1 (primary) | -1.69e-05 | [-2.41e-05, -1.14e-05] | -1.890 | 0.054 |
+| M(RV) vs B2 | -1.32e-05 | [-2.04e-05, -7.64e-06] | -0.454 | 0.154 |
+| M(B1) vs B1 | +4.10e-07 | [5.39e-08, 8.40e-07] | -0.012 | 0.463 |
+| M(B2) vs B2 | -4.83e-06 | [-8.20e-06, -2.50e-06] | -0.238 | 0.241 |
+
+The pre-registered value claim fails. B1 beats the learned model in 94.6% of sessions; at the median the model's session RMSE is about 2.9 times B1's. Per the plan's pre-specified interpretation, the v1 model captured structure that a flat baseline lacks but no more than persistence of the previous smile provides. The remaining question, whether learning adds anything on top of persistence, is at best fragile: M(B1)'s mean differential clears zero at blocks 10 and 21 only, the median relative improvement is negative, the model loses 54% of sessions, and the block-63 and block-126 intervals include zero. Learning on top of the smile is indistinguishable from the smile. Learning relative to the SVI fit is worse than the fit alone.
+
+Because the primary comparison gives B1 option-price information the model's features lack, it measures the value of option-market information, not of learning; M(B1) versus B1 is the clean test of learning, and it is null.
+
+## 7. Design C: exploratory attribution
+
+All of this section is exploratory and none of it is confirmatory. Ablating one feature group at a time from M(RV) under C3: removing moneyness flips the median improvement from +0.107 to -0.116 (win rate 0.646 to 0.390), removing maturity interactions drops it to +0.046, and removing the symbol indicator to +0.078, each with a paired interval below zero for the change in mean differential. Moneyness carries the result. The mean differential, by contrast, barely moves under any ablation, because the ten largest of 1,056 sessions carry 77.5% of its sum (median session $d$ 2.7e-06 against a mean of 4.7e-04). The model's aggregate advantage over the flat baseline lives in a handful of high-volatility sessions, which reconciles the v1 significance pattern: the median is stable, the mean is outlier-driven, and HAC inference on the mean is rightly unimpressed.
+
+Against the flat baseline, the model helps at maturities of 31 days and longer (median $\rho$ +0.189, win 0.76) and not at 30 days or fewer (-0.009, 0.49); in the middle moneyness tercile (+0.374, win 0.91) and not near the money (-0.021); in high-VIX sessions (+0.191) more than low (+0.038); and on AAPL (+0.141) more than SPY (+0.074). Against B1 it fails everywhere: median $\rho$ between -1.1 and -3.3 in every cell with win rates at or below 0.09. For M(B1) no feature group provides a typical-session edge over persistence.
+
+## 8. Diagnostics prompted by review
+
+**Stale quotes.** Persistence wins mechanically when a mid does not move. Exact ties are 892 rows, 0.6% of set B, and both Design B labels are unchanged on the changed-mid subset (M(RV) vs B1: -1.90e-05, [-3.00e-05, -1.11e-05], win 0.078). B1's advantage is not a stale-quote artifact.
+
+**Early exercise.** An outside review flagged that the engine prices American contracts with a European formula. Repricing every evaluated observation with a 200-step CRR binomial tree at the study's own inputs: the premium is 0.06% of the mid at the median, 0.40% at the mean, and exceeds tick precision on 31.9% of set A rows, concentrated in puts (52.7% versus 6.0% for calls) and in the post-2022 rate regime. The 2020-21 identification failures are the misspecification's footprint, confirming the review's diagnosis while bounding its effect. The asymmetry concern, that B1 inverts and reprices under the same European engine and so partially cancels the error while M(RV) eats it in full, is real but small: repeating the comparison with tree-based inversion on the 78,414 same-contract rows where B1 can be inverted on the tree moves the mean gap from -1.82e-05 to -1.78e-05, so the European engine accounts for about 2.1% of B1's advantage. Restricting to rows with premium at or below the tick leaves the primary label unchanged and moves M(B1) versus B1 from fragile-positive to an interval spanning zero ([-1.20e-07, +5.53e-07]), consistent with the null reading. Both diagnostics were specified after the results they probe and are recorded as dated amendments.
+
+## 9. Design D: locked fresh evaluation (in progress)
+
+On 2026-09-15 the model, configuration, feature set, hyperparameter grid, and analysis code were frozen at tag `study-v2-locked`, with hashes enforced at runtime: prediction refuses to run if a session's chain is already in the store, and scoring refuses a prediction file that differs from its committed hash. For each new source session, timestamped predictions for B1, M(RV), M(B1), and the RV baseline are committed before the session's chain is imported, making the separation between inputs and targets physical. Amendment 7 fixed the expectations in advance: B1 beats M(RV) with an M(RV) win rate under 0.15; M(B1) versus B1 includes zero at every block length, an expected null whose confirmation is the result; and M(RV)'s edge over the flat baseline concentrates in high-VIX sessions at 31 or more days. The sample rule is the first 60 available sessions or all sessions through 2027-03-31, whichever comes first, with no interim stopping on results. One session is scored at this draft (2026-09-16, 47 contracts, on a twelve-day-stale prior); no inference is drawn before the rule is met.
+
+## 10. Limitations
+
+Two symbols, one venue tier, and a source missing 36% of calendar sessions. End-of-day mids only, with quote-close synchrony assumed rather than verified. No expiry beyond 67 calendar days, so nothing here speaks to term structure. American contracts priced with a European formula, with the measured premium distribution above bounding the effect. Discrete dividends approximated by a trailing continuous yield. Every reported interval is conditional on the fitted models: the bootstrap resamples evaluation sessions while adjacent folds share 249 of 250 training sessions, so total uncertainty is larger than reported. The mean differential is dominated by ten sessions, so mean-based statements are fragile by construction and the median-of-ratios estimand is preferred throughout. Set A conditions on pricing success under all four carry configurations and set B on prior-quote availability; controls for both restrictions are reported, but the conditioning is data-dependent.
+
+## 11. Reproducibility
+
+Every number above traces to a committed artifact through `docs/results/manifest.json` (157 claims for the v1 report, with hashed blocks for every study v2 artifact added since), verified by `python docs/results/build_manifest.py --check`, which runs in CI on every push. The frozen v1 study is `git clone --depth 1 --branch study-v1 --no-tags` away, about 110 MB, and verifies without rerunning anything; full reruns follow `docs/REPRODUCE.md`. The pre-registered plan with all nine amendments, the dated lab notebook, and the fold-level outputs of every run are in the repository. History is never rewritten because commit hashes are cited in the lock record and amendments.
+
+## 12. Conclusion
+
+A ridge-learned adjustment to realized volatility genuinely improves on a flat baseline, and the improvement is volatility structure rather than carry compensation. It is also worth roughly a third of what simply remembering yesterday's implied volatility is worth, and learning on top of that memory adds nothing detectable. The study's value is the sequence that established this: freezing the flattering result, pre-registering the question that could kill it, and letting a stronger benchmark do so. The locked evaluation now accruing will say whether the negative result predicts as well as it backtests.
