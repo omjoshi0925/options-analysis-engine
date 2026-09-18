@@ -729,6 +729,9 @@ V2_RUNS_B = [f"docs/results/v2/design-b/{name}" for name in ("B1", "B2", "M-RV",
 V2_COMPARISON_B = ["docs/results/v2/design-b/comparison.json", "docs/results/v2/design-b/REPORT.md"]
 V2_DESIGN_C = ["docs/results/v2/design-c/ablations.json", "docs/results/v2/design-c/breakdowns.json", "docs/results/v2/design-c/REPORT.md"]
 V2_EARLY_EXERCISE = "docs/results/v2/early-exercise-diagnostic.json"
+V2_GUARD_CONFIGS = ["config/v2/C1-guard-v1.json", "config/v2/C2-guard-v1.json", "config/v2/C3-guard-v1.json"]
+V2_GUARD_RUNS = [f"docs/results/v2/design-a/{name}-guard-v1" for name in ("C1", "C2", "C3")]
+V2_GUARD_FILES = ["docs/results/v2/design-a/guard-v1/comparison.json", "docs/results/v2/design-a/guard-v1/REPORT.md", "docs/results/v2/design-a/guard-sensitivity.json"]
 V2_FRESH_DIR = "docs/results/v2/fresh"
 V2_EXTRACT_DIR = "docs/results/v2/extract"
 V2_DESIGN_C_RUNS = ["docs/results/v2/design-c/runs/set-a/full", "docs/results/v2/design-c/runs/set-a/no-moneyness",
@@ -766,6 +769,7 @@ def study_v2_block():
     block["early_exercise_diagnostic"] = early_exercise_block()
     block["extract"] = extract_block()
     block["fresh_evaluation"] = fresh_block()
+    block["guard_sensitivity"] = guard_sensitivity_block()
     block["paper"] = file_entry("docs/PAPER.md") if exists("docs/PAPER.md") else None
     block["lock"] = {name: file_entry(path) for name, path in (("record", "docs/lock.json"), ("document", "docs/LOCK.md")) if exists(path)} or None
     if exists(V2_COMPARISON[0]):
@@ -870,6 +874,25 @@ def extract_block():
     names = ["README.md", "extract.json", "observations-sample.csv"]+[f"folds/{Path(f['copy']).name}" for f in meta["files"]["folds"]]
     return dict(exploratory=True, inspection_only=True, note=meta["note"], sampling=meta["sampling"],
                 files=[file_entry(f"{V2_EXTRACT_DIR}/{name}") for name in names if exists(f"{V2_EXTRACT_DIR}/{name}")])
+
+
+def guard_sensitivity_block():
+    """Amendment 3 guard sensitivity (executed 2026-09-17): the v1-guard configs, the three runs with their abstention records, the
+    guard-on comparison, and the agreement summary."""
+    if not any(exists(run) for run in V2_GUARD_RUNS):
+        return None
+    runs = {}
+    for run in V2_GUARD_RUNS:
+        if exists(run):
+            runs[Path(run).name] = {name: file_entry(f"{run}/{name}") for name in (*RUN_FILES, "abstentions.json") if exists(f"{run}/{name}")}
+    block = dict(amendment=3, configs=[file_entry(p) for p in V2_GUARD_CONFIGS if exists(p)], runs=runs,
+                 files=[file_entry(p) for p in V2_GUARD_FILES if exists(p)], headline=None)
+    if exists(V2_GUARD_FILES[2]):
+        summary = json.loads((ROOT/V2_GUARD_FILES[2]).read_text())
+        block["headline"] = dict(decision=summary["decision"]["line"], agrees=summary["decision"]["agrees"],
+                                 s={name: dict(guard_off=item["guard_off"]["s"], guard_on=item["guard_on"]["s"]) for name, item in summary["s"].items()},
+                                 abstaining={name: dict(rows=item["rows"], abstaining=item["abstaining"]) for name, item in summary["abstentions"].items()})
+    return block
 
 
 def fresh_block():
@@ -1032,6 +1055,10 @@ def check(manifest):
         v2_entries.append(v2["early_exercise_diagnostic"]["file"])
     v2_entries += list((v2.get("extract") or {}).get("files", []))
     v2_entries += list((v2.get("fresh_evaluation") or {}).get("files", []))
+    guard = v2.get("guard_sensitivity") or {}
+    v2_entries += list(guard.get("configs", []))+list(guard.get("files", []))
+    for files in guard.get("runs", {}).values():
+        v2_entries += list(files.values())
     if v2.get("paper"):
         v2_entries.append(v2["paper"])
     design_c = v2.get("design_c") or {}

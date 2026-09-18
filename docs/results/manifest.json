@@ -6,8 +6,8 @@
   "report": "docs/RESULTS.md",
   "code_version": "3.2.1",
   "repository": "https://github.com/omjoshi0925/options-analysis-engine",
-  "code_commit": "2f1851c5e0abcfaeb1e6bbd17aabc272377ab552",
-  "code_commit_short": "2f1851c",
+  "code_commit": "29f94aa4fa34c22915641c29072689553d0de9af",
+  "code_commit_short": "29f94aa",
   "working_tree_version": "3.6.1",
   "report_sha256": "61ee526762cc0c37cf505cb0971ef1b53050f7295579124a0173bb92fc402c3b",
   "description": "1,056-fold rolling-origin walk-forward over DoltHub end-of-day chains (SPY and AAPL; QQQ configured but absent from the export) plus a single-year SPY 2023 run, constant rate and dividend yields.",
@@ -10473,8 +10473,8 @@
    },
    {
     "path": "docs/results/v2/design-a/REPORT.md",
-    "sha256": "f2d6397578e0dac04057f30574807224e0cadd6a7caa524ce6f2196218c9e144",
-    "bytes": 2281
+    "sha256": "000a6d737175c029d8a45eff5b9b071382cc0eaa63c94a56474c378f349a7e9d",
+    "bytes": 3783
    }
   ],
   "design_a": {
@@ -12006,10 +12006,151 @@
     }
    ]
   },
+  "guard_sensitivity": {
+   "amendment": 3,
+   "configs": [
+    {
+     "path": "config/v2/C1-guard-v1.json",
+     "sha256": "5b44aa77a9e0551008324c4ded72c8a43c362e337ee069fdb1451e54994fb8ef",
+     "bytes": 1283
+    },
+    {
+     "path": "config/v2/C2-guard-v1.json",
+     "sha256": "af8299609de7ca77f81d8523bec193f519839ce869a154260714c1952158ad7e",
+     "bytes": 1358
+    },
+    {
+     "path": "config/v2/C3-guard-v1.json",
+     "sha256": "a2ed2a2634078d1509d26b8fbdb91e9ab5e3c941b188b6bd45f0d9118859f636",
+     "bytes": 1446
+    }
+   ],
+   "runs": {
+    "C1-guard-v1": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-a/C1-guard-v1/folds.csv",
+      "sha256": "af4f3d2959cb7cb4f73d517a7f556857182dfbe46bae1b631953a888f6fb3020",
+      "bytes": 435405
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-a/C1-guard-v1/significance.json",
+      "sha256": "6d607e623bb60a694f7512090732947faf1420319fb8c84f003db1625c867863",
+      "bytes": 4339
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-a/C1-guard-v1/REPORT.md",
+      "sha256": "811ab17a13c86ee772f966351fb57eb81971d7cfa86b38e86642b07d90679d4b",
+      "bytes": 995
+     },
+     "abstentions.json": {
+      "path": "docs/results/v2/design-a/C1-guard-v1/abstentions.json",
+      "sha256": "c45151a76220313764f9bfda6c696873423bb74f71903095f5d6444bc819e120",
+      "bytes": 359188
+     }
+    },
+    "C2-guard-v1": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-a/C2-guard-v1/folds.csv",
+      "sha256": "771db83f3a91a4fb88385330756447430954014bb9000819eac8bdae968bdb95",
+      "bytes": 439121
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-a/C2-guard-v1/significance.json",
+      "sha256": "ad0a2a14cff0d55d6ba422b555757efb76c60e0bb3c13a4a005fc3783eb578aa",
+      "bytes": 4422
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-a/C2-guard-v1/REPORT.md",
+      "sha256": "0ab01c256fa4a7f6da44ba63be8ef1c0e1de15d362c7a001f509264d004725dc",
+      "bytes": 998
+     },
+     "abstentions.json": {
+      "path": "docs/results/v2/design-a/C2-guard-v1/abstentions.json",
+      "sha256": "fafd2d89648ccf546377a44e8dec219a77a624869cd019ec010079faa08147c3",
+      "bytes": 359062
+     }
+    },
+    "C3-guard-v1": {
+     "folds.csv": {
+      "path": "docs/results/v2/design-a/C3-guard-v1/folds.csv",
+      "sha256": "f2829ddde9f05db1c6e9da2b6bc78f832aba83dfcdc46c86a8faef07c9c85a5a",
+      "bytes": 443668
+     },
+     "significance.json": {
+      "path": "docs/results/v2/design-a/C3-guard-v1/significance.json",
+      "sha256": "36d34e219d20fa3bfeb119a6d15ee6a66530851e39f70a0e1699aa97163541e5",
+      "bytes": 5241
+     },
+     "REPORT.md": {
+      "path": "docs/results/v2/design-a/C3-guard-v1/REPORT.md",
+      "sha256": "f3be8254881f28f3381fec129258b986e53322db19b6b9bb2862f3f47054de80",
+      "bytes": 998
+     },
+     "abstentions.json": {
+      "path": "docs/results/v2/design-a/C3-guard-v1/abstentions.json",
+      "sha256": "c45151a76220313764f9bfda6c696873423bb74f71903095f5d6444bc819e120",
+      "bytes": 359188
+     }
+    }
+   },
+   "files": [
+    {
+     "path": "docs/results/v2/design-a/guard-v1/comparison.json",
+     "sha256": "d0fa96664808cec2eda27f83c550f6ad50765928ecf5446c2f007625f19e52ab",
+     "bytes": 14056
+    },
+    {
+     "path": "docs/results/v2/design-a/guard-v1/REPORT.md",
+     "sha256": "f48d71d19207f594c00f6f8b4b8fffea4c7f445b2143ba9d85d22f879600ee94",
+     "bytes": 2364
+    },
+    {
+     "path": "docs/results/v2/design-a/guard-sensitivity.json",
+     "sha256": "e227d42aed5b20f92074b7b07930d3642d22382d53b3a0a0b560ace341084048",
+     "bytes": 11614
+    }
+   ],
+   "headline": {
+    "decision": "The decision label agrees with the guard-off runs: guard off structure dominant (S_3 = 0.986, interval [0.762, 1.281]); guard on structure dominant (S_3 = 0.986, interval [0.755, 1.273]).",
+    "agrees": true,
+    "s": {
+     "C1": {
+      "guard_off": 0.9546658447713058,
+      "guard_on": 0.9499779749814666
+     },
+     "C2": {
+      "guard_off": 0.9767260662777091,
+      "guard_on": 0.9767260662777091
+     },
+     "C3": {
+      "guard_off": 0.9860774585691403,
+      "guard_on": 0.9860774585691403
+     }
+    },
+    "abstaining": {
+     "C0": {
+      "rows": null,
+      "abstaining": null
+     },
+     "C1": {
+      "rows": 230927,
+      "abstaining": 5024
+     },
+     "C2": {
+      "rows": 230927,
+      "abstaining": 699
+     },
+     "C3": {
+      "rows": 230927,
+      "abstaining": 5024
+     }
+    }
+   }
+  },
   "paper": {
    "path": "docs/PAPER.md",
-   "sha256": "36fb0acda1434e9394ccd61b1495359c5731fc6a01fe742101d8fc76622f1765",
-   "bytes": 18809
+   "sha256": "de41e1242cbf9bf7cd51051a11dee1b8fc4f437ec6e51a3eb452b0d8fe5e34f2",
+   "bytes": 19325
   },
   "lock": {
    "record": {
