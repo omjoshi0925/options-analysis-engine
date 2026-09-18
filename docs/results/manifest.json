@@ -6,8 +6,8 @@
   "report": "docs/RESULTS.md",
   "code_version": "3.2.1",
   "repository": "https://github.com/omjoshi0925/options-analysis-engine",
-  "code_commit": "29f94aa4fa34c22915641c29072689553d0de9af",
-  "code_commit_short": "29f94aa",
+  "code_commit": "9b6205b940274f006686abde3975e09b58f3f157",
+  "code_commit_short": "9b6205b",
   "working_tree_version": "3.6.1",
   "report_sha256": "61ee526762cc0c37cf505cb0971ef1b53050f7295579124a0173bb92fc402c3b",
   "description": "1,056-fold rolling-origin walk-forward over DoltHub end-of-day chains (SPY and AAPL; QQQ configured but absent from the export) plus a single-year SPY 2023 run, constant rate and dividend yields.",
@@ -12149,8 +12149,8 @@
   },
   "paper": {
    "path": "docs/PAPER.md",
-   "sha256": "de41e1242cbf9bf7cd51051a11dee1b8fc4f437ec6e51a3eb452b0d8fe5e34f2",
-   "bytes": 19325
+   "sha256": "bf669463ac085889595079e50d53f1fb504197a795f47b56cbe4405329b6734f",
+   "bytes": 19441
   },
   "lock": {
    "record": {

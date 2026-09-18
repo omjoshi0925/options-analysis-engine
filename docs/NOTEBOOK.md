@@ -830,3 +830,34 @@ were losing ones. The decision label agrees with the guard-off runs: guard off s
 slot is filled from this file. The manifest covers the configs, the three
 runs with their abstention records, the comparison, and the summary.
 
+## 2026-09-18: EBMA talk delivered 2026-09-17, and the revision it prompted
+
+Talk delivered to the East Bay Math Association on 2026-09-17 from the deck
+"When Yesterday's Smile Beats the Model". Audience about 45 to 50 in a small
+conference room: math and economics majors from community colleges and UC
+Berkeley, PhD students from other schools, and some industry professionals.
+Format: the presentation, then a walkthrough of the engine's methodology (the
+programs run and how it was built), then the rest of the deck.
+
+Two questions. First, a repeat of a methodology question, which suggests the
+methodology section ran long or landed unclearly; recorded as a delivery gap.
+Second, "What were the results?" The answer given at the time was that the
+results were successful, with some errors since fixed and pushed to the
+repository. That answer was wrong in emphasis. The pre-registered value claim
+failed (docs/results/v2/design-b/comparison.json, primary_claim.holds false).
+The accurate answer: the learned adjustment beats the flat baseline and
+survives carry correction (Design A, structure dominant, S_3 = 0.986 [0.762,
+1.281]), but prior-session implied volatility beats the model in 94.6% of the
+1,005 evaluated sessions (M(RV) win rate 0.054 against B1), so the central
+finding is negative, and the locked fresh evaluation pre-registered that
+outcome in advance (Amendment 7: B1 beats M(RV) with a win rate under 0.15,
+and M(B1) versus B1 null at every block length).
+
+Resulting change: one line added to the deck's result-b speaker notes and to
+the conclusion of docs/PAPER.md, stating the one-breath answer to "did it
+work": yes as a study, no as a model, and the distinction is the
+contribution. The paper's conclusion already carried the substance (structure
+beats flat, persistence beats structure, the sequence is the value) but not
+the one-breath form, so the line was added rather than treated as covered.
+The manifest re-hashes the paper. No model, analysis, or locked-module
+change; study-v1 and study-v2-locked unmoved.
