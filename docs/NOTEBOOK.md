@@ -788,3 +788,45 @@ sensitivity blocks (lower bounds 0.754 to 0.800) and the carry-only check,
 which closes 8.5% of the C0 median gap. The manifest now hashes the paper;
 study-v1 and study-v2-locked unmoved.
 
+## 2026-09-17: Design A guard sensitivity (Amendment 3) executed
+
+These runs were executed on 2026-09-17 after the paper's verification pass
+caught that they had never been made (the 2026-09-13 entry records the gap).
+Amendment 3's text stands. Method: a worktree at fbfa43a, the commit that
+produced the committed Design A runs, on branch guard-sensitivity-2026-09-17
+(commit 840f706), which adds a config key support_guard (amended, the
+default, or v1: r and q guarded as well) threaded through fit_ridge and the
+walk-forward, records per session which rows the guard reverts and which
+guarded feature each fails (abstentions.json beside an unchanged fold table,
+with a summary in significance.json), and nothing else; the branch's own
+tests pass except the golden snapshot of the config's public dictionary,
+which now carries the extra key. C0 was rerun there first: folds.csv and
+REPORT.md byte-identical to the committed C0, significance.json identical
+apart from the two added keys and the candidate row count (262,311 against
+260,296, because the store now holds the sessions imported after the lock;
+the set A restriction selects the same rows). C1, C2, and C3 then ran in
+parallel (02:34 to 02:44 UTC) from config/v2/C{1,2,3}-guard-v1.json, each
+the committed configuration plus support_guard v1, with --allow-partial
+because those configs are not among the set's builders (the set is fully
+matched and nothing else is dropped; recorded in each significance.json).
+Outputs: docs/results/v2/design-a/C1-guard-v1, C2-guard-v1, C3-guard-v1,
+the guard-on comparison from the locked compare-configs under
+design-a/guard-v1/ (its report labels the treatment differential d_1
+because it takes the last character of the run name), and
+design-a/guard-sensitivity.json with the section appended to the Design A
+report by scripts/guard_sensitivity.py.
+
+Abstentions under the v1 guard: C1 and C3 revert 5,024 of 230,927 rows,
+4,325 on the rate alone (the 699 on baseline volatility are the same rows
+the amended guard reverts), on 28 sessions, 21 of them fully, the
+17 in the 2022 hiking cycle and 4 in late 2025 that Amendment 3 counted;
+C2 reverts the same 699 rows as guard-off and nothing on the yield. S_k
+guard on against guard off: C1 0.950 [0.652, 1.221] against
+0.955 [0.665, 1.230]; C2 identical at 0.977; C3 0.986
+[0.755, 1.273] against 0.986 [0.762, 1.281]. The median
+is unmoved because zeroing 21 sessions does not cross it; the mean d_3
+moves from 4.7485e-04 to 4.7553e-04 because the zeroed sessions
+were losing ones. The decision label agrees with the guard-off runs: guard off structure dominant (S_3 = 0.986, interval [0.762, 1.281]); guard on structure dominant (S_3 = 0.986, interval [0.755, 1.273]). The paper's guard
+slot is filled from this file. The manifest covers the configs, the three
+runs with their abstention records, the comparison, and the summary.
+
