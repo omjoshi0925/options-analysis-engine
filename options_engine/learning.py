@@ -36,7 +36,10 @@ def basis(frame, symbols):
     return matrix, names
 
 
-def fit_ridge(frame, alpha):
+SUPPORT_KEYS = dict(amended=("T", "baseline_sigma"), v1=("T", "baseline_sigma", "r", "q"))
+
+
+def fit_ridge(frame, alpha, support_keys=SUPPORT_KEYS["amended"]):
     symbols = sorted(frame.symbol.unique())
     X, names = basis(frame, symbols)
     # Equal total weight for each session/symbol/expiry group.
@@ -54,7 +57,7 @@ def fit_ridge(frame, alpha):
     # Support keys: maturity, baseline volatility, and log-moneyness (below). The rate and yield enter only through the
     # linear features r*T and q*T, so they are not guarded (Research Plan Amendment 3): under a dated carry a guard on
     # them would silence the model for whole sessions whenever the rate moves past the training window's range.
-    support = {key: [float(frame[key].min()), float(frame[key].max())] for key in ("T", "baseline_sigma")}
+    support = {key: [float(frame[key].min()), float(frame[key].max())] for key in support_keys}
     m = np.log(frame.spot/frame.strike)
     support["log_moneyness"] = [float(m.min()), float(m.max())]
     return dict(schema=MODEL_SCHEMA, kind="ridge_log_iv_ratio", alpha=float(alpha), symbols=symbols,

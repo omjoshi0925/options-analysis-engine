@@ -53,7 +53,7 @@ class WalkForwardSpec:
             raise ValueError("alphas must be nonnegative and finite")
 
 
-def fit_fold(train_frame, spec):
+def fit_fold(train_frame, spec, support_keys=("T", "baseline_sigma")):
     """Select alpha on the training tail, then refit on the whole training window."""
     sessions = sorted(train_frame.session_date.unique())
     tail = sessions[-spec.validation_sessions:]
@@ -61,14 +61,36 @@ def fit_fold(train_frame, spec):
     inner_validation = train_frame.loc[train_frame.session_date.isin(tail)]
     scored = []
     for alpha in spec.alphas:
-        candidate = fit_ridge(inner_train, alpha)
+        candidate = fit_ridge(inner_train, alpha, support_keys=support_keys)
         metrics, _, _ = evaluate(candidate, inner_validation)
         scored.append((metrics["spot_normalized_rmse"], alpha))
     _, best_alpha = min(scored)
-    return fit_ridge(train_frame, best_alpha), best_alpha
+    return fit_ridge(train_frame, best_alpha, support_keys=support_keys), best_alpha
 
 
-def walk_forward(frame, spec=None):
+def abstention_record(model, evaluation, session):
+    """Which evaluation rows the support guard reverts to the baseline, and which guarded feature each one fails."""
+    failing = {}
+    for key, (lo, hi) in model["support"].items():
+        value = np.log(evaluation.spot/evaluation.strike).to_numpy() if key == "log_moneyness" else evaluation[key].to_numpy(float)
+        margin = max(1e-10, .1*(hi-lo))
+        failing[key] = (value < lo-margin) | (value > hi+margin)
+    symbol_unsupported = ~evaluation.symbol.isin(model["symbols"]).to_numpy()
+    any_fail = symbol_unsupported.copy()
+    for mask in failing.values():
+        any_fail |= mask
+    only = {}
+    for key, mask in failing.items():
+        others = np.zeros(len(mask), bool)
+        for other, other_mask in failing.items():
+            if other != key:
+                others |= other_mask
+        only[key] = int((mask & ~others & ~symbol_unsupported).sum())
+    return dict(session=session, rows=int(len(evaluation)), abstaining=int(any_fail.sum()), by_key={k: int(v.sum()) for k, v in failing.items()},
+                only_key=only, symbol_unsupported=int(symbol_unsupported.sum()))
+
+
+def walk_forward(frame, spec=None, support_keys=("T", "baseline_sigma")):
     """One fold per evaluable session; returns fold table and session-level loss series."""
     spec = spec or WalkForwardSpec()
     if frame.empty or "session_date" not in frame:
@@ -79,15 +101,17 @@ def walk_forward(frame, spec=None):
         raise ValueError(f"Need at least {first_eval+1} sessions for one fold; have {len(sessions)}")
     by_session = {day: group for day, group in frame.groupby("session_date")}
     folds = []
+    abstentions = []
     for j in range(first_eval, len(sessions)):
         train_sessions = sessions[:j-spec.gap]
         if spec.window == "rolling":
             train_sessions = train_sessions[-spec.max_train_sessions:]
         train_frame = pd.concat([by_session[day] for day in train_sessions], ignore_index=True)
         evaluation = by_session[sessions[j]]
-        model, alpha = fit_fold(train_frame, spec)
+        model, alpha = fit_fold(train_frame, spec, support_keys=support_keys)
         base_metrics, base_prices, _ = evaluate(None, evaluation)
         model_metrics, model_prices, _ = evaluate(model, evaluation)
+        abstentions.append(abstention_record(model, evaluation, sessions[j]))
         mid, spot = evaluation.mid.to_numpy(float), evaluation.spot.to_numpy(float)
         per_symbol = {}
         for symbol, index in evaluation.groupby("symbol").groups.items():
@@ -112,7 +136,7 @@ def walk_forward(frame, spec=None):
                           baseline_within_spread=base_metrics["within_spread"],
                           learned_coverage=model_metrics["learned_coverage"]))
     table = pd.DataFrame(folds)
-    return dict(folds=table, spec=asdict(spec), sessions=list(table.evaluated_session),
+    return dict(folds=table, abstentions=abstentions, spec=asdict(spec), sessions=list(table.evaluated_session),
                 baseline_losses=table.baseline_loss.to_numpy(), model_losses=table.model_loss.to_numpy())
 
 
@@ -214,6 +238,18 @@ def walk_forward_report(result, output, n_boot=2000, seed=0, extra=None):
                                               zero_coverage_folds=[str(s) for s in table.evaluated_session[coverage == 0]],
                                               partial_coverage_folds=int(((coverage > 0) & (coverage < 1)).sum())),
                         spec=result["spec"], sessions_evaluated=len(table), **(extra or {}))
+    if result.get("abstentions"):
+        # Guard abstentions per session and per guarded feature; a separate file so the fold table is unchanged.
+        records = result["abstentions"]
+        keys = sorted({k for r in records for k in r["by_key"]})
+        significance["abstentions"] = dict(rows=int(sum(r["rows"] for r in records)), abstaining=int(sum(r["abstaining"] for r in records)),
+                                           by_key={k: int(sum(r["by_key"].get(k, 0) for r in records)) for k in keys},
+                                           only_key={k: int(sum(r["only_key"].get(k, 0) for r in records)) for k in keys},
+                                           symbol_unsupported=int(sum(r["symbol_unsupported"] for r in records)),
+                                           sessions_with_any=int(sum(1 for r in records if r["abstaining"])),
+                                           sessions_fully_abstaining=int(sum(1 for r in records if r["abstaining"] == r["rows"])),
+                                           file="abstentions.json")
+        atomic_json(output/"abstentions.json", clean_json(records))
     atomic_json(output/"significance.json", clean_json(significance))
     lines = ["# Walk-forward evaluation", "",
              f"{len(table)} folds, one held-out session each, from {table.evaluated_session.iloc[0]} "

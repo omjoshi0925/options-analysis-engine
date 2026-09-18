@@ -51,6 +51,7 @@ class LiveConfig:
     promotion_min_improvement: float = .02
     auto_train: bool = True
     assumptions_note: str = "Illustrative constant rate/yield inputs. Replace for your research observation period."
+    support_guard: str = "amended"   # "amended": T, baseline_sigma, log_moneyness (Amendment 3); "v1": r and q guarded as well
 
     def __post_init__(self):
         if self.provider not in ("yahoo", "tradier", "dolt_eod"):
@@ -102,6 +103,8 @@ class LiveConfig:
             raise ValueError("Invalid maturity or spread settings")
         if not 0 <= self.promotion_min_improvement < 1 or not isinstance(self.auto_train, bool):
             raise ValueError("Invalid training settings")
+        if self.support_guard not in ("amended", "v1"):
+            raise ValueError("support_guard must be 'amended' or 'v1'")
 
     @classmethod
     def load(cls, path):

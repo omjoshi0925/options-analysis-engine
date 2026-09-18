@@ -304,7 +304,10 @@ def run(args):
             spec = WalkForwardSpec(min_train_sessions=args.min_train_sessions, gap=args.gap,
                                    validation_sessions=args.validation_sessions, window=args.window,
                                    max_train_sessions=args.max_train_sessions)
-            result = walk_forward_report(walk_forward(frame, spec), args.output, n_boot=args.bootstrap, extra=extra)
+            from .learning import SUPPORT_KEYS
+            support_keys = SUPPORT_KEYS[config.support_guard]
+            extra["support_guard"] = dict(mode=config.support_guard, keys=list(support_keys)+["log_moneyness"])
+            result = walk_forward_report(walk_forward(frame, spec, support_keys=support_keys), args.output, n_boot=args.bootstrap, extra=extra)
         else:
             from .learning import select_model
             result = select_model(root, args.model_id)
