@@ -1,0 +1,439 @@
+{
+  "bootstrap": {
+    "block_length": 21,
+    "confidence": 0.95,
+    "kind": "circular block, paired (identical block indices for every series)",
+    "replicates": 10000,
+    "seed": 20260908,
+    "sensitivity_blocks": [
+      10,
+      63,
+      126
+    ],
+    "sensitivity_blocks_skipped": []
+  },
+  "carry_only_check": {
+    "definition": "median(L_base,C3-guard-v1) - median(L_model,C0)",
+    "interval": [
+      2.581480305769066e-07,
+      3.859499465543497e-06
+    ],
+    "median_baseline_mse_treatment": 1.3989102215239915e-05,
+    "median_model_mse_control": 1.185351833788722e-05,
+    "value": 2.1355838773526954e-06
+  },
+  "configurations": {
+    "C0": {
+      "carry": {
+        "dividend": {
+          "mode": "constant",
+          "yields": {
+            "AAPL": 0.005,
+            "QQQ": 0.006,
+            "SPY": 0.014
+          }
+        },
+        "rate": {
+          "mode": "constant",
+          "value": 0.04
+        }
+      },
+      "config": {
+        "path": "config/v2/C0.json",
+        "sha256": "91f9c8e042f5bd6004c9291b705a29ca2d8fddfbf4e45885d1f755aca59725cc"
+      },
+      "diebold_mariano_hln": {
+        "lag1_autocorrelation": 0.8743841715835668,
+        "p_value": 0.00025227633030371576,
+        "statistic": 3.6724608898313558
+      },
+      "first_session": "2020-10-23",
+      "folds": 1056,
+      "last_session": "2026-09-04",
+      "learned_coverage": {
+        "mean": 0.9970146604193015,
+        "partial_coverage_folds": 7,
+        "zero_coverage_folds": 0
+      },
+      "mean_baseline_rmse": 0.007141553193169799,
+      "mean_d": 0.00047322889389532117,
+      "mean_model_rmse": 0.004115844536169886,
+      "median_baseline_mse": 1.418700720111467e-05,
+      "median_model_mse": 1.185351833788722e-05,
+      "median_rho": 0.10855818559605879,
+      "newey_west": {
+        "hac_lags": 15,
+        "p_value": 0.22106655600783123,
+        "statistic": 1.2244216211575212
+      },
+      "win_rate": 0.6638257575757576
+    },
+    "C1-guard-v1": {
+      "carry": {
+        "dividend": {
+          "mode": "constant",
+          "yields": {
+            "AAPL": 0.005,
+            "QQQ": 0.006,
+            "SPY": 0.014
+          }
+        },
+        "rate": {
+          "alignment": "strictly_prior",
+          "first_quote": "1981-09-01",
+          "last_quote": "2026-09-04",
+          "mode": "series",
+          "path": "/private/tmp/claude-501/-Users-joshum-GitHub/a521c5f7-be11-4c38-b34a-bf2ba6e79706/scratchpad/wt-guard/data/external/raw/DGS3MO.csv",
+          "quotes": 11253,
+          "sha256": "504030af381b2ee828c3012ba91dcc9ea7cdbbcaa3297026acd500ed9c4b4e44",
+          "stale_days": 10,
+          "units": "percent"
+        }
+      },
+      "config": {
+        "path": "config/v2/C1-guard-v1.json",
+        "sha256": "5b44aa77a9e0551008324c4ded72c8a43c362e337ee069fdb1451e54994fb8ef"
+      },
+      "diebold_mariano_hln": {
+        "lag1_autocorrelation": 0.8744968431383452,
+        "p_value": 0.0002600288222612392,
+        "statistic": 3.6646217180567295
+      },
+      "first_session": "2020-10-23",
+      "folds": 1056,
+      "last_session": "2026-09-04",
+      "learned_coverage": {
+        "mean": 0.977128296782938,
+        "partial_coverage_folds": 7,
+        "zero_coverage_folds": 21
+      },
+      "mean_baseline_rmse": 0.007119567486909812,
+      "mean_d": 0.000475159877355678,
+      "mean_model_rmse": 0.004153462551714556,
+      "median_baseline_mse": 1.4039114707857723e-05,
+      "median_model_mse": 1.1635397917784165e-05,
+      "median_rho": 0.10312788532020614,
+      "newey_west": {
+        "hac_lags": 15,
+        "p_value": 0.222029566780965,
+        "statistic": 1.2218704328503396
+      },
+      "win_rate": 0.6354166666666666
+    },
+    "C2-guard-v1": {
+      "carry": {
+        "dividend": {
+          "files": {
+            "bars": {
+              "path": "/private/tmp/claude-501/-Users-joshum-GitHub/a521c5f7-be11-4c38-b34a-bf2ba6e79706/scratchpad/wt-guard/data/external/raw/full_underlying.csv",
+              "sha256": "aa9e446dddf40682a68890a0b70f36a41c6d2f108d0777dddc1b7403801bc738"
+            },
+            "dividends": {
+              "path": "/private/tmp/claude-501/-Users-joshum-GitHub/a521c5f7-be11-4c38-b34a-bf2ba6e79706/scratchpad/wt-guard/data/external/dividends.csv",
+              "sha256": "7cc323daac11272eee3949729e7ee435ae865670ccb76b3424f80068cdbf39d2"
+            },
+            "splits": {
+              "path": "/private/tmp/claude-501/-Users-joshum-GitHub/a521c5f7-be11-4c38-b34a-bf2ba6e79706/scratchpad/wt-guard/data/external/splits.csv",
+              "sha256": "96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec"
+            }
+          },
+          "history_end": "2026-09-09",
+          "history_start": "2018-01-01",
+          "max_bar_gap_days": 10,
+          "mode": "series",
+          "stale_days": 100,
+          "window_days": 365
+        },
+        "rate": {
+          "mode": "constant",
+          "value": 0.04
+        }
+      },
+      "config": {
+        "path": "config/v2/C2-guard-v1.json",
+        "sha256": "af8299609de7ca77f81d8523bec193f519839ce869a154260714c1952158ad7e"
+      },
+      "diebold_mariano_hln": {
+        "lag1_autocorrelation": 0.8744190481399343,
+        "p_value": 0.0002527163671016005,
+        "statistic": 3.67200991622656
+      },
+      "first_session": "2020-10-23",
+      "folds": 1056,
+      "last_session": "2026-09-04",
+      "learned_coverage": {
+        "mean": 0.9970146604193015,
+        "partial_coverage_folds": 7,
+        "zero_coverage_folds": 0
+      },
+      "mean_baseline_rmse": 0.00713939658098388,
+      "mean_d": 0.0004731611732433084,
+      "mean_model_rmse": 0.004108917486605742,
+      "median_baseline_mse": 1.4185506892712087e-05,
+      "median_model_mse": 1.1802532972729005e-05,
+      "median_rho": 0.10603160957948396,
+      "newey_west": {
+        "hac_lags": 15,
+        "p_value": 0.22112484151566722,
+        "statistic": 1.224266985887716
+      },
+      "win_rate": 0.6647727272727273
+    },
+    "C3-guard-v1": {
+      "carry": {
+        "dividend": {
+          "files": {
+            "bars": {
+              "path": "/private/tmp/claude-501/-Users-joshum-GitHub/a521c5f7-be11-4c38-b34a-bf2ba6e79706/scratchpad/wt-guard/data/external/raw/full_underlying.csv",
+              "sha256": "aa9e446dddf40682a68890a0b70f36a41c6d2f108d0777dddc1b7403801bc738"
+            },
+            "dividends": {
+              "path": "/private/tmp/claude-501/-Users-joshum-GitHub/a521c5f7-be11-4c38-b34a-bf2ba6e79706/scratchpad/wt-guard/data/external/dividends.csv",
+              "sha256": "7cc323daac11272eee3949729e7ee435ae865670ccb76b3424f80068cdbf39d2"
+            },
+            "splits": {
+              "path": "/private/tmp/claude-501/-Users-joshum-GitHub/a521c5f7-be11-4c38-b34a-bf2ba6e79706/scratchpad/wt-guard/data/external/splits.csv",
+              "sha256": "96053ba693b69c0e192622dadfd9dcb48db42d1829855334a067c69b17fb9fec"
+            }
+          },
+          "history_end": "2026-09-09",
+          "history_start": "2018-01-01",
+          "max_bar_gap_days": 10,
+          "mode": "series",
+          "stale_days": 100,
+          "window_days": 365
+        },
+        "rate": {
+          "alignment": "strictly_prior",
+          "first_quote": "1981-09-01",
+          "last_quote": "2026-09-04",
+          "mode": "series",
+          "path": "/private/tmp/claude-501/-Users-joshum-GitHub/a521c5f7-be11-4c38-b34a-bf2ba6e79706/scratchpad/wt-guard/data/external/raw/DGS3MO.csv",
+          "quotes": 11253,
+          "sha256": "504030af381b2ee828c3012ba91dcc9ea7cdbbcaa3297026acd500ed9c4b4e44",
+          "stale_days": 10,
+          "units": "percent"
+        }
+      },
+      "config": {
+        "path": "config/v2/C3-guard-v1.json",
+        "sha256": "a2ed2a2634078d1509d26b8fbdb91e9ab5e3c941b188b6bd45f0d9118859f636"
+      },
+      "diebold_mariano_hln": {
+        "lag1_autocorrelation": 0.8745250476559777,
+        "p_value": 0.00025709719066828083,
+        "statistic": 3.667559993829993
+      },
+      "first_session": "2020-10-23",
+      "folds": 1056,
+      "last_session": "2026-09-04",
+      "learned_coverage": {
+        "mean": 0.977128296782938,
+        "partial_coverage_folds": 7,
+        "zero_coverage_folds": 21
+      },
+      "mean_baseline_rmse": 0.0071178154471436645,
+      "mean_d": 0.0004755325364429824,
+      "mean_model_rmse": 0.004108731485043819,
+      "median_baseline_mse": 1.3989102215239915e-05,
+      "median_model_mse": 1.1462346386668883e-05,
+      "median_rho": 0.1070467797594387,
+      "newey_west": {
+        "hac_lags": 15,
+        "p_value": 0.22168109855734686,
+        "statistic": 1.2227926693262234
+      },
+      "win_rate": 0.6439393939393939
+    }
+  },
+  "control": "C0",
+  "decision": {
+    "headline": "S_3 = 0.986 with 95% interval [0.755, 1.273]: structure dominant",
+    "label": "structure dominant",
+    "s3": 0.9860774585691403,
+    "s3_interval": [
+      0.7549356118236019,
+      1.272563330618382
+    ],
+    "v1_improvement_survives_carry_correction": true
+  },
+  "first_session": "2020-10-23",
+  "last_session": "2026-09-04",
+  "mean_d_treatment": {
+    "interval": [
+      7.107550332618951e-06,
+      0.00140457195604537
+    ],
+    "sensitivity": {
+      "10": [
+        9.81298305561364e-06,
+        0.0012483839543118353
+      ],
+      "126": [
+        5.199968765441754e-06,
+        0.0014026519396275303
+      ],
+      "21": [
+        7.107550332618951e-06,
+        0.00140457195604537
+      ],
+      "63": [
+        4.8004701022757035e-06,
+        0.0014075815365299476
+      ]
+    },
+    "value": 0.0004755325364429824
+  },
+  "runs": {
+    "C0": {
+      "files": {
+        "REPORT.md": {
+          "path": "docs/results/v2/design-a/C0/REPORT.md",
+          "sha256": "8514f146c48ad0556b964ab513532e6d043d5530bace7923f45dd61462d3268c"
+        },
+        "folds.csv": {
+          "path": "docs/results/v2/design-a/C0/folds.csv",
+          "sha256": "e3bdf0320721e2eef69933ca8801e98917f523e2be026f8bbbd418aa17e4a5d0"
+        },
+        "significance.json": {
+          "path": "docs/results/v2/design-a/C0/significance.json",
+          "sha256": "9a62a165e4f9eb0da597be03ca98160bd37790988fc27541f1e1aeaf5ed9231b"
+        }
+      },
+      "path": "docs/results/v2/design-a/C0"
+    },
+    "C1-guard-v1": {
+      "files": {
+        "REPORT.md": {
+          "path": "docs/results/v2/design-a/C1-guard-v1/REPORT.md",
+          "sha256": "811ab17a13c86ee772f966351fb57eb81971d7cfa86b38e86642b07d90679d4b"
+        },
+        "folds.csv": {
+          "path": "docs/results/v2/design-a/C1-guard-v1/folds.csv",
+          "sha256": "af4f3d2959cb7cb4f73d517a7f556857182dfbe46bae1b631953a888f6fb3020"
+        },
+        "significance.json": {
+          "path": "docs/results/v2/design-a/C1-guard-v1/significance.json",
+          "sha256": "6d607e623bb60a694f7512090732947faf1420319fb8c84f003db1625c867863"
+        }
+      },
+      "path": "docs/results/v2/design-a/C1-guard-v1"
+    },
+    "C2-guard-v1": {
+      "files": {
+        "REPORT.md": {
+          "path": "docs/results/v2/design-a/C2-guard-v1/REPORT.md",
+          "sha256": "0ab01c256fa4a7f6da44ba63be8ef1c0e1de15d362c7a001f509264d004725dc"
+        },
+        "folds.csv": {
+          "path": "docs/results/v2/design-a/C2-guard-v1/folds.csv",
+          "sha256": "771db83f3a91a4fb88385330756447430954014bb9000819eac8bdae968bdb95"
+        },
+        "significance.json": {
+          "path": "docs/results/v2/design-a/C2-guard-v1/significance.json",
+          "sha256": "ad0a2a14cff0d55d6ba422b555757efb76c60e0bb3c13a4a005fc3783eb578aa"
+        }
+      },
+      "path": "docs/results/v2/design-a/C2-guard-v1"
+    },
+    "C3-guard-v1": {
+      "files": {
+        "REPORT.md": {
+          "path": "docs/results/v2/design-a/C3-guard-v1/REPORT.md",
+          "sha256": "f3be8254881f28f3381fec129258b986e53322db19b6b9bb2862f3f47054de80"
+        },
+        "folds.csv": {
+          "path": "docs/results/v2/design-a/C3-guard-v1/folds.csv",
+          "sha256": "f2829ddde9f05db1c6e9da2b6bc78f832aba83dfcdc46c86a8faef07c9c85a5a"
+        },
+        "significance.json": {
+          "path": "docs/results/v2/design-a/C3-guard-v1/significance.json",
+          "sha256": "36d34e219d20fa3bfeb119a6d15ee6a66530851e39f70a0e1699aa97163541e5"
+        }
+      },
+      "path": "docs/results/v2/design-a/C3-guard-v1"
+    }
+  },
+  "s": {
+    "C1-guard-v1": {
+      "interval": [
+        0.6523942310547993,
+        1.2207952749558537
+      ],
+      "median_rho": 0.10312788532020614,
+      "s": 0.9499779749814666,
+      "sensitivity": {
+        "10": [
+          0.6986619138074374,
+          1.1872985886498477
+        ],
+        "126": [
+          0.6477246735544354,
+          1.33188092776595
+        ],
+        "21": [
+          0.6523942310547993,
+          1.2207952749558537
+        ],
+        "63": [
+          0.6423559975384282,
+          1.2941729255783394
+        ]
+      }
+    },
+    "C2-guard-v1": {
+      "interval": [
+        0.8907111681026388,
+        1.1207152931742184
+      ],
+      "median_rho": 0.10603160957948396,
+      "s": 0.9767260662777091,
+      "sensitivity": {
+        "10": [
+          0.903143106181066,
+          1.1047230362720857
+        ],
+        "126": [
+          0.8836025219231904,
+          1.1410485027762256
+        ],
+        "21": [
+          0.8907111681026388,
+          1.1207152931742184
+        ],
+        "63": [
+          0.8770119556083332,
+          1.1443338791127224
+        ]
+      }
+    },
+    "C3-guard-v1": {
+      "interval": [
+        0.7549356118236019,
+        1.272563330618382
+      ],
+      "median_rho": 0.1070467797594387,
+      "s": 0.9860774585691403,
+      "sensitivity": {
+        "10": [
+          0.7930378167354245,
+          1.2364263608236228
+        ],
+        "126": [
+          0.7740821050596598,
+          1.3712140445071852
+        ],
+        "21": [
+          0.7549356118236019,
+          1.272563330618382
+        ],
+        "63": [
+          0.7440877175357219,
+          1.3546538372216708
+        ]
+      }
+    }
+  },
+  "sessions": 1056,
+  "treatment": "C3-guard-v1"
+}

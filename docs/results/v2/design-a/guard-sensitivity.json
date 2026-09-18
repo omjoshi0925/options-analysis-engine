@@ -1,0 +1,475 @@
+{
+  "abstentions": {
+    "C0": {
+      "abstaining": null,
+      "by_key": null,
+      "config": {
+        "path": "config/v2/C0.json",
+        "sha256": "91f9c8e042f5bd6004c9291b705a29ca2d8fddfbf4e45885d1f755aca59725cc"
+      },
+      "learned_coverage_mean": 0.9970146604193015,
+      "only_key": null,
+      "rows": null,
+      "sessions_fully_abstaining": null,
+      "sessions_with_any": null,
+      "support_guard": null,
+      "zero_coverage_folds": []
+    },
+    "C1": {
+      "abstaining": 5024,
+      "by_key": {
+        "T": 0,
+        "baseline_sigma": 699,
+        "log_moneyness": 0,
+        "q": 0,
+        "r": 4325
+      },
+      "config": {
+        "path": "config/v2/C1-guard-v1.json",
+        "sha256": "5b44aa77a9e0551008324c4ded72c8a43c362e337ee069fdb1451e54994fb8ef"
+      },
+      "learned_coverage_mean": 0.977128296782938,
+      "only_key": {
+        "T": 0,
+        "baseline_sigma": 699,
+        "log_moneyness": 0,
+        "q": 0,
+        "r": 4325
+      },
+      "rows": 230927,
+      "sessions_fully_abstaining": 21,
+      "sessions_with_any": 28,
+      "support_guard": {
+        "keys": [
+          "T",
+          "baseline_sigma",
+          "r",
+          "q",
+          "log_moneyness"
+        ],
+        "mode": "v1"
+      },
+      "zero_coverage_folds": [
+        "2022-02-07",
+        "2022-02-09",
+        "2022-02-11",
+        "2022-02-14",
+        "2022-03-16",
+        "2022-03-23",
+        "2022-03-25",
+        "2022-04-06",
+        "2022-04-08",
+        "2022-04-18",
+        "2022-05-16",
+        "2022-05-18",
+        "2022-06-13",
+        "2022-06-15",
+        "2022-06-17",
+        "2022-07-13",
+        "2022-07-15",
+        "2025-09-08",
+        "2025-12-02",
+        "2025-12-03",
+        "2025-12-04"
+      ]
+    },
+    "C2": {
+      "abstaining": 699,
+      "by_key": {
+        "T": 0,
+        "baseline_sigma": 699,
+        "log_moneyness": 0,
+        "q": 0,
+        "r": 0
+      },
+      "config": {
+        "path": "config/v2/C2-guard-v1.json",
+        "sha256": "af8299609de7ca77f81d8523bec193f519839ce869a154260714c1952158ad7e"
+      },
+      "learned_coverage_mean": 0.9970146604193015,
+      "only_key": {
+        "T": 0,
+        "baseline_sigma": 699,
+        "log_moneyness": 0,
+        "q": 0,
+        "r": 0
+      },
+      "rows": 230927,
+      "sessions_fully_abstaining": 0,
+      "sessions_with_any": 7,
+      "support_guard": {
+        "keys": [
+          "T",
+          "baseline_sigma",
+          "r",
+          "q",
+          "log_moneyness"
+        ],
+        "mode": "v1"
+      },
+      "zero_coverage_folds": []
+    },
+    "C3": {
+      "abstaining": 5024,
+      "by_key": {
+        "T": 0,
+        "baseline_sigma": 699,
+        "log_moneyness": 0,
+        "q": 0,
+        "r": 4325
+      },
+      "config": {
+        "path": "config/v2/C3-guard-v1.json",
+        "sha256": "a2ed2a2634078d1509d26b8fbdb91e9ab5e3c941b188b6bd45f0d9118859f636"
+      },
+      "learned_coverage_mean": 0.977128296782938,
+      "only_key": {
+        "T": 0,
+        "baseline_sigma": 699,
+        "log_moneyness": 0,
+        "q": 0,
+        "r": 4325
+      },
+      "rows": 230927,
+      "sessions_fully_abstaining": 21,
+      "sessions_with_any": 28,
+      "support_guard": {
+        "keys": [
+          "T",
+          "baseline_sigma",
+          "r",
+          "q",
+          "log_moneyness"
+        ],
+        "mode": "v1"
+      },
+      "zero_coverage_folds": [
+        "2022-02-07",
+        "2022-02-09",
+        "2022-02-11",
+        "2022-02-14",
+        "2022-03-16",
+        "2022-03-23",
+        "2022-03-25",
+        "2022-04-06",
+        "2022-04-08",
+        "2022-04-18",
+        "2022-05-16",
+        "2022-05-18",
+        "2022-06-13",
+        "2022-06-15",
+        "2022-06-17",
+        "2022-07-13",
+        "2022-07-15",
+        "2025-09-08",
+        "2025-12-02",
+        "2025-12-03",
+        "2025-12-04"
+      ]
+    }
+  },
+  "amendment": 3,
+  "bootstrap": {
+    "block_length": 21,
+    "confidence": 0.95,
+    "kind": "circular block, paired (identical block indices for every series)",
+    "replicates": 10000,
+    "seed": 20260908,
+    "sensitivity_blocks": [
+      10,
+      63,
+      126
+    ],
+    "sensitivity_blocks_skipped": []
+  },
+  "carry_only_check": {
+    "off": {
+      "definition": "median(L_base,C3) - median(L_model,C0)",
+      "interval": [
+        2.581480305769066e-07,
+        3.859499465543497e-06
+      ],
+      "median_baseline_mse_treatment": 1.3989102215239915e-05,
+      "median_model_mse_control": 1.185351833788722e-05,
+      "value": 2.1355838773526954e-06
+    },
+    "on": {
+      "definition": "median(L_base,C3-guard-v1) - median(L_model,C0)",
+      "interval": [
+        2.581480305769066e-07,
+        3.859499465543497e-06
+      ],
+      "median_baseline_mse_treatment": 1.3989102215239915e-05,
+      "median_model_mse_control": 1.185351833788722e-05,
+      "value": 2.1355838773526954e-06
+    }
+  },
+  "control": {
+    "off": "C0",
+    "on": "C0"
+  },
+  "decision": {
+    "agrees": true,
+    "line": "The decision label agrees with the guard-off runs: guard off structure dominant (S_3 = 0.986, interval [0.762, 1.281]); guard on structure dominant (S_3 = 0.986, interval [0.755, 1.273]).",
+    "off": {
+      "headline": "S_3 = 0.986 with 95% interval [0.762, 1.281]: structure dominant",
+      "label": "structure dominant",
+      "s3": 0.9860774585691403,
+      "s3_interval": [
+        0.7616867511532046,
+        1.2805612644513384
+      ],
+      "v1_improvement_survives_carry_correction": true
+    },
+    "on": {
+      "headline": "S_3 = 0.986 with 95% interval [0.755, 1.273]: structure dominant",
+      "label": "structure dominant",
+      "s3": 0.9860774585691403,
+      "s3_interval": [
+        0.7549356118236019,
+        1.272563330618382
+      ],
+      "v1_improvement_survives_carry_correction": true
+    }
+  },
+  "executed": "2026-09-17",
+  "exploratory": false,
+  "files": {
+    "guard_off_comparison": {
+      "path": "docs/results/v2/design-a/comparison.json",
+      "sha256": "9b55ecd48506d05ab676483a7a9e0cd9b0f74a3a6626dc44eea7a5531593ac06"
+    },
+    "guard_on_comparison": {
+      "path": "docs/results/v2/design-a/guard-v1/comparison.json",
+      "sha256": "d0fa96664808cec2eda27f83c550f6ad50765928ecf5446c2f007625f19e52ab"
+    }
+  },
+  "mean_d_treatment": {
+    "off": {
+      "interval": [
+        6.320121947499345e-06,
+        0.001404195764720898
+      ],
+      "sensitivity": {
+        "10": [
+          9.124125324273795e-06,
+          0.0012478757043653493
+        ],
+        "126": [
+          4.227291049632705e-06,
+          0.0014023032999962493
+        ],
+        "21": [
+          6.320121947499345e-06,
+          0.001404195764720898
+        ],
+        "63": [
+          3.984852073765861e-06,
+          0.0014067921379788152
+        ]
+      },
+      "value": 0.000474847531248505
+    },
+    "on": {
+      "interval": [
+        7.107550332618951e-06,
+        0.00140457195604537
+      ],
+      "sensitivity": {
+        "10": [
+          9.81298305561364e-06,
+          0.0012483839543118353
+        ],
+        "126": [
+          5.199968765441754e-06,
+          0.0014026519396275303
+        ],
+        "21": [
+          7.107550332618951e-06,
+          0.00140457195604537
+        ],
+        "63": [
+          4.8004701022757035e-06,
+          0.0014075815365299476
+        ]
+      },
+      "value": 0.0004755325364429824
+    }
+  },
+  "note": "Design A rerun with the v1 support guard (T, baseline_sigma, log_moneyness, r, q) from the code at the commit that produced the committed runs, with a config key selecting the guard; C0 was rerun first and required to be byte-identical to the committed C0. Amendment 3's text stands.",
+  "s": {
+    "C1": {
+      "difference_in_s": -0.00468786978983915,
+      "guard_off": {
+        "interval": [
+          0.6652852898149378,
+          1.2299714012401048
+        ],
+        "median_rho": 0.10363679195890166,
+        "s": 0.9546658447713058,
+        "sensitivity": {
+          "10": [
+            0.7093651818982183,
+            1.194600587845577
+          ],
+          "126": [
+            0.6621343670868352,
+            1.342553931614944
+          ],
+          "21": [
+            0.6652852898149378,
+            1.2299714012401048
+          ],
+          "63": [
+            0.6571653785941848,
+            1.3005744640803645
+          ]
+        }
+      },
+      "guard_on": {
+        "interval": [
+          0.6523942310547993,
+          1.2207952749558537
+        ],
+        "median_rho": 0.10312788532020614,
+        "s": 0.9499779749814666,
+        "sensitivity": {
+          "10": [
+            0.6986619138074374,
+            1.1872985886498477
+          ],
+          "126": [
+            0.6477246735544354,
+            1.33188092776595
+          ],
+          "21": [
+            0.6523942310547993,
+            1.2207952749558537
+          ],
+          "63": [
+            0.6423559975384282,
+            1.2941729255783394
+          ]
+        }
+      }
+    },
+    "C2": {
+      "difference_in_s": 0.0,
+      "guard_off": {
+        "interval": [
+          0.8907111681026388,
+          1.1207152931742184
+        ],
+        "median_rho": 0.10603160957948396,
+        "s": 0.9767260662777091,
+        "sensitivity": {
+          "10": [
+            0.903143106181066,
+            1.1047230362720857
+          ],
+          "126": [
+            0.8836025219231904,
+            1.1410485027762256
+          ],
+          "21": [
+            0.8907111681026388,
+            1.1207152931742184
+          ],
+          "63": [
+            0.8770119556083332,
+            1.1443338791127224
+          ]
+        }
+      },
+      "guard_on": {
+        "interval": [
+          0.8907111681026388,
+          1.1207152931742184
+        ],
+        "median_rho": 0.10603160957948396,
+        "s": 0.9767260662777091,
+        "sensitivity": {
+          "10": [
+            0.903143106181066,
+            1.1047230362720857
+          ],
+          "126": [
+            0.8836025219231904,
+            1.1410485027762256
+          ],
+          "21": [
+            0.8907111681026388,
+            1.1207152931742184
+          ],
+          "63": [
+            0.8770119556083332,
+            1.1443338791127224
+          ]
+        }
+      }
+    },
+    "C3": {
+      "difference_in_s": 0.0,
+      "guard_off": {
+        "interval": [
+          0.7616867511532046,
+          1.2805612644513384
+        ],
+        "median_rho": 0.1070467797594387,
+        "s": 0.9860774585691403,
+        "sensitivity": {
+          "10": [
+            0.8003191475559344,
+            1.2417213646898877
+          ],
+          "126": [
+            0.77929305458811,
+            1.377315269794648
+          ],
+          "21": [
+            0.7616867511532046,
+            1.2805612644513384
+          ],
+          "63": [
+            0.753844220256928,
+            1.3576266822335763
+          ]
+        }
+      },
+      "guard_on": {
+        "interval": [
+          0.7549356118236019,
+          1.272563330618382
+        ],
+        "median_rho": 0.1070467797594387,
+        "s": 0.9860774585691403,
+        "sensitivity": {
+          "10": [
+            0.7930378167354245,
+            1.2364263608236228
+          ],
+          "126": [
+            0.7740821050596598,
+            1.3712140445071852
+          ],
+          "21": [
+            0.7549356118236019,
+            1.272563330618382
+          ],
+          "63": [
+            0.7440877175357219,
+            1.3546538372216708
+          ]
+        }
+      }
+    }
+  },
+  "sessions": {
+    "off": 1056,
+    "on": 1056
+  },
+  "treatment": {
+    "off": "C3",
+    "on": "C3-guard-v1"
+  }
+}

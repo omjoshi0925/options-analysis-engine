@@ -29,3 +29,23 @@
 Compensation dominant if S_3 < 0.5 and the upper bound is below 0.75; structure dominant if S_3 >= 0.75 and the lower bound is above 0.5; otherwise mixed or inconclusive. Separately, a mean d_3 interval that includes zero means the v1 improvement did not survive carry correction.
 
 Diebold-Mariano and Newey-West values are reported for continuity with v1 and are not used for decisions.
+
+<!-- guard-sensitivity:start -->
+## Guard sensitivity (Amendment 3, executed 2026-09-17)
+
+Design A rerun with the v1 support guard, which also guards r and q, from the code at the commit that produced the committed runs; C0 reran byte-identically first. Same set A, folds, and bootstrap settings; S_k against the same C0.
+
+| Correction | S_k, guard off | 95% CI | S_k, guard on (v1) | 95% CI | Abstaining rows, guard on (of rows) | Sessions fully abstaining |
+|---|---:|---:|---:|---:|---:|---:|
+| C1 | 0.955 | [0.665, 1.230] | 0.950 | [0.652, 1.221] | 5,024 of 230,927 | 21 |
+| C2 | 0.977 | [0.891, 1.121] | 0.977 | [0.891, 1.121] | 699 of 230,927 | 0 |
+| C3 | 0.986 | [0.762, 1.281] | 0.986 | [0.755, 1.273] | 5,024 of 230,927 | 21 |
+
+Abstentions by guarded feature (a row may fail several; the second figure counts rows failing only that feature):
+
+- C1: T 0 (0 only), baseline_sigma 699 (699 only), log_moneyness 0 (0 only), q 0 (0 only), r 4,325 (4,325 only); sessions with any abstention 28.
+- C2: T 0 (0 only), baseline_sigma 699 (699 only), log_moneyness 0 (0 only), q 0 (0 only), r 0 (0 only); sessions with any abstention 7.
+- C3: T 0 (0 only), baseline_sigma 699 (699 only), log_moneyness 0 (0 only), q 0 (0 only), r 4,325 (4,325 only); sessions with any abstention 28.
+
+The decision label agrees with the guard-off runs: guard off structure dominant (S_3 = 0.986, interval [0.762, 1.281]); guard on structure dominant (S_3 = 0.986, interval [0.755, 1.273]).
+<!-- guard-sensitivity:end -->
