@@ -1,5 +1,10 @@
 name: Numerical and data validation
-on: [push, pull_request]
+# Runs on pushes to main and on pull requests only. Provenance branches (historical snapshots kept for the record,
+# such as guard-sensitivity-2026-09-17) and tag pushes are not built; see docs/NOTEBOOK.md, 2026-09-19.
+on:
+  push:
+    branches: [main]
+  pull_request:
 jobs:
   lint:
     runs-on: ubuntu-latest

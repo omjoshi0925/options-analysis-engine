@@ -861,3 +861,32 @@ beats flat, persistence beats structure, the sequence is the value) but not
 the one-breath form, so the line was added rather than treated as covered.
 The manifest re-hashes the paper. No model, analysis, or locked-module
 change; study-v1 and study-v2-locked unmoved.
+
+## 2026-09-19: CI limited to main and pull requests after the provenance-branch failures
+
+The two red runs on the provenance branch guard-sensitivity-2026-09-17
+(commit 840f706), checks #18 and Numerical and data validation #40, were read
+without touching the branch. Both fail at the same step, python -m pytest -q,
+on the same single test in every job:
+tests/test_carry_inputs.py::test_constant_mode_metadata_is_the_v1_shape (1
+failed, 206 passed, 1 skipped in checks; 1 failed, 207 passed on Python 3.10,
+3.12, and 3.13; lint passed; the manifest check in checks never ran because
+pytest failed first). Cause: the branch adds the LiveConfig field
+support_guard, so public_dict() ends with "support_guard": "amended", and the
+golden test, which the branch leaves untouched, pins the v1 metadata shape
+verbatim. This is the failure the 2026-09-17 guard-sensitivity entry already
+recorded, and it has no numeric effect (C0 reran byte-identically on that
+branch). It is not drift between CI and a snapshot: the workflow files on the
+branch are identical to main's and the branch touches no test. It says
+nothing about main (the same test passes there, verify_lock passes, no hashed
+file differs, and main carries no support_guard code), about the tags (their
+push runs succeeded), or about the fresh evaluation.
+
+Change: .github/workflows/checks.yml and tests.yml now trigger on pushes to
+main and on pull requests only, so a provenance branch pushed for the record
+is no longer built. Tag pushes no longer start runs either (a tag points at a
+commit main already built), and Dependabot branches are built once, by their
+pull request, rather than twice. The repository has no ci.yml; the triggers
+of the two existing workflows were changed, since a new workflow file cannot
+restrict the others. The branch stays at 840f706 and its two failed runs stay
+in the Actions history as the record. study-v1 and study-v2-locked unmoved.
